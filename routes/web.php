@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\KnowledgeBaseController as AdminKnowledgeBaseController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\PublicOrderController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
+use App\Http\Controllers\SuperAdmin\KnowledgeBaseController as SuperAdminKnowledgeBaseController;
 use App\Http\Controllers\SuperAdmin\TefaUnitController;
 use App\Http\Controllers\SuperAdmin\AdminUserController;
 use App\Http\Controllers\SuperAdmin\CategoryController;
@@ -66,6 +68,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('units', TefaUnitController::class)->except(['show', 'create', 'edit']);
         Route::resource('admins', AdminUserController::class)->except(['show', 'create', 'edit']);
         Route::resource('categories', CategoryController::class)->only(['index', 'store', 'destroy']);
+        Route::resource('knowledge', SuperAdminKnowledgeBaseController::class)->only(['index', 'store', 'update', 'destroy']);
     });
 
     // --- ADMIN JURUSAN MODULE ---
@@ -91,6 +94,9 @@ Route::middleware('auth')->group(function () {
         
         // Workers CRUD
         Route::resource('workers', AdminWorkerController::class);
+
+        // AI Knowledge Base (Konteks per Jurusan)
+        Route::resource('knowledge', AdminKnowledgeBaseController::class)->only(['index', 'store', 'update', 'destroy']);
     });
 
     // --- WORKER / SISWA MODULE ---

@@ -41,6 +41,10 @@
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.categories.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             🏷️ Kategori
                         </a>
+                        <a href="{{ route('superadmin.knowledge.index') }}" 
+                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            🧠 Konteks AI
+                        </a>
                     @elseif($role === 'admin_jurusan')
                         <a href="{{ route('admin.dashboard') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
@@ -65,6 +69,10 @@
                         <a href="{{ route('admin.workers.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.workers.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             🎓 Siswa
+                        </a>
+                        <a href="{{ route('admin.knowledge.index') }}" 
+                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            🧠 Konteks AI
                         </a>
                     @elseif($role === 'worker')
                         <a href="{{ route('worker.dashboard') }}" 
@@ -137,6 +145,7 @@
             <a href="{{ route('superadmin.units.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('superadmin.units.*') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">🏫 Unit TEFA</a>
             <a href="{{ route('superadmin.admins.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('superadmin.admins.*') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">👥 Admin Jurusan</a>
             <a href="{{ route('superadmin.categories.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('superadmin.categories.*') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">🏷️ Kategori</a>
+            <a href="{{ route('superadmin.knowledge.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('superadmin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">🧠 Konteks AI</a>
         @elseif($role === 'admin_jurusan')
             <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">Dashboard</a>
             <a href="{{ route('admin.products.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">📦 Kelola Produk</a>
@@ -144,6 +153,7 @@
             <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">⚡ Proyek</a>
             <a href="{{ route('admin.projects.import-wa.create') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🤖 Import WA</a>
             <a href="{{ route('admin.workers.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎓 Kelola Siswa</a>
+            <a href="{{ route('admin.knowledge.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🧠 Konteks AI</a>
         @elseif($role === 'worker')
             <a href="{{ route('worker.dashboard') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">📊 Statistik & Ringkasan</a>
             <a href="{{ route('worker.tasks.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎯 Daftar Tugas</a>

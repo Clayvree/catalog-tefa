@@ -17,7 +17,11 @@
     </style>
 </head>
 <body class="antialiased bg-slate-50 text-slate-900 min-h-screen selection:bg-indigo-600 selection:text-white">
-    <div class="min-h-screen flex flex-col">
+    <div class="min-h-screen flex flex-col" x-data="{
+        addModalOpen: false,
+        editModalOpen: false,
+        active: { id: '', title: '', description: '', is_active: true, unit_id: '' }
+    }">
         @include('layouts.navigation')
 
         @isset($header)

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AiChatSession;
 use App\Models\AiChatMessage;
+use App\Models\AiKnowledgeBase;
 use App\Models\CatalogItem;
 use App\Models\TefaUnit;
 use Illuminate\Http\Request;
@@ -15,102 +16,168 @@ use Illuminate\Support\Str;
 
 class AiChatController extends Controller
 {
-    /**
-     * Handle public chat widget message using Gemini.
-     */
+    private string $geminiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+
     public function message(Request $request)
     {
         $request->validate([
-            'message' => 'required|string|max:1000',
-            'session_token' => 'nullable|string',
-            'tefa_unit_id' => 'nullable|uuid'
+            'message'      => 'required|string|max:1000',
+            'tefa_unit_id' => 'nullable|uuid',
         ]);
 
         $userMessage = $request->input('message');
-        $sessionToken = $request->input('session_token') ?? (string) Str::uuid();
-        $tefaUnitId = $request->input('tefa_unit_id');
+        $tefaUnitId  = $request->input('tefa_unit_id');
+        $userId      = $request->user()?->id;
 
         try {
-            // 1. Get or create session
-            $session = AiChatSession::firstOrCreate(
-                ['session_token' => $sessionToken],
-                [
-                    'user_id' => $request->user()?->id,
-                    'tefa_unit_id' => $tefaUnitId
-                ]
-            );
-
-            // 2. Simpan pesan user
-            AiChatMessage::create([
-                'session_id' => $session->id,
-                'sender' => 'user',
-                'message' => $userMessage
-            ]);
-
-            // 3. Bangun context (RAG sederhana)
-            $context = $this->buildContext($tefaUnitId);
-            $history = $this->getChatHistory($session->id);
-
-            // 4. Panggil Gemini
-            $geminiApiKey = env('GEMINI_API_KEY');
-            
-            $prompt = "Context Platform:\n{$context}\n\nRiwayat Chat:\n{$history}\n\nUser: {$userMessage}\n\nAI Assistant (jawab dalam bahasa Indonesia, ramah, dan profesional):";
-
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$geminiApiKey}", [
-                'contents' => [['parts' => [['text' => $prompt]]]]
-            ]);
-
-            if ($response->failed()) {
-                throw new \Exception('Gemini API Error');
+            // ── 1. Resolve / buat session ────────────────────────────────
+            if ($userId) {
+                $session = AiChatSession::firstOrCreate(
+                    ['user_id' => $userId, 'tefa_unit_id' => $tefaUnitId],
+                    ['session_token' => (string) Str::uuid()]
+                );
+            } else {
+                $sessionToken = $request->session()->getId();
+                $session = AiChatSession::firstOrCreate(
+                    ['session_token' => $sessionToken, 'tefa_unit_id' => $tefaUnitId]
+                );
             }
 
-            $responseData = $response->json();
-            $aiText = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? 'Maaf, saya sedang mengalami gangguan.';
-
-            // 5. Simpan balasan AI
+            // ── 2. Simpan pesan user ─────────────────────────────────────
             AiChatMessage::create([
                 'session_id' => $session->id,
-                'sender' => 'ai',
-                'message' => $aiText
+                'sender'     => 'user',
+                'message'    => $userMessage,
+            ]);
+
+            // ── 3. STEP 1 – AI Routing: pilih knowledge yang relevan ──────
+            $knowledgeIndex = AiKnowledgeBase::forUnit($tefaUnitId)->get(['id', 'title']);
+
+            $selectedDescriptions = collect();
+
+            if ($knowledgeIndex->isNotEmpty()) {
+                $indexList = $knowledgeIndex->map(fn($k) => "[{$k->id}] {$k->title}")->implode("\n");
+
+                $routerPrompt = <<<PROMPT
+Kamu adalah sistem router AI. Tugasmu HANYA menentukan ID knowledge yang dibutuhkan untuk menjawab pertanyaan berikut.
+
+Pertanyaan user: "{$userMessage}"
+
+Daftar Knowledge yang tersedia (format [ID] Judul):
+{$indexList}
+
+Jawab HANYA dengan JSON array berisi ID yang relevan. Contoh: [1, 3]
+Jika tidak ada yang relevan, jawab: []
+Jangan tambahkan penjelasan apapun.
+PROMPT;
+
+                $routerResponse = $this->callGemini($routerPrompt);
+
+                // Parse JSON array dari balasan AI router
+                preg_match('/\[[\d,\s]*\]/', $routerResponse, $matches);
+                $selectedIds = json_decode($matches[0] ?? '[]', true) ?? [];
+
+                if (!empty($selectedIds)) {
+                    $selectedDescriptions = AiKnowledgeBase::whereIn('id', $selectedIds)
+                        ->where('is_active', true)
+                        ->get(['title', 'description']);
+                }
+
+                Log::info('AI Router selected knowledge IDs: ' . json_encode($selectedIds));
+            }
+
+            // ── 4. STEP 2 – Rakit Final Prompt & Jawab ───────────────────
+            $knowledgeContext = '';
+            if ($selectedDescriptions->isNotEmpty()) {
+                $knowledgeContext = "=== Informasi Relevan ===\n";
+                foreach ($selectedDescriptions as $kb) {
+                    $knowledgeContext .= "## {$kb->title}\n{$kb->description}\n\n";
+                }
+            }
+
+            $platformContext = $this->buildPlatformContext($tefaUnitId);
+            $chatHistory     = $this->getChatHistory($session->id);
+
+            $finalPrompt = <<<PROMPT
+Kamu adalah AI Assistant yang ramah dan profesional untuk platform Teaching Factory (TEFA) SMK.
+
+{$platformContext}
+
+{$knowledgeContext}
+=== Riwayat Percakapan ===
+{$chatHistory}
+
+=== Pertanyaan Terbaru ===
+User: {$userMessage}
+
+Jawab dalam Bahasa Indonesia yang ramah dan profesional. Gunakan informasi relevan di atas jika tersedia.
+PROMPT;
+
+            $aiText = $this->callGemini($finalPrompt);
+
+            // ── 5. Simpan & kembalikan balasan ────────────────────────────
+            AiChatMessage::create([
+                'session_id' => $session->id,
+                'sender'     => 'ai',
+                'message'    => $aiText,
             ]);
 
             return response()->json([
-                'session_token' => $sessionToken,
-                'reply' => $aiText
+                'session_token' => $session->session_token,
+                'reply'         => $aiText,
             ]);
 
         } catch (\Exception $e) {
             Log::error('AI Chat Error: ' . $e->getMessage());
             return response()->json([
-                'reply' => 'Maaf, sistem AI kami sedang tidak tersedia saat ini.'
+                'reply' => 'Maaf, sistem AI kami sedang tidak tersedia saat ini.',
             ], 500);
         }
     }
 
-    private function buildContext(?string $tefaUnitId): string
+    // ── Private Helpers ───────────────────────────────────────────────────
+
+    private function callGemini(string $prompt): string
     {
-        $context = "Anda adalah AI Assistant untuk platform Teaching Factory (TEFA).\n";
-        
+        $apiKey  = env('GEMINI_API_KEY');
+        $response = Http::withHeaders(['Content-Type' => 'application/json'])
+            ->timeout(30)
+            ->post("{$this->geminiEndpoint}?key={$apiKey}", [
+                'contents' => [['parts' => [['text' => $prompt]]]],
+            ]);
+
+        if ($response->failed()) {
+            Log::error('Gemini API Error Body: ' . $response->body());
+            throw new \Exception('Gemini API Error: ' . $response->status());
+        }
+
+        return $response->json('candidates.0.content.parts.0.text')
+            ?? 'Maaf, saya sedang mengalami gangguan.';
+    }
+
+    private function buildPlatformContext(?string $tefaUnitId): string
+    {
+        $context = "=== Konteks Platform ===\n";
+        $context .= "Platform: Teaching Factory (TEFA) SMK\n";
+
         if ($tefaUnitId) {
             $unit = TefaUnit::find($tefaUnitId);
             if ($unit) {
-                $context .= "Saat ini Anda melayani pertanyaan untuk jurusan: {$unit->name}.\n";
-                $context .= "Deskripsi jurusan: {$unit->description}\n";
-                
-                $items = CatalogItem::published()->forUnit($tefaUnitId)->take(10)->get();
+                $context .= "Jurusan: {$unit->name}\n";
+                $context .= "Deskripsi: {$unit->description}\n";
+
+                $items = CatalogItem::published()->forUnit($tefaUnitId)->take(8)->get(['title', 'price', 'item_type']);
                 if ($items->isNotEmpty()) {
-                    $context .= "Produk/Jasa yang tersedia:\n";
+                    $context .= "Produk/Jasa tersedia:\n";
                     foreach ($items as $item) {
-                        $context .= "- {$item->title} (Rp " . number_format((float)$item->price, 0, ',', '.') . ")\n";
+                        $harga = $item->price ? 'Rp ' . number_format((float) $item->price, 0, ',', '.') : 'Hubungi kami';
+                        $context .= "- {$item->title} ({$harga})\n";
                     }
                 }
             }
         } else {
-            $context .= "Anda melayani portal utama. Tersedia berbagai layanan dari berbagai jurusan.\n";
             $units = TefaUnit::where('is_active', true)->pluck('name')->toArray();
-            $context .= "Jurusan yang ada: " . implode(', ', $units) . ".\n";
+            $context .= "Jurusan tersedia: " . implode(', ', $units) . "\n";
         }
 
         return $context;
@@ -120,16 +187,14 @@ class AiChatController extends Controller
     {
         $messages = AiChatMessage::where('session_id', $sessionId)
             ->latest()
-            ->take(6) // Ambil 6 pesan terakhir agar context window tidak penuh
+            ->take(8) // 4 putaran percakapan
             ->get()
             ->reverse();
 
-        $history = "";
-        foreach ($messages as $msg) {
+        return $messages->map(function ($msg) {
             $sender = $msg->sender === 'user' ? 'User' : 'AI';
-            $history .= "{$sender}: {$msg->message}\n";
-        }
-        
-        return $history;
+            return "{$sender}: {$msg->message}";
+        })->implode("\n");
     }
 }
+

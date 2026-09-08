@@ -14,7 +14,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id')->nullable(); // Nullable untuk guest
             $table->uuid('tefa_unit_id')->nullable(); // konteks per jurusan jika ada
-            $table->string('session_token')->unique();
+            $table->string('session_token'); // Wajib ada untuk mengelompokkan chat Guest
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
