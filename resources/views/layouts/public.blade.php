@@ -93,6 +93,10 @@
                            class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('about') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                             Tentang TEFA
                         </a>
+                        <a href="{{ route('contact') }}" 
+                            class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('contact') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/60' }}">
+                            Hubungi Kami
+                        </a>
                     </div>
                 </div>
 

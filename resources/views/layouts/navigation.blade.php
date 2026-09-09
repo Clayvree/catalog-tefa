@@ -85,6 +85,7 @@
 
             <!-- Right Actions: Web Publik Link & User Dropdown -->
             <div class="flex items-center gap-3">
+
                 
                 <a href="{{ route('home') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
@@ -149,6 +150,8 @@
             <a href="{{ route('worker.tasks.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎯 Daftar Tugas</a>
             <a href="{{ route('worker.portfolios.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🏆 Ajukan Portofolio</a>
         @endif
+
+        
         <a href="{{ route('home') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-indigo-400">← Kembali ke Web Publik</a>
     </div>
 </nav>

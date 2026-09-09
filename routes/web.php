@@ -23,6 +23,11 @@ use Illuminate\Support\Facades\Route;
 // --- PUBLIC PORTAL ---
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
+
+Route::get('/contact', function () {
+    return view('public.contact');
+})->name('contact');
+
 Route::get('/jurusan', [PublicController::class, 'jurusanList'])->name('jurusan.list');
 Route::get('/produk', [PublicController::class, 'produkList'])->name('produk.list');
 
