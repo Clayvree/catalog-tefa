@@ -45,11 +45,11 @@
                     <p class="text-xl font-black text-slate-900">{{ $stats['total'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'produk']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'produk' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-indigo-600 uppercase">📦 Produk Fisik</span>
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase"> Produk Fisik</span>
                     <p class="text-xl font-black text-indigo-600">{{ $stats['physical'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'jasa']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'jasa' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase">🛠️ Jasa & Digital</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase"> Jasa & Digital</span>
                     <p class="text-xl font-black text-emerald-600">{{ $stats['service_digital'] }}</p>
                 </a>
                 <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-1">
@@ -103,25 +103,25 @@
                                         <div class="space-y-1">
                                             @if($product->item_type->value === 'produk')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px]">
-                                                    📦 Produk Fisik
+                                                     Produk Fisik
                                                 </span>
                                             @else
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px]">
-                                                    🛠️ Jasa / Digital
+                                                     Jasa / Digital
                                                 </span>
                                             @endif
 
                                             <div class="text-[10px] text-slate-400">
                                                 @if($product->fulfillment_type === 'both')
-                                                    🛵 Dikirim & 🏢 Ambil di Workshop
+                                                     Dikirim &  Ambil di Workshop
                                                 @elseif($product->fulfillment_type === 'shipping_only')
-                                                    🛵 Khusus Dikirim Kurir
+                                                     Khusus Dikirim Kurir
                                                 @elseif($product->fulfillment_type === 'pickup_only')
-                                                    🏢 Khusus Ambil di Workshop
+                                                     Khusus Ambil di Workshop
                                                 @elseif($product->fulfillment_type === 'digital_download')
-                                                    💻 Download File Digital
+                                                     Download File Digital
                                                 @else
-                                                    🛠️ Layanan Booking
+                                                     Layanan Booking
                                                 @endif
                                             </div>
                                         </div>

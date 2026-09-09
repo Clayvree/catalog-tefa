@@ -42,9 +42,9 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Standar</label>
                             <select name="type" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                <option value="jasa">🛠️ Layanan Jasa</option>
-                                <option value="produk">📦 Produk Fisik</option>
-                                <option value="kegiatan">🎪 Event & Kegiatan</option>
+                                <option value="jasa"> Layanan Jasa</option>
+                                <option value="produk"> Produk Fisik</option>
+                                <option value="kegiatan">Event & Kegiatan</option>
                             </select>
                         </div>
 

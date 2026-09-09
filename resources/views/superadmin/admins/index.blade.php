@@ -74,7 +74,7 @@
                                     <td class="px-6 py-4">
                                         @if($adminUser->managedUnits->isNotEmpty())
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold text-xs">
-                                                🏫 {{ $adminUser->managedUnits->first()->name }}
+                                                 {{ $adminUser->managedUnits->first()->name }}
                                             </span>
                                         @else
                                             <span class="text-amber-500 font-bold italic">Belum dihubungkan ke unit</span>

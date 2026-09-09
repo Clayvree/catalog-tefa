@@ -93,7 +93,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold text-[10px]">
-                                            🏫 {{ $project->tefaUnit->name ?? '-' }}
+                                             {{ $project->tefaUnit->name ?? '-' }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 font-black text-slate-900 text-sm">

@@ -24,14 +24,14 @@
 
                     <!-- Headline -->
                     <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
-                        Karya Nyata Siswa, <br class="hidden sm:inline">
+                        Karya Siswa <br class="hidden sm:inline">
                         <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-indigo-700 to-blue-600">
-                            Standar Kualitas Industri.
+                            dengan Kualitas Industri.
                         </span>
                     </h1>
 
                     <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                        Temukan ribuan produk inovatif dan layanan jasa profesional langsung dari unit Teaching Factory. Dikerjakan oleh siswa berprestasi dengan supervisi instruktur ahli.
+                        Temukan berbagai produk dan layanan dari Teaching Factory kami. Setiap proyek dikerjakan oleh siswa dengan pendampingan instruktur melalui proses yang disesuaikan dengan kebutuhan dan standar dunia kerja.
                     </p>
 
                     <!-- Hero Search Box -->
@@ -123,7 +123,7 @@
 
                 <div class="pt-2 md:pt-0">
                     <p class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">100%</p>
-                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Didampingi Guru Ahli</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Didampingi Tenaga Ahli</p>
                 </div>
 
                 <div class="pt-2 md:pt-0">
@@ -332,7 +332,7 @@
                 <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Teknologi Terkini</span>
                 <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Alur Pengerjaan Terpadu AI</h2>
                 <p class="text-slate-500 text-xs sm:text-sm">
-                    Automasi cerdas dari diskusi chat WhatsApp hingga pengerjaan siswa terampil.
+                    Automasi cerdas dari diskusi chat WhatsApp hingga pengerjaan projek oleh siswa.
                 </p>
             </div>
 
@@ -373,7 +373,7 @@
             
             <div class="flex items-center justify-between gap-4 mb-8 sm:mb-12">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Bukti Nyata</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-400"></span>
                     <h2 class="text-xl sm:text-3xl font-black text-white tracking-tight mt-0.5">Portofolio Siswa</h2>
                 </div>
                 <a href="{{ route('jurusan.list') }}" class="text-xs sm:text-sm font-bold text-indigo-300 hover:text-white transition">
@@ -426,7 +426,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-gradient-to-tr from-indigo-700 via-indigo-600 to-blue-600 rounded-3xl p-8 sm:p-14 text-center text-white shadow-2xl shadow-indigo-600/30">
                 <div class="space-y-4 max-w-2xl mx-auto">
-                    <h2 class="text-2xl sm:text-3xl font-black tracking-tight">Siap Bermitra dengan Siswa Vokasi?</h2>
+                    <h2 class="text-2xl sm:text-3xl font-black tracking-tight">Siap untuk bermitra dengan siswa kejuruan?</h2>
                     <p class="text-indigo-100 text-xs sm:text-sm leading-relaxed">
                         Pesan layanan atau diskusikan kebutuhan proyek Anda dengan unit TEFA sekarang juga.
                     </p>

@@ -107,11 +107,11 @@
                                 </a>
                                 <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" 
                                    class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-                                    <span>🛠️ Layanan Jasa</span>
+                                    <span>Layanan Jasa</span>
                                 </a>
                                 <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" 
                                    class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'produk' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-                                    <span>📦 Produk Fisik</span>
+                                    <span>Produk Fisik</span>
                                 </a>
                             </div>
                         </div>
@@ -209,7 +209,7 @@
                                         @if($item->item_type->value === 'jasa')
                                             <a href="{{ route('jasa.nego', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-emerald-600/20">
-                                                <span class="hidden sm:inline">💬 Nego & Konsultasi</span>
+                                                <span class="hidden sm:inline">Nego & Konsultasi</span>
                                                 <span class="sm:hidden">Nego</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
@@ -223,7 +223,7 @@
                                         @else
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
-                                                <span class="hidden sm:inline">🛒 Beli Sekarang</span>
+                                                <span class="hidden sm:inline">Beli Sekarang</span>
                                                 <span class="sm:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
@@ -272,8 +272,8 @@
                             <h4 class="text-xs font-bold text-slate-400 uppercase">Tipe Penawaran</h4>
                             <div class="space-y-1">
                                 <a href="{{ route('produk.list', array_merge(request()->except('type'))) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ !request('type') ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">Semua Tipe</a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">🛠️ Layanan Jasa</a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'produk' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">📦 Produk Fisik</a>
+                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">Layanan Jasa</a>
+                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'produk' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">Produk Fisik</a>
                             </div>
                         </div>
 

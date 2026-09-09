@@ -115,7 +115,7 @@
                     </div>
                 @empty
                     <div class="col-span-full py-16 px-4 bg-white rounded-3xl border border-dashed border-slate-300 text-center space-y-3">
-                        <span class="text-4xl">🎨</span>
+                        <span class="text-4xl">[◉°]</span>
                         <h3 class="text-base font-black text-slate-800">Belum Ada Portofolio yang Diajukan</h3>
                         <p class="text-xs text-slate-500 max-w-md mx-auto">
                             Tunjukkan karya terbaik Anda kepada calon klien industri dengan mengajukan portofolio karya.

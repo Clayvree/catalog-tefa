@@ -30,15 +30,15 @@
                     <p class="text-xl font-black text-slate-900">{{ $stats['total'] }}</p>
                 </a>
                 <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('status') === 'pending' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-amber-500 uppercase">⏳ Perlu Diproses</span>
+                    <span class="text-[10px] font-bold text-amber-500 uppercase"> Perlu Diproses</span>
                     <p class="text-xl font-black text-amber-500">{{ $stats['pending'] }}</p>
                 </a>
                 <a href="{{ route('admin.orders.index', ['type' => 'physical']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'physical' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-indigo-600 uppercase">🛵 Pengiriman Kurir / Ambil</span>
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase"> Pengiriman Kurir / Ambil</span>
                     <p class="text-xl font-black text-indigo-600">{{ $stats['delivery'] + $stats['pickup'] }}</p>
                 </a>
                 <a href="{{ route('admin.orders.index', ['type' => 'digital']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'digital' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase">💻 Produk Digital</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase"> Produk Digital</span>
                     <p class="text-xl font-black text-emerald-600">{{ $stats['digital'] }}</p>
                 </a>
             </div>

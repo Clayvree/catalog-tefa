@@ -9,7 +9,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200">
-                    👑 Ketua TEFA Umum
+                    Ketua TEFA Umum
                 </span>
             </div>
         </div>
@@ -31,7 +31,7 @@
                 <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
                     <div class="flex items-center justify-between text-xs font-bold text-slate-400">
                         <span>TOTAL OMSET EST.</span>
-                        <span class="text-lg">💰</span>
+                        <span class="text-lg"></span>
                     </div>
                     <p class="text-xl sm:text-2xl font-black text-slate-900">
                         Rp{{ number_format((float)$stats['total_revenue_est'], 0, ',', '.') }}
@@ -42,7 +42,7 @@
                 <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
                     <div class="flex items-center justify-between text-xs font-bold text-slate-400">
                         <span>UNIT JURUSAN</span>
-                        <span class="text-lg">🏫</span>
+                        <span class="text-lg"></span>
                     </div>
                     <p class="text-2xl sm:text-3xl font-black text-indigo-600">{{ $stats['total_units'] }}</p>
                     <p class="text-[11px] text-slate-500">Unit Teaching Factory</p>
@@ -51,7 +51,7 @@
                 <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
                     <div class="flex items-center justify-between text-xs font-bold text-slate-400">
                         <span>KATALOG PRODUK</span>
-                        <span class="text-lg">📦</span>
+                        <span class="text-lg"></span>
                     </div>
                     <p class="text-2xl sm:text-3xl font-black text-slate-900">{{ $stats['total_products'] }}</p>
                     <p class="text-[11px] text-slate-500">Barang & Jasa Terdaftar</p>
@@ -60,7 +60,7 @@
                 <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
                     <div class="flex items-center justify-between text-xs font-bold text-slate-400">
                         <span>SISWA WORKER</span>
-                        <span class="text-lg">🎓</span>
+                        <span class="text-lg"></span>
                     </div>
                     <p class="text-2xl sm:text-3xl font-black text-slate-900">{{ $stats['total_workers'] }}</p>
                     <p class="text-[11px] text-slate-500">Talenta Vokasi Aktif</p>
@@ -118,7 +118,7 @@
                                     @endif
                                 </div>
                                 <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
-                                    <span>🏫 {{ $project->tefaUnit->name ?? 'Unit TEFA' }}</span>
+                                    <span> {{ $project->tefaUnit->name ?? 'Unit TEFA' }}</span>
                                     <span>Klien: {{ $project->client_name }}</span>
                                 </div>
                             </div>
