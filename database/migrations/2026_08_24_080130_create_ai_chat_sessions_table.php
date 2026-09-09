@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('ai_chat_sessions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('user_id')->nullable(); // Nullable untuk guest
+            $table->uuid('tefa_unit_id')->nullable(); // konteks per jurusan jika ada
+            $table->string('session_token'); // Wajib ada untuk mengelompokkan chat Guest
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
+            $table->foreign('tefa_unit_id')->references('id')->on('tefa_units')->nullOnDelete();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('ai_chat_sessions');
+    }
+};
