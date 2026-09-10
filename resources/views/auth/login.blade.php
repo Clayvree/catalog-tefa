@@ -1,47 +1,144 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.public')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('content')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+    <div class="min-h-[calc(100vh-80px)] flex items-center justify-center bg-slate-50 px-4 py-12">
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <div class="w-full max-w-md">
 
-            <x-text-input id="password" class="block mt-1 w-full"
+            <!-- Card Login -->
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
+
+                <!-- Header -->
+                <div class="text-center mb-8">
+
+                    <h1 class="text-2xl font-bold text-slate-800">
+                        Masuk ke TefaHub
+                    </h1>
+
+                    <p class="mt-2 text-sm text-slate-500">
+                        Silakan masuk untuk melanjutkan
+                    </p>
+
+                </div>
+
+                <!-- Session Status -->
+                <x-auth-session-status
+                    class="mb-4"
+                    :status="session('status')"
+                />
+
+                <!-- Form Login -->
+                <form method="POST" action="{{ route('login') }}">
+
+                    @csrf
+
+                    <!-- Email -->
+                    <div>
+                        <x-input-label
+                            for="email"
+                            :value="__('Email')"
+                            class="text-sm font-medium text-slate-700"
+                        />
+
+                        <x-text-input
+                            id="email"
+                            class="block mt-2 w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            type="email"
+                            name="email"
+                            :value="old('email')"
+                            required
+                            autofocus
+                            autocomplete="username"
+                            placeholder="Masukkan email kamu"
+                        />
+
+                        <x-input-error
+                            :messages="$errors->get('email')"
+                            class="mt-2"
+                        />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mt-5">
+
+                        <x-input-label
+                            for="password"
+                            :value="__('Password')"
+                            class="text-sm font-medium text-slate-700"
+                        />
+
+                        <x-text-input
+                            id="password"
+                            class="block mt-2 w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500"
                             type="password"
                             name="password"
-                            required autocomplete="current-password" />
+                            required
+                            autocomplete="current-password"
+                            placeholder="Masukkan password kamu"
+                        />
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        <x-input-error
+                            :messages="$errors->get('password')"
+                            class="mt-2"
+                        />
+
+                    </div>
+
+                    <!-- Forgot Password -->
+                    @if (Route::has('password.request'))
+
+                        <div class="flex justify-end mt-3">
+
+                            <a
+                                href="{{ route('password.request') }}"
+                                class="text-sm text-indigo-600 hover:text-indigo-800"
+                            >
+                                Lupa password?
+                            </a>
+
+                        </div>
+
+                    @endif
+
+                    <!-- Tombol Login -->
+                    <div class="mt-6">
+
+                        <x-primary-button
+                            class="w-full justify-center rounded-xl bg-indigo-600 py-3 text-sm font-semibold hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-800"
+                        >
+                            {{ __('Log in') }}
+                        </x-primary-button>
+
+                    </div>
+
+                </form>
+
+                <!-- Register -->
+                <div class="mt-6 text-center">
+
+                    <p class="text-sm text-slate-500">
+                        Belum punya akun?
+
+                        <a
+                            href="{{ route('register') }}"
+                            class="font-semibold text-indigo-600 hover:text-indigo-800"
+                        >
+                            Daftar sekarang
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Keterangan -->
+            <p class="mt-6 text-center text-xs text-slate-400">
+                © {{ date('Y') }} TefaHub. Semua hak dilindungi.
+            </p>
+
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+    </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+@endsection

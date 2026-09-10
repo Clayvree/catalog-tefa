@@ -21,10 +21,23 @@ use App\Http\Controllers\Worker\DashboardController as WorkerDashboardController
 use App\Http\Controllers\Worker\TaskController;
 use App\Http\Controllers\Worker\PortfolioController as WorkerPortfolioController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MailerController;
+
+// --- EMAIL COMPOSER ---
+Route::get("email", [MailerController::class, "email"])->name("email");
+Route::post("send-email", [MailerController::class, "composeEmail"])->name("send-email");
 
 // --- PUBLIC PORTAL ---
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
+
+Route::get('/contact', function () {
+    return view('public.contact');
+})->name('contact');
+
+// PROSES KIRIM EMAIL FORM CONTACT (TAMBAHKAN INI)
+Route::post('/contact', [MailerController::class, 'composeEmail'])->name('contact.send');
+
 Route::get('/jurusan', [PublicController::class, 'jurusanList'])->name('jurusan.list');
 Route::get('/produk', [PublicController::class, 'produkList'])->name('produk.list');
 

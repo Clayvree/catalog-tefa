@@ -15,7 +15,7 @@
                 </a>
 
                 @php
-                    $role = Auth::user()->role?->value;
+                    $role = Auth::user()?->role?->value ?? null;
                 @endphp
 
                 <!-- Navigation Links based on Role -->
