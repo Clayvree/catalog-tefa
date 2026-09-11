@@ -23,6 +23,13 @@
                     </div>
                 @endif
 
+                <!-- Notifikasi Gagal -->
+                @if(session('failed'))
+                    <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm font-semibold rounded-2xl">
+                        {{ session('failed') }}
+                    </div>
+                @endif
+
                 <form action="{{ route('contact.send') }}" method="POST" class="space-y-6">
                 @csrf
 

@@ -24,17 +24,24 @@ class MailerController extends Controller
         $mail = new PHPMailer(true);
 
         try {
-            // Server settings (diambil dari .env)
+            // Server settings
             $mail->SMTPDebug   = 0;
             $mail->isSMTP();
-            $mail->Host        = env('MAIL_HOST', 'smtp.gmail.com');
+            
+            // Mengatasi kendala IPv6 di Windows/Laragon dengan memaksa pencarian IP IPv4
+            $host = env('MAIL_HOST', 'smtp.gmail.com');
+            $mail->Host        = ($host === 'smtp.gmail.com') ? gethostbyname('smtp.gmail.com') : $host;
+            
             $mail->SMTPAuth    = true;
             $mail->Username    = env('MAIL_USERNAME', 'rizproject02@gmail.com');
             $mail->Password    = env('MAIL_PASSWORD', 'lxzwxctgtwzqgrlu');
-            $mail->SMTPSecure  = PHPMailer::ENCRYPTION_SMTPS; 
-            $mail->Port        = env('MAIL_PORT', 465);
+            
+            // Disesuaikan: Port 587 WAJIB menggunakan ENCRYPTION_STARTTLS (TLS)
+            $mail->SMTPSecure  = PHPMailer::ENCRYPTION_STARTTLS; 
+            $mail->Port        = env('MAIL_PORT', 587);
+            $mail->Timeout     = 30;
 
-            // Bypass SSL certificate check (Khusus Localhost/XAMPP)
+            // Bypass SSL certificate check (Khusus Localhost/Laragon)
             $mail->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer'       => false,
@@ -57,13 +64,17 @@ class MailerController extends Controller
             $mail->isHTML(true);
             $mail->Subject = "Pesan Kontak Baru: " . $request->subject;
             
-            // Menggunakan view email.blade.php sebagai tampilan isi pesan
-            $mail->Body    = view('email', [
-                'name'    => $request->name,
-                'email'   => $request->email,
-                'subject' => $request->subject,
-                'pesan'   => $request->message,
-            ])->render();
+            // Menggunakan String HTML langsung (tanpa pemanggilan view Blade)
+            $mail->Body = "
+                <h3>Pesan Kontak Baru</h3>
+                <p><b>Nama:</b> " . e($request->name) . "</p>
+                <p><b>Email:</b> " . e($request->email) . "</p>
+                <p><b>Subjek:</b> " . e($request->subject) . "</p>
+                <p><b>Pesan:</b><br>" . nl2br(e($request->message)) . "</p>
+            ";
+
+            // Plain text alternatif untuk email client yang tidak mendukung HTML
+            $mail->AltBody = "Nama: {$request->name}\nEmail: {$request->email}\nSubjek: {$request->subject}\nPesan:\n{$request->message}";
 
             $mail->send();
             return back()->with("success", "Pesan Anda berhasil terkirim ke Superadmin!");
