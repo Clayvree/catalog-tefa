@@ -7,19 +7,21 @@
         <div class="w-full max-w-md">
 
             <!-- Card Login -->
-            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
 
-                <!-- Header -->
+                <!-- Logo & Header -->
                 <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">
+                        Tefa <span class="text-indigo-600">Hub</span>
+                    </h2>
 
-                    <h1 class="text-2xl font-bold text-slate-800">
-                        Masuk ke TefaHub
+                    <h1 class="text-xl font-bold text-slate-900 mt-4">
+                        Masuk ke Akun
                     </h1>
 
-                    <p class="mt-2 text-sm text-slate-500">
+                    <p class="mt-1 text-sm text-slate-500">
                         Silakan masuk untuk melanjutkan
                     </p>
-
                 </div>
 
                 <!-- Session Status -->
@@ -35,22 +37,20 @@
 
                     <!-- Email -->
                     <div>
-                        <x-input-label
-                            for="email"
-                            :value="__('Email')"
-                            class="text-sm font-medium text-slate-700"
-                        />
+                        <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Alamat Email
+                        </label>
 
-                        <x-text-input
+                        <input
                             id="email"
-                            class="block mt-2 w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500"
                             type="email"
                             name="email"
-                            :value="old('email')"
+                            value="{{ old('email') }}"
                             required
                             autofocus
                             autocomplete="username"
-                            placeholder="Masukkan email kamu"
+                            placeholder="nama@email.com"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition duration-200"
                         />
 
                         <x-input-error
@@ -62,20 +62,18 @@
                     <!-- Password -->
                     <div class="mt-5">
 
-                        <x-input-label
-                            for="password"
-                            :value="__('Password')"
-                            class="text-sm font-medium text-slate-700"
-                        />
+                        <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Kata Sandi
+                        </label>
 
-                        <x-text-input
+                        <input
                             id="password"
-                            class="block mt-2 w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500"
                             type="password"
                             name="password"
                             required
                             autocomplete="current-password"
-                            placeholder="Masukkan password kamu"
+                            placeholder="••••••••"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition duration-200"
                         />
 
                         <x-input-error
@@ -92,7 +90,7 @@
 
                             <a
                                 href="{{ route('password.request') }}"
-                                class="text-sm text-indigo-600 hover:text-indigo-800"
+                                class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition duration-150"
                             >
                                 Lupa password?
                             </a>
@@ -104,11 +102,12 @@
                     <!-- Tombol Login -->
                     <div class="mt-6">
 
-                        <x-primary-button
-                            class="w-full justify-center rounded-xl bg-indigo-600 py-3 text-sm font-semibold hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-800"
+                        <button
+                            type="submit"
+                            class="w-full justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition duration-200"
                         >
-                            {{ __('Log in') }}
-                        </x-primary-button>
+                            Masuk
+                        </button>
 
                     </div>
 
@@ -122,7 +121,7 @@
 
                         <a
                             href="{{ route('register') }}"
-                            class="font-semibold text-indigo-600 hover:text-indigo-800"
+                            class="font-semibold text-indigo-600 hover:text-indigo-800 transition duration-150 ml-1"
                         >
                             Daftar sekarang
                         </a>
@@ -140,4 +139,5 @@
         </div>
 
     </div>
+
 @endsection
