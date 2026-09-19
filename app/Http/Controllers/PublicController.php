@@ -49,7 +49,7 @@ class PublicController extends Controller
 
     public function produkList(Request $request)
     {
-        $query = CatalogItem::with(['category', 'tefaUnit'])->published();
+        $query = CatalogItem::with(['category', 'categories', 'tefaUnit'])->published();
         
         // Search
         if ($request->filled('q')) {
@@ -62,7 +62,10 @@ class PublicController extends Controller
 
         // Filter Category
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
+            $query->where(function ($q) use ($request) {
+                $q->where('category_id', $request->category)
+                    ->orWhereHas('categories', fn ($categoryQuery) => $categoryQuery->whereKey($request->category));
+            });
         }
 
         // Filter Type (produk, jasa, kegiatan)
@@ -89,9 +92,12 @@ class PublicController extends Controller
     public function storefront(string $slug)
     {
         $unit = TefaUnit::withCount(['catalogItems', 'portfolios'])->where('slug', $slug)->where('is_active', true)->firstOrFail();
-        $featuredItems = CatalogItem::with('category')->forUnit($unit->id)->published()->latest()->take(6)->get();
+        $featuredItems = CatalogItem::with(['category', 'categories'])->forUnit($unit->id)->published()->latest()->take(6)->get();
         $featuredPortfolios = Portfolio::with('worker.user')->where('tefa_unit_id', $unit->id)->where('status', 'approved')->latest()->take(4)->get();
-        $categories = Category::whereHas('catalogItems', fn($q) => $q->where('tefa_unit_id', $unit->id))->get();
+        $categories = Category::where(function ($q) use ($unit) {
+            $q->whereHas('catalogItems', fn ($itemQuery) => $itemQuery->where('tefa_unit_id', $unit->id))
+                ->orWhereHas('catalogItemsMany', fn ($itemQuery) => $itemQuery->where('tefa_unit_id', $unit->id));
+        })->get();
 
         return view('public.storefront', compact('unit', 'featuredItems', 'featuredPortfolios', 'categories'));
     }
@@ -102,7 +108,10 @@ class PublicController extends Controller
         $query = CatalogItem::with('category')->forUnit($unit->id)->published();
         
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
+            $query->where(function ($q) use ($request) {
+                $q->where('category_id', $request->category)
+                    ->orWhereHas('categories', fn ($categoryQuery) => $categoryQuery->whereKey($request->category));
+            });
         }
 
         if ($request->filled('type')) {

@@ -9,6 +9,7 @@ use App\Models\TefaUnit;
 use App\Models\User;
 use App\Enums\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TefaUnitController extends Controller
@@ -26,8 +27,8 @@ class TefaUnitController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:tefa_units,slug',
             'description' => 'nullable|string',
-            'banner_url' => 'nullable|string',
-            'logo_url' => 'nullable|string',
+            'banner_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -38,8 +39,12 @@ class TefaUnitController extends Controller
             'name' => $validated['name'],
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
-            'banner_url' => $validated['banner_url'] ?? 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80',
-            'logo_url' => $validated['logo_url'] ?? null,
+            'banner_url' => $request->hasFile('banner_file')
+                ? '/storage/' . $request->file('banner_file')->store('units', 'public')
+                : null,
+            'logo_url' => $request->hasFile('logo_file')
+                ? '/storage/' . $request->file('logo_file')->store('units', 'public')
+                : null,
             'is_active' => $request->has('is_active') ? (bool) $request->is_active : true,
         ]);
 
@@ -51,24 +56,42 @@ class TefaUnitController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'banner_url' => 'nullable|string',
-            'logo_url' => 'nullable|string',
+            'banner_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'is_active' => 'nullable|boolean',
         ]);
 
-        $unit->update([
+        $data = [
             'name' => $validated['name'],
             'description' => $validated['description'] ?? $unit->description,
-            'banner_url' => $validated['banner_url'] ?? $unit->banner_url,
-            'logo_url' => $validated['logo_url'] ?? $unit->logo_url,
             'is_active' => $request->has('is_active') ? (bool) $request->is_active : true,
-        ]);
+        ];
+
+        foreach (['banner_file' => 'banner_url', 'logo_file' => 'logo_url'] as $fileKey => $column) {
+            if ($request->hasFile($fileKey)) {
+                $oldPath = ltrim(str_replace('/storage/', '', (string) $unit->{$column}), '/');
+                if ($oldPath && !str_starts_with((string) $unit->{$column}, 'http')) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+
+                $data[$column] = '/storage/' . $request->file($fileKey)->store('units', 'public');
+            }
+        }
+
+        $unit->update($data);
 
         return redirect()->back()->with('success', 'Unit TEFA berhasil diperbarui!');
     }
 
     public function destroy(TefaUnit $unit)
     {
+        foreach ([$unit->banner_url, $unit->logo_url] as $image) {
+            $path = ltrim(str_replace('/storage/', '', (string) $image), '/');
+            if ($path && !str_starts_with((string) $image, 'http')) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $unit->delete();
         return redirect()->back()->with('success', 'Unit TEFA berhasil dihapus!');
     }

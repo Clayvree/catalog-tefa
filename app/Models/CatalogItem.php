@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CatalogItem extends Model
@@ -25,6 +26,7 @@ class CatalogItem extends Model
         'description',
         'price',
         'stock',
+        'track_stock',
         'thumbnail_url',
         'digital_file_url',
         'fulfillment_type',
@@ -39,6 +41,7 @@ class CatalogItem extends Model
         return [
             'price'     => 'decimal:2',
             'stock'     => 'integer',
+            'track_stock' => 'boolean',
             'weight_gram' => 'integer',
             'item_type' => ItemType::class,
             'status'    => ItemStatus::class,
@@ -63,6 +66,11 @@ class CatalogItem extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'catalog_item_category');
     }
 
     public function galleries(): HasMany

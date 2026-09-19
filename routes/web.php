@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/projects', [SuperAdminProjectController::class, 'index'])->name('projects.index');
         Route::resource('units', TefaUnitController::class)->except(['show', 'create', 'edit']);
         Route::resource('admins', AdminUserController::class)->except(['show', 'create', 'edit']);
-        Route::resource('categories', CategoryController::class)->only(['index', 'store', 'destroy']);
+        Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('knowledge', SuperAdminKnowledgeBaseController::class)->only(['index', 'store', 'update', 'destroy']);
     });
 
@@ -91,7 +91,8 @@ Route::middleware('auth')->group(function () {
         // WhatsApp Import
         Route::get('/projects/import-wa', [WhatsAppImportController::class, 'create'])->name('projects.import-wa.create');
         Route::post('/projects/import-wa', [WhatsAppImportController::class, 'store'])->name('projects.import-wa.store');
-        Route::post('/projects/import-wa/confirm', [WhatsAppImportController::class, 'confirm'])->name('projects.import-wa.confirm');
+        Route::get('/projects/import-wa/{draft}/review', [WhatsAppImportController::class, 'review'])->name('projects.import-wa.review');
+        Route::post('/projects/import-wa/{draft}/confirm', [WhatsAppImportController::class, 'confirm'])->name('projects.import-wa.confirm');
         
         // Projects Monitoring
         Route::resource('projects', AdminProjectController::class);
@@ -104,6 +105,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
         Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
         Route::patch('/orders/{order}/payment', [AdminOrderController::class, 'confirmPayment'])->name('orders.payment.confirm');
+        Route::patch('/orders/{order}/fulfillment', [AdminOrderController::class, 'updateFulfillment'])->name('orders.fulfillment.update');
         
         // Workers CRUD
         Route::resource('workers', AdminWorkerController::class);

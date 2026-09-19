@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Category extends Model
 {
@@ -18,6 +19,7 @@ class Category extends Model
         'tefa_unit_id',
         'name',
         'type',
+        'image',
     ];
 
     protected function casts(): array
@@ -35,5 +37,10 @@ class Category extends Model
     public function catalogItems(): HasMany
     {
         return $this->hasMany(CatalogItem::class);
+    }
+
+    public function catalogItemsMany(): BelongsToMany
+    {
+        return $this->belongsToMany(CatalogItem::class, 'catalog_item_category');
     }
 }

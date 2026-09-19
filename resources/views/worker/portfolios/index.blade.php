@@ -166,9 +166,9 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto Mockup / Unggah Gambar</label>
-                            <input type="url" name="thumbnail_url" placeholder="https://images.unsplash.com/..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium mb-1">
-                            <input type="file" name="thumbnail_file" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Foto Mockup / Karya</label>
+                            <input type="file" name="thumbnail_file" accept="image/jpeg,image/png,image/webp" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                            <p class="text-[10px] text-slate-400 mt-1">JPG, PNG, atau WEBP. Maksimal 5 MB.</p>
                         </div>
 
                         <div class="pt-4 flex items-center justify-end gap-2 border-t border-slate-100">

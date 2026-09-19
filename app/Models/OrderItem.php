@@ -15,7 +15,10 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'catalog_item_id',
+        'item_title',
+        'unit_price',
         'quantity',
+        'subtotal',
         'price_at_purchase',
     ];
 
@@ -23,6 +26,8 @@ class OrderItem extends Model
     {
         return [
             'quantity'          => 'integer',
+            'unit_price'        => 'decimal:2',
+            'subtotal'          => 'decimal:2',
             'price_at_purchase' => 'decimal:2',
         ];
     }

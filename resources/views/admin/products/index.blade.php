@@ -16,7 +16,7 @@
     <div class="py-8 bg-slate-50 min-h-screen" x-data="{ 
         editModalOpen: false, 
         addModalOpen: false,
-        activeProduct: { id: '', title: '', category_id: '', item_type: 'produk', fulfillment_type: 'both', price: '', stock: 10, weight_gram: 500, digital_file_url: '', thumbnail_url: '', description: '', status: 'published' } 
+        activeProduct: { id: '', title: '', category_ids: [], item_type: 'produk', fulfillment_type: 'both', track_stock: true, stock: 10, weight_gram: '', digital_file_url: '', thumbnail_url: '', description: '', status: 'published' } 
     }" @open-add-product-modal.window="addModalOpen = true">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             
@@ -95,7 +95,7 @@
                                             </div>
                                             <div>
                                                 <p class="font-bold text-slate-900 text-sm line-clamp-1">{{ $product->title }}</p>
-                                                <span class="text-[10px] text-indigo-600 font-bold">{{ $product->category->name ?? 'Umum' }}</span>
+                                                <span class="text-[10px] text-indigo-600 font-bold">{{ $product->categories->pluck('name')->join(', ') ?: ($product->category->name ?? 'Umum') }}</span>
                                             </div>
                                         </div>
                                     </td>
@@ -130,7 +130,11 @@
                                         Rp{{ number_format((float)$product->price, 0, ',', '.') }}
                                     </td>
                                     <td class="px-6 py-4 text-center font-bold text-slate-800">
-                                        {{ $product->stock }}
+                                        @if($product->item_type->value === 'jasa' || !$product->track_stock)
+                                            <span class="text-emerald-600">Unlimited</span>
+                                        @else
+                                            {{ $product->stock }}
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4">
                                         @if($product->status->value === 'published')
@@ -151,12 +155,13 @@
                                             <button type="button" @click="activeProduct = {
                                                 id: '{{ $product->id }}',
                                                 title: '{{ addslashes($product->title) }}',
-                                                category_id: '{{ $product->category_id ?? '' }}',
+                                                category_ids: @js($product->categories->pluck('id')->values()->all() ?: ($product->category_id ? [$product->category_id] : [''])),
                                                 item_type: '{{ $product->item_type->value }}',
                                                 fulfillment_type: '{{ $product->fulfillment_type }}',
                                                 price: '{{ (int)$product->price }}',
-                                                stock: '{{ $product->stock }}',
-                                                weight_gram: '{{ $product->weight_gram }}',
+                                                track_stock: {{ $product->track_stock ? 'true' : 'false' }},
+                                                stock: '{{ $product->stock ?? '' }}',
+                                                weight_gram: '{{ $product->weight_gram ?? '' }}',
                                                 digital_file_url: '{{ addslashes($product->digital_file_url ?? '') }}',
                                                 thumbnail_url: '{{ addslashes($product->thumbnail_url) }}',
                                                 description: '{{ addslashes($product->description ?? '') }}',
@@ -195,7 +200,7 @@
             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" @click="addModalOpen = false"></div>
                 
-                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full p-6 sm:p-8 space-y-6" x-data="{ currentType: 'produk', currentFulfillment: 'both' }">
+                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full p-6 sm:p-8 space-y-6" x-data="{ currentType: 'produk', currentFulfillment: 'both', trackStock: true, categoryRows: [''] }">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <h3 class="font-black text-base text-slate-900">Tambah Item Produk / Jasa Baru</h3>
                         <button type="button" @click="addModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl cursor-pointer">×</button>
@@ -210,13 +215,21 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori</label>
-                                <select name="category_id" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                    <option value="">-- Pilih Kategori --</option>
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase">Kategori</label>
+                                    <button type="button" @click="categoryRows.push('')" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800">+ Tambah kategori</button>
+                                </div>
+                                <template x-for="(category, index) in categoryRows" :key="index">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <select name="category_ids[]" x-model="categoryRows[index]" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
+                                            <option value="">-- Pilih Kategori --</option>
+                                            @foreach($categories as $cat)
+                                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" x-show="categoryRows.length > 1" @click="categoryRows.splice(index, 1)" class="text-red-500 hover:text-red-700 font-bold text-lg" title="Hapus kategori">×</button>
+                                    </div>
+                                </template>
                             </div>
 
                             <div>
@@ -230,15 +243,20 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
+                            <div x-show="currentType === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Metode Pengambilan / Penerimaan</label>
-                                <select name="fulfillment_type" x-model="currentFulfillment" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
+                                <select name="fulfillment_type" x-model="currentFulfillment" :disabled="currentType !== 'produk'" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
                                     <option value="both">🛵 Bisa Diantar & 🏢 Ambil di Workshop</option>
                                     <option value="pickup_only">🏢 Khusus Ambil di Workshop TEFA</option>
                                     <option value="shipping_only">🛵 Khusus Dikirim Kurir</option>
                                     <option value="digital_download">💻 Download Aset / File Digital</option>
                                     <option value="service_booking">🛠️ Booking Layanan Jasa</option>
                                 </select>
+                            </div>
+
+                            <div x-show="currentType !== 'produk'" x-cloak class="p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 font-medium">
+                                <span x-show="currentType === 'digital'">Produk digital memakai akses download dan tidak memerlukan pengantaran.</span>
+                                <span x-show="currentType === 'jasa'">Layanan jasa memakai konsultasi/booking, tanpa pengantaran barang.</span>
                             </div>
 
                             <div>
@@ -248,27 +266,32 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
+                            <div x-show="currentType !== 'jasa'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stok Tersedia</label>
-                                <input type="number" name="stock" value="10" min="0" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <label class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-600">
+                                    <input type="checkbox" name="track_stock" value="1" checked x-model="trackStock" class="rounded text-indigo-600"> Stok terbatas
+                                </label>
+                                <input type="number" name="stock" value="10" min="0" :disabled="!trackStock" :required="trackStock" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <p class="text-[10px] text-slate-400 mt-1">Matikan untuk stok unlimited.</p>
                             </div>
-                            <div>
+                            <div x-show="currentType === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Berat Barang (Gram)</label>
-                                <input type="number" name="weight_gram" value="500" min="0" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <input type="number" name="weight_gram" min="0" :disabled="currentType !== 'produk'" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <p class="text-[10px] text-slate-400 mt-1">Opsional, hanya untuk barang fisik.</p>
                             </div>
                         </div>
 
                         <!-- Digital File URL (Shown if digital) -->
-                        <div x-show="currentFulfillment === 'digital_download'">
+                        <div x-show="currentType === 'digital'" x-cloak>
                             <label class="block text-xs font-bold text-indigo-700 uppercase mb-1">Link Download Aset Digital (Google Drive / GitHub / ZIP)</label>
-                            <input type="url" name="digital_file_url" placeholder="https://drive.google.com/..." class="w-full rounded-xl border-indigo-200 bg-indigo-50/50 focus:border-indigo-600 text-xs font-medium">
+                            <input type="url" name="digital_file_url" :disabled="currentType !== 'digital'" :required="currentType === 'digital'" placeholder="https://drive.google.com/..." class="w-full rounded-xl border-indigo-200 bg-indigo-50/50 focus:border-indigo-600 text-xs font-medium">
                             <p class="text-[10px] text-slate-400 mt-1">Link ini akan otomatis terbuka untuk pembeli setelah pembayaran terkonfirmasi.</p>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto Thumbnail / Unggah File</label>
-                            <input type="text" name="thumbnail_url" placeholder="https://images.unsplash.com/..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium mb-1">
-                            <input type="file" name="thumbnail_file" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Foto Thumbnail</label>
+                            <input type="file" name="thumbnail_file" accept="image/jpeg,image/png,image/webp" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                            <p class="text-[10px] text-slate-400 mt-1">JPG, PNG, atau WEBP. Maksimal 5 MB.</p>
                         </div>
 
                         <div>
@@ -314,13 +337,21 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori</label>
-                                <select name="category_id" x-model="activeProduct.category_id" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                    <option value="">-- Pilih Kategori --</option>
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase">Kategori</label>
+                                    <button type="button" @click="activeProduct.category_ids.push('')" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800">+ Tambah kategori</button>
+                                </div>
+                                <template x-for="(category, index) in activeProduct.category_ids" :key="index">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <select name="category_ids[]" x-model="activeProduct.category_ids[index]" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
+                                            <option value="">-- Pilih Kategori --</option>
+                                            @foreach($categories as $cat)
+                                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" x-show="activeProduct.category_ids.length > 1" @click="activeProduct.category_ids.splice(index, 1)" class="text-red-500 hover:text-red-700 font-bold text-lg" title="Hapus kategori">×</button>
+                                    </div>
+                                </template>
                             </div>
 
                             <div>
@@ -334,15 +365,20 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
+                            <div x-show="activeProduct.item_type === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Metode Pengambilan</label>
-                                <select name="fulfillment_type" x-model="activeProduct.fulfillment_type" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
+                                <select name="fulfillment_type" x-model="activeProduct.fulfillment_type" :disabled="activeProduct.item_type !== 'produk'" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
                                     <option value="both">🛵 Bisa Diantar & 🏢 Ambil di Workshop</option>
                                     <option value="pickup_only">🏢 Khusus Ambil di Workshop TEFA</option>
                                     <option value="shipping_only">🛵 Khusus Dikirim Kurir</option>
                                     <option value="digital_download">💻 Download Aset / File Digital</option>
                                     <option value="service_booking">🛠️ Booking Layanan Jasa</option>
                                 </select>
+                            </div>
+
+                            <div x-show="activeProduct.item_type !== 'produk'" x-cloak class="p-3 rounded-xl bg-slate-50 text-[11px] text-slate-500 font-medium">
+                                <span x-show="activeProduct.item_type === 'digital'">Produk digital memakai akses download dan tidak memerlukan pengantaran.</span>
+                                <span x-show="activeProduct.item_type === 'jasa'">Layanan jasa memakai konsultasi/booking, tanpa pengantaran barang.</span>
                             </div>
 
                             <div>
@@ -352,25 +388,30 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
+                            <div x-show="activeProduct.item_type !== 'jasa'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stok</label>
-                                <input type="number" name="stock" x-model="activeProduct.stock" min="0" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <label class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-600">
+                                    <input type="checkbox" name="track_stock" value="1" x-model="activeProduct.track_stock" class="rounded text-indigo-600"> Stok terbatas
+                                </label>
+                                <input type="number" name="stock" x-model="activeProduct.stock" min="0" :disabled="!activeProduct.track_stock" :required="activeProduct.track_stock" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <p class="text-[10px] text-slate-400 mt-1">Matikan untuk stok unlimited.</p>
                             </div>
-                            <div>
+                            <div x-show="activeProduct.item_type === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Berat (Gram)</label>
-                                <input type="number" name="weight_gram" x-model="activeProduct.weight_gram" min="0" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <input type="number" name="weight_gram" x-model="activeProduct.weight_gram" min="0" :disabled="activeProduct.item_type !== 'produk'" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                <p class="text-[10px] text-slate-400 mt-1">Opsional, hanya untuk barang fisik.</p>
                             </div>
                         </div>
 
-                        <div x-show="activeProduct.fulfillment_type === 'digital_download'">
+                        <div x-show="activeProduct.item_type === 'digital'" x-cloak>
                             <label class="block text-xs font-bold text-indigo-700 uppercase mb-1">Link File / Download Aset Digital</label>
-                            <input type="url" name="digital_file_url" x-model="activeProduct.digital_file_url" placeholder="https://drive.google.com/..." class="w-full rounded-xl border-indigo-200 bg-indigo-50/50 focus:border-indigo-600 text-xs font-medium">
+                            <input type="url" name="digital_file_url" x-model="activeProduct.digital_file_url" :disabled="activeProduct.item_type !== 'digital'" :required="activeProduct.item_type === 'digital'" placeholder="https://drive.google.com/..." class="w-full rounded-xl border-indigo-200 bg-indigo-50/50 focus:border-indigo-600 text-xs font-medium">
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Thumbnail Foto</label>
-                            <input type="text" name="thumbnail_url" x-model="activeProduct.thumbnail_url" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium mb-1">
-                            <input type="file" name="thumbnail_file" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                            <input type="file" name="thumbnail_file" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                            <p class="text-[10px] text-slate-400 mt-1">Kosongkan jika tidak ingin mengganti gambar. Maksimal 5 MB.</p>
                         </div>
 
                         <div>

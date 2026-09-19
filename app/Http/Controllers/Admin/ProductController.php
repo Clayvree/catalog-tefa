@@ -13,6 +13,7 @@ use App\Enums\ItemType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -21,7 +22,7 @@ class ProductController extends Controller
         $managedUnit = $request->user()->managedUnits()->first() ?? TefaUnit::first();
         $unitId = $managedUnit?->id;
 
-        $query = CatalogItem::with('category')->forUnit($unitId);
+        $query = CatalogItem::with(['category', 'categories'])->forUnit($unitId);
 
         if ($request->filled('type')) {
             $query->where('item_type', $request->type);
@@ -37,7 +38,7 @@ class ProductController extends Controller
         }
 
         $products = $query->latest()->paginate(10)->withQueryString();
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::whereNull('tefa_unit_id')->orWhere('tefa_unit_id', $unitId)->orderBy('name')->get();
 
         $stats = [
             'total' => CatalogItem::forUnit($unitId)->count(),
@@ -55,44 +56,47 @@ class ProductController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
             'item_type' => ['required', new Enum(ItemType::class)],
-            'fulfillment_type' => 'required|string|in:shipping_only,pickup_only,both,digital_download,service_booking',
+            'fulfillment_type' => 'nullable|string|in:shipping_only,pickup_only,both,digital_download,service_booking',
             'price' => 'required|numeric|min:0',
-            'stock' => 'nullable|integer|min:0',
+            'track_stock' => 'nullable|boolean',
+            'stock' => 'nullable|integer|min:0|required_if:track_stock,1',
             'weight_gram' => 'nullable|integer|min:0',
-            'digital_file_url' => 'nullable|string|max:500',
-            'thumbnail_url' => 'nullable|string|max:500',
-            'thumbnail_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'digital_file_url' => 'nullable|required_if:fulfillment_type,digital_download|string|max:500',
+            'thumbnail_file' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'description' => 'nullable|string',
             'status' => ['required', new Enum(ItemStatus::class)],
         ]);
 
-        $thumbnailUrl = $validated['thumbnail_url'] ?? 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=600&q=80';
-
-        if ($request->hasFile('thumbnail_file')) {
-            $path = $request->file('thumbnail_file')->store('products', 'public');
-            $thumbnailUrl = '/storage/' . $path;
-        }
+        $type = $validated['item_type'];
+        $fulfillment = $this->normalizeFulfillment($type, $validated['fulfillment_type'] ?? null);
+        $trackStock = $type === ItemType::Jasa->value ? false : $request->boolean('track_stock');
+        $stock = $trackStock ? (int) $validated['stock'] : null;
+        $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
+        $path = $request->file('thumbnail_file')->store('products', 'public');
+        $thumbnailUrl = '/storage/' . $path;
 
         $slug = Str::slug($validated['title']) . '-' . Str::random(5);
 
         CatalogItem::create([
             'id' => (string) Str::uuid(),
             'tefa_unit_id' => $managedUnit->id,
-            'category_id' => $validated['category_id'] ?? null,
+            'category_id' => $validated['category_ids'][0] ?? null,
             'title' => $validated['title'],
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'price' => $validated['price'],
-            'stock' => $validated['stock'] ?? 10,
-            'weight_gram' => $validated['weight_gram'] ?? 500,
-            'fulfillment_type' => $validated['fulfillment_type'],
+            'stock' => $stock,
+            'track_stock' => $trackStock,
+            'weight_gram' => $weight,
+            'fulfillment_type' => $fulfillment,
             'digital_file_url' => $validated['digital_file_url'] ?? null,
             'thumbnail_url' => $thumbnailUrl,
             'item_type' => $validated['item_type'],
             'status' => $validated['status'],
-        ]);
+        ])->categories()->sync($validated['category_ids'] ?? []);
 
         return redirect()->back()->with('success', "Item katalog '{$validated['title']}' berhasil ditambahkan!");
     }
@@ -101,41 +105,47 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
             'item_type' => ['required', new Enum(ItemType::class)],
-            'fulfillment_type' => 'required|string|in:shipping_only,pickup_only,both,digital_download,service_booking',
+            'fulfillment_type' => 'nullable|string|in:shipping_only,pickup_only,both,digital_download,service_booking',
             'price' => 'required|numeric|min:0',
-            'stock' => 'nullable|integer|min:0',
+            'track_stock' => 'nullable|boolean',
+            'stock' => 'nullable|integer|min:0|required_if:track_stock,1',
             'weight_gram' => 'nullable|integer|min:0',
-            'digital_file_url' => 'nullable|string|max:500',
-            'thumbnail_url' => 'nullable|string|max:500',
+            'digital_file_url' => 'nullable|required_if:fulfillment_type,digital_download|string|max:500',
             'thumbnail_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'description' => 'nullable|string',
             'status' => ['required', new Enum(ItemStatus::class)],
         ]);
 
+        $type = $validated['item_type'];
+        $fulfillment = $this->normalizeFulfillment($type, $validated['fulfillment_type'] ?? null);
+        $trackStock = $type === ItemType::Jasa->value ? false : $request->boolean('track_stock');
+        $stock = $trackStock ? (int) $validated['stock'] : null;
+        $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
         $thumbnailUrl = $product->thumbnail_url;
 
         if ($request->hasFile('thumbnail_file')) {
             $path = $request->file('thumbnail_file')->store('products', 'public');
             $thumbnailUrl = '/storage/' . $path;
-        } elseif (!empty($validated['thumbnail_url'])) {
-            $thumbnailUrl = $validated['thumbnail_url'];
         }
 
         $product->update([
             'title' => $validated['title'],
-            'category_id' => $validated['category_id'] ?? $product->category_id,
+            'category_id' => $validated['category_ids'][0] ?? null,
             'description' => $validated['description'] ?? $product->description,
             'price' => $validated['price'],
-            'stock' => $validated['stock'] ?? $product->stock,
-            'weight_gram' => $validated['weight_gram'] ?? $product->weight_gram,
-            'fulfillment_type' => $validated['fulfillment_type'],
+            'stock' => $stock,
+            'track_stock' => $trackStock,
+            'weight_gram' => $weight,
+            'fulfillment_type' => $fulfillment,
             'digital_file_url' => $validated['digital_file_url'] ?? $product->digital_file_url,
             'thumbnail_url' => $thumbnailUrl,
             'item_type' => $validated['item_type'],
             'status' => $validated['status'],
         ]);
+        $product->categories()->sync($validated['category_ids'] ?? []);
 
         return redirect()->back()->with('success', "Item katalog '{$product->title}' berhasil diperbarui!");
     }
@@ -144,5 +154,22 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->back()->with('success', 'Item produk berhasil dihapus dari katalog.');
+    }
+
+    private function normalizeFulfillment(string $type, ?string $fulfillment): string
+    {
+        $allowed = match ($type) {
+            ItemType::Jasa->value => ['service_booking'],
+            ItemType::Digital->value => ['digital_download'],
+            default => ['shipping_only', 'pickup_only', 'both'],
+        };
+
+        if (!$fulfillment || !in_array($fulfillment, $allowed, true)) {
+            throw ValidationException::withMessages([
+                'fulfillment_type' => 'Metode penerimaan tidak sesuai dengan tipe item yang dipilih.',
+            ]);
+        }
+
+        return $fulfillment;
     }
 }

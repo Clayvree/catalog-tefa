@@ -26,6 +26,8 @@
 
 <div class="py-12 bg-slate-50 min-h-screen" x-data="{
     quantity: 1,
+    stock: {{ (int) $item->stock }},
+    trackStock: {{ $item->track_stock ? 'true' : 'false' }},
     unitPrice: {{ (int)$item->price }},
     itemType: '{{ $item->item_type->value }}',
     fulfillment: '{{ ($item->item_type->value === 'digital' || $item->fulfillment_type === 'digital_download') ? 'digital_download' : (($item->fulfillment_type === 'pickup_only') ? 'pickup_at_tefa' : 'delivery') }}',
@@ -217,11 +219,16 @@
 
                 <!-- Quantity Counter -->
                 <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                    <span class="text-xs font-bold text-slate-700">Jumlah Pembelian</span>
+                    <div>
+                        <span class="block text-xs font-bold text-slate-700">Jumlah Pembelian</span>
+                        <span class="text-[10px] font-bold {{ !$item->track_stock || $item->stock > 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                            {{ !$item->track_stock ? 'Stok unlimited' : ($item->stock > 0 ? 'Stok tersedia: ' . $item->stock : 'Stok habis') }}
+                        </span>
+                    </div>
                     <div class="flex items-center gap-2">
                         <button type="button" @click="if(quantity > 1) quantity--" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-700 font-black text-sm flex items-center justify-center hover:bg-slate-100 cursor-pointer">-</button>
-                        <input type="number" name="quantity" x-model="quantity" min="1" max="100" class="w-12 text-center text-xs font-bold py-1 border-0 bg-transparent focus:ring-0">
-                        <button type="button" @click="quantity++" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-700 font-black text-sm flex items-center justify-center hover:bg-slate-100 cursor-pointer">+</button>
+                        <input type="number" name="quantity" x-model.number="quantity" min="1" max="{{ $item->track_stock ? max(1, (int) $item->stock) : 100 }}" class="w-12 text-center text-xs font-bold py-1 border-0 bg-transparent focus:ring-0">
+                        <button type="button" @click="if(!trackStock || quantity < stock) quantity++" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-700 font-black text-sm flex items-center justify-center hover:bg-slate-100 cursor-pointer">+</button>
                     </div>
                 </div>
 
@@ -242,8 +249,8 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 cursor-pointer">
-                    Lanjut Bayar via Payment Gateway &rarr;
+                <button type="submit" @disabled($item->track_stock && $item->stock < 1) class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 cursor-pointer">
+                    {{ !$item->track_stock || $item->stock > 0 ? 'Lanjut Bayar via Payment Gateway →' : 'Produk Sedang Habis' }}
                 </button>
 
                 <p class="text-[10px] text-slate-400 text-center">

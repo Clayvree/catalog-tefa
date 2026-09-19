@@ -66,8 +66,39 @@ class OrderController extends Controller
             'payment_status' => 'required|in:unpaid,paid,expired,refunded',
         ]);
 
-        $order->update(['payment_status' => $validated['payment_status']]);
+        $updates = ['payment_status' => $validated['payment_status']];
+
+        if ($validated['payment_status'] === 'paid' && !$order->fulfillment_status) {
+            if ($order->isDigital()) {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::DownloadReady;
+            } elseif ($order->isService()) {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::InProgressService;
+            } else {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::Packing;
+            }
+        }
+
+        $order->update($updates);
 
         return redirect()->back()->with('success', "Status pembayaran pesanan #{$order->id} berhasil diperbarui!");
+    }
+
+    public function updateFulfillment(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'fulfillment_status' => 'required|string',
+            'estimated_ready_at' => 'nullable|date',
+            'tracking_number'    => 'nullable|string|max:255',
+            'fulfillment_notes'  => 'nullable|string',
+        ]);
+
+        $order->update([
+            'fulfillment_status' => $validated['fulfillment_status'],
+            'estimated_ready_at' => $validated['estimated_ready_at'],
+            'tracking_number'    => $validated['tracking_number'],
+            'fulfillment_notes'  => $validated['fulfillment_notes'],
+        ]);
+
+        return redirect()->back()->with('success', "Status pengiriman/progress pesanan #{$order->id} berhasil diperbarui!");
     }
 }

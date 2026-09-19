@@ -48,6 +48,15 @@
                                 <div class="p-4 flex-1 flex flex-col">
                                     <h3 class="font-bold text-gray-900 line-clamp-1" title="{{ $item->title }}">{{ $item->title }}</h3>
                                     <p class="text-xs text-gray-500 mt-1 mb-3">{{ $item->category->name ?? 'Uncategorized' }}</p>
+                                    @if($item->item_type->value === 'jasa')
+                                        <p class="text-xs font-bold text-emerald-600 mb-3">Tersedia untuk konsultasi</p>
+                                    @elseif(!$item->track_stock)
+                                        <p class="text-xs font-bold text-emerald-600 mb-3">Stok unlimited</p>
+                                    @else
+                                        <p class="text-xs font-bold {{ $item->stock > 0 ? 'text-emerald-600' : 'text-red-600' }} mb-3">
+                                            {{ $item->stock > 0 ? 'Stok tersedia: ' . $item->stock : 'Stok habis' }}
+                                        </p>
+                                    @endif
                                     <div class="flex items-center justify-between mt-auto">
                                         <span class="font-bold text-blue-600">Rp {{ number_format((float)$item->price, 0, ',', '.') }}</span>
                                         @auth

@@ -18,8 +18,8 @@ class DigitalProductSeeder extends Seeder
         $unitDkv = TefaUnit::where('slug', 'tefa-dkv-creative-studio')->first() ?? TefaUnit::skip(1)->first() ?? $unitRpl;
         $unitKuliner = TefaUnit::where('slug', 'tefa-culinary-bakery')->first() ?? TefaUnit::latest()->first() ?? $unitRpl;
 
-        $catDigital = Category::firstOrCreate(['name' => 'Template & Aset Digital'], ['type' => 'digital']);
-        $catKuliner = Category::firstOrCreate(['name' => 'Kuliner & Bakery'], ['type' => 'produk']);
+        $catDigital = Category::firstOrCreate(['name' => 'Template & Aset Digital'], ['type' => ItemType::Produk]);
+        $catKuliner = Category::firstOrCreate(['name' => 'Kuliner & Bakery'], ['type' => ItemType::Produk]);
 
         $items = [
             [

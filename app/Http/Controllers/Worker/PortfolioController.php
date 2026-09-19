@@ -42,16 +42,11 @@ class PortfolioController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:2000',
             'external_link' => 'nullable|url|max:255',
-            'thumbnail_url' => 'nullable|url|max:500',
-            'thumbnail_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'thumbnail_file' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        $thumbnailUrl = $validated['thumbnail_url'] ?? 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80';
-
-        if ($request->hasFile('thumbnail_file')) {
-            $path = $request->file('thumbnail_file')->store('portfolios', 'public');
-            $thumbnailUrl = '/storage/' . $path;
-        }
+        $path = $request->file('thumbnail_file')->store('portfolios', 'public');
+        $thumbnailUrl = '/storage/' . $path;
 
         Portfolio::create([
             'id' => (string) Str::uuid(),

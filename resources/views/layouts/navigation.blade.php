@@ -23,27 +23,27 @@
                     @if($role === 'superadmin')
                         <a href="{{ route('superadmin.dashboard') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            📊 Statistik
+                             Statistik
                         </a>
                         <a href="{{ route('superadmin.projects.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            ⚡ Riwayat Proyek
+                             Riwayat Proyek
                         </a>
                         <a href="{{ route('superadmin.units.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.units.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🏫 Unit TEFA
+                             Unit TEFA
                         </a>
                         <a href="{{ route('superadmin.admins.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.admins.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            👥 Admin Jurusan
+                             Admin Jurusan
                         </a>
                         <a href="{{ route('superadmin.categories.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.categories.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🏷️ Kategori
+                             Kategori
                         </a>
                         <a href="{{ route('superadmin.knowledge.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🧠 Konteks AI
+                             Konteks AI
                         </a>
                     @elseif($role === 'admin_jurusan')
                         <a href="{{ route('admin.dashboard') }}" 
@@ -52,40 +52,40 @@
                         </a>
                         <a href="{{ route('admin.products.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.products.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            📦 Kelola Produk
+                             Kelola Produk
                         </a>
                         <a href="{{ route('admin.orders.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.orders.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🛒 Pesanan Masuk
+                             Pesanan Masuk
                         </a>
                         <a href="{{ route('admin.projects.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            ⚡ Proyek
+                             Proyek
                         </a>
                         <a href="{{ route('admin.projects.import-wa.create') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 {{ request()->routeIs('admin.projects.import-wa.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            <span>🤖 Import WA</span>
+                            <span> Import WA</span>
                         </a>
                         <a href="{{ route('admin.workers.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.workers.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🎓 Siswa
+                             Siswa
                         </a>
                         <a href="{{ route('admin.knowledge.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🧠 Konteks AI
+                             Konteks AI
                         </a>
                     @elseif($role === 'worker')
                         <a href="{{ route('worker.dashboard') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            📊 Statistik & Ringkasan
+                             Statistik & Ringkasan
                         </a>
                         <a href="{{ route('worker.tasks.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.tasks.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🎯 Daftar Tugas
+                             Daftar Tugas
                         </a>
                         <a href="{{ route('worker.portfolios.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.portfolios.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            🏆 Ajukan Portofolio
+                             Ajukan Portofolio
                         </a>
                     @endif
                 </div>

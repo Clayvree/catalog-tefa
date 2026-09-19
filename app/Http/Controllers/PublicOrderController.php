@@ -12,6 +12,8 @@ use App\Models\TefaUnit;
 use App\Enums\ItemType;
 use App\Enums\ProjectStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 
 class PublicOrderController extends Controller
@@ -23,6 +25,10 @@ class PublicOrderController extends Controller
         // If it's a Jasa, redirect to Nego page instead of direct checkout!
         if ($item->item_type === ItemType::Jasa) {
             return redirect()->route('jasa.nego', $slug);
+        }
+
+        if ($item->item_type !== ItemType::Jasa && $item->track_stock && $item->stock < 1) {
+            return redirect()->route('produk.list')->with('error', 'Produk tersebut sedang habis.');
         }
 
         return view('public.checkout', compact('item'));
@@ -47,47 +53,58 @@ class PublicOrderController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
-        $quantity = (int) $validated['quantity'];
-        $unitPrice = (float) $item->price;
-        
-        // Delivery fee only applies for physical delivery (Rp15.000)
-        $shippingFee = ($validated['fulfillment_method'] === 'delivery') ? 15000 : 0;
-        $totalPrice = ($unitPrice * $quantity) + $shippingFee;
+        $order = DB::transaction(function () use ($validated, $slug) {
+            $item = CatalogItem::where('slug', $slug)->lockForUpdate()->firstOrFail();
 
-        $orderType = ($item->item_type === ItemType::Digital || $item->fulfillment_type === 'digital_download')
-            ? 'digital'
-            : 'physical';
+            if ($item->track_stock && $item->stock < (int) $validated['quantity']) {
+                throw ValidationException::withMessages([
+                    'quantity' => "Stok {$item->title} tersisa {$item->stock}. Silakan kurangi jumlah pembelian.",
+                ]);
+            }
 
-        $digitalToken = ($orderType === 'digital') ? Str::random(32) : null;
+            $quantity = (int) $validated['quantity'];
+            $unitPrice = (float) $item->price;
+            $shippingFee = ($validated['fulfillment_method'] === 'delivery') ? 15000 : 0;
+            $totalPrice = ($unitPrice * $quantity) + $shippingFee;
+            $orderType = ($item->item_type === ItemType::Digital || $item->fulfillment_type === 'digital_download')
+                ? 'digital'
+                : 'physical';
 
-        $order = Order::create([
-            'id' => (string) Str::uuid(),
-            'tefa_unit_id' => $item->tefa_unit_id,
-            'user_id' => auth()->id() ?? null,
-            'customer_name' => $validated['customer_name'],
-            'customer_contact' => $validated['customer_contact'],
-            'order_type' => $orderType,
-            'fulfillment_method' => $validated['fulfillment_method'],
-            'shipping_address' => $validated['shipping_address'] ?? null,
-            'shipping_city' => $validated['shipping_city'] ?? null,
-            'shipping_courier' => ($validated['fulfillment_method'] === 'delivery') ? 'Kurir TEFA Express' : null,
-            'payment_method' => $validated['payment_method'],
-            'payment_status' => 'unpaid',
-            'digital_access_token' => $digitalToken,
-            'notes' => $validated['notes'] ?? null,
-            'total_price' => $totalPrice,
-            'status' => 'pending',
-            'order_date' => now(),
-        ]);
+            $order = Order::create([
+                'id' => (string) Str::uuid(),
+                'tefa_unit_id' => $item->tefa_unit_id,
+                'user_id' => auth()->id() ?? null,
+                'customer_name' => $validated['customer_name'],
+                'customer_contact' => $validated['customer_contact'],
+                'order_type' => $orderType,
+                'fulfillment_method' => $validated['fulfillment_method'],
+                'shipping_address' => $validated['shipping_address'] ?? null,
+                'shipping_city' => $validated['shipping_city'] ?? null,
+                'shipping_courier' => ($validated['fulfillment_method'] === 'delivery') ? 'Kurir TEFA Express' : null,
+                'payment_method' => $validated['payment_method'],
+                'payment_status' => 'unpaid',
+                'digital_access_token' => $orderType === 'digital' ? Str::random(32) : null,
+                'notes' => $validated['notes'] ?? null,
+                'total_price' => $totalPrice,
+                'status' => 'pending',
+                'order_date' => now(),
+            ]);
 
-        OrderItem::create([
-            'order_id' => $order->id,
-            'catalog_item_id' => $item->id,
-            'item_title' => $item->title,
-            'unit_price' => $unitPrice,
-            'quantity' => $quantity,
-            'subtotal' => $unitPrice * $quantity,
-        ]);
+            OrderItem::create([
+                'order_id' => $order->id,
+                'catalog_item_id' => $item->id,
+                'item_title' => $item->title,
+                'unit_price' => $unitPrice,
+                'quantity' => $quantity,
+                'subtotal' => $unitPrice * $quantity,
+            ]);
+
+            if ($item->track_stock) {
+                $item->decrement('stock', $quantity);
+            }
+
+            return $order;
+        });
 
         return redirect()->route('order.invoice', $order->id)->with('success', 'Pesanan Anda berhasil dibuat!');
     }
@@ -100,10 +117,22 @@ class PublicOrderController extends Controller
 
     public function simulatePayment(Request $request, Order $order)
     {
-        $order->update([
+        $updates = [
             'payment_status' => 'paid',
             'status' => 'processed',
-        ]);
+        ];
+
+        if (!$order->fulfillment_status) {
+            if ($order->isDigital()) {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::DownloadReady;
+            } elseif ($order->isService()) {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::InProgressService;
+            } else {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::Packing;
+            }
+        }
+
+        $order->update($updates);
 
         return redirect()->back()->with('success', 'Pembayaran QRIS / Virtual Account Berhasil Dikonfirmasi!');
     }

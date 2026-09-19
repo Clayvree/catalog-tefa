@@ -1,6 +1,11 @@
 <x-public-layout>
     <div class="bg-slate-50 min-h-screen py-4 sm:py-8" x-data="{ mobileFilterOpen: false }">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            @if(session('error'))
+                <div class="mb-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-bold">
+                    {{ session('error') }}
+                </div>
+            @endif
             
             <!-- Breadcrumb (Desktop) -->
             <nav class="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-500 mb-4">
@@ -204,6 +209,15 @@
                                             <span class="text-xs sm:text-base font-black text-indigo-600">
                                                 Rp{{ number_format((float)$item->price, 0, ',', '.') }}
                                             </span>
+                                            @if($item->item_type->value === 'jasa')
+                                                <span class="block text-[10px] font-bold text-emerald-600">Tersedia untuk konsultasi</span>
+                                            @elseif(!$item->track_stock)
+                                                <span class="block text-[10px] font-bold text-emerald-600">Stok unlimited</span>
+                                            @else
+                                                <span class="block text-[10px] font-bold {{ $item->stock > 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                                                    {{ $item->stock > 0 ? 'Stok: ' . $item->stock : 'Stok habis' }}
+                                                </span>
+                                            @endif
                                         </div>
                                         
                                         @if($item->item_type->value === 'jasa')
@@ -213,20 +227,22 @@
                                                 <span class="sm:hidden">Nego</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
-                                        @elseif($item->item_type->value === 'digital')
+                                        @elseif($item->item_type->value === 'digital' && (!$item->track_stock || $item->stock > 0))
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-purple-600/20">
                                                 <span class="hidden sm:inline">⚡ Beli Digital</span>
                                                 <span class="sm:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
-                                        @else
+                                        @elseif(!$item->track_stock || $item->stock > 0)
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
                                                 <span class="hidden sm:inline">🛒 Beli Sekarang</span>
                                                 <span class="sm:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
+                                        @elseif($item->item_type->value !== 'jasa')
+                                            <span class="px-2 py-1.5 rounded-lg bg-red-50 text-red-600 text-[10px] sm:text-xs font-bold">Habis</span>
                                         @endif
                                     </div>
 

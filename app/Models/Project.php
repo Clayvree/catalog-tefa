@@ -22,6 +22,7 @@ class Project extends Model
         'client_name',
         'client_contact',
         'description',
+        'estimated_price',
         'source_chat_file_url',
         'ai_extraction_data',
         'final_price',
@@ -34,6 +35,7 @@ class Project extends Model
     {
         return [
             'ai_extraction_data' => 'array',
+            'estimated_price'    => 'decimal:2',
             'final_price'        => 'decimal:2',
             'status'             => ProjectStatus::class,
             'deadline'           => 'date',

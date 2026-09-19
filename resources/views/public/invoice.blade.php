@@ -126,26 +126,36 @@
                         <p class="text-xs text-emerald-700">Terima kasih telah bertransaksi di Teaching Factory.</p>
                     </div>
 
-                    <!-- If Digital Product: Big Download Access -->
-                    @if($order->order_type === 'digital' || $order->fulfillment_method === 'digital_download')
+                    @if($order->isDigital() || $order->fulfillment_method === 'digital_download')
                         @php
                             $firstItem = $order->items->first()?->catalogItem;
-                            $downloadUrl = $firstItem->digital_file_url ?? 'https://github.com';
+                            $downloadUrl = $firstItem?->digital_file_url ?? '#';
                         @endphp
                         <div class="pt-3">
                             <a href="{{ $downloadUrl }}" target="_blank" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition">
                                 <span>⬇️ Akses & Download File Digital</span>
                             </a>
                         </div>
-                    @elseif($order->fulfillment_method === 'delivery')
-                        <div class="p-4 rounded-2xl bg-white border border-emerald-200 text-xs text-slate-600 text-left space-y-1">
-                            <span class="font-bold text-slate-900">Status Pengiriman:</span>
-                            <p>Pesanan fisik Anda sedang dipersiapkan dan akan dikirim ke alamat tujuan oleh tim kurir TEFA.</p>
-                        </div>
-                    @elseif($order->fulfillment_method === 'pickup_at_tefa')
-                        <div class="p-4 rounded-2xl bg-white border border-emerald-200 text-xs text-slate-600 text-left space-y-1">
-                            <span class="font-bold text-slate-900">Pengambilan di Workshop TEFA:</span>
-                            <p>Tunjukkan invoice ini ke kasir/petugas workshop jurusan untuk mengambil barang pesanan Anda.</p>
+                    @else
+                        <div class="p-4 rounded-2xl bg-white border border-emerald-200 text-xs text-slate-600 text-left space-y-2 mt-4">
+                            <span class="font-bold text-slate-900 block mb-1">Status Fulfillment:</span>
+                            @if($order->fulfillment_status)
+                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
+                                    {{ $order->fulfillment_status->label() }}
+                                </span>
+                            @else
+                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">Menunggu Diproses</span>
+                            @endif
+
+                            @if($order->tracking_number)
+                                <p class="mt-2"><span class="font-bold">Resi:</span> {{ $order->tracking_number }}</p>
+                            @endif
+                            @if($order->estimated_ready_at)
+                                <p class="mt-1"><span class="font-bold">Estimasi:</span> {{ $order->estimated_ready_at->format('d M Y, H:i') }}</p>
+                            @endif
+                            @if($order->fulfillment_notes)
+                                <p class="mt-1 italic">"{{ $order->fulfillment_notes }}"</p>
+                            @endif
                         </div>
                     @endif
                 </div>

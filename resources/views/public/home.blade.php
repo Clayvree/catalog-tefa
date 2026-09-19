@@ -286,6 +286,15 @@
                                 <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-snug" title="{{ $item->title }}">
                                     {{ $item->title }}
                                 </h3>
+                                @if($item->item_type->value === 'jasa')
+                                    <span class="block text-[10px] font-bold text-emerald-600">Tersedia untuk konsultasi</span>
+                                @elseif(!$item->track_stock)
+                                    <span class="block text-[10px] font-bold text-emerald-600">Stok unlimited</span>
+                                @else
+                                    <span class="block text-[10px] font-bold {{ $item->stock > 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                                        {{ $item->stock > 0 ? 'Stok: ' . $item->stock : 'Stok habis' }}
+                                    </span>
+                                @endif
                             </div>
 
                             <!-- Price & Action -->
@@ -302,16 +311,18 @@
                                         <span>Nego</span>
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                     </a>
-                                @elseif($item->item_type->value === 'digital')
+                                @elseif($item->item_type->value === 'digital' && (!$item->track_stock || $item->stock > 0))
                                     <a href="{{ route('order.checkout', $item->slug) }}" class="p-1.5 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-purple-600/20">
                                         <span>Beli</span>
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                     </a>
-                                @else
+                                @elseif(!$item->track_stock || $item->stock > 0)
                                     <a href="{{ route('order.checkout', $item->slug) }}" class="p-1.5 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
                                         <span>Pesan</span>
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                     </a>
+                                @elseif($item->item_type->value !== 'jasa')
+                                    <span class="px-2 py-1.5 rounded-lg bg-red-50 text-red-600 text-[10px] sm:text-xs font-bold">Habis</span>
                                 @endif
                             </div>
 

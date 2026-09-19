@@ -137,7 +137,7 @@
                         <button @click="addModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">×</button>
                     </div>
 
-                    <form action="{{ route('superadmin.units.store') }}" method="POST" class="space-y-4">
+                    <form action="{{ route('superadmin.units.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Unit / Jurusan</label>
@@ -150,13 +150,13 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto Banner (Unsplash / Link)</label>
-                            <input type="text" name="banner_url" placeholder="https://images.unsplash.com/photo-..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Foto Banner</label>
+                            <input type="file" name="banner_file" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:font-bold">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Logo Jurusan</label>
-                            <input type="text" name="logo_url" placeholder="https://..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Logo Jurusan</label>
+                            <input type="file" name="logo_file" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:font-bold">
                         </div>
 
                         <div class="flex items-center gap-2 pt-2">
@@ -184,7 +184,7 @@
                         <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">×</button>
                     </div>
 
-                    <form :action="'{{ url('superadmin/units') }}/' + activeEditUnit.id" method="POST" class="space-y-4">
+                    <form :action="'{{ url('superadmin/units') }}/' + activeEditUnit.id" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         @method('PUT')
                         <div>
@@ -198,13 +198,13 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Banner Cover</label>
-                            <input type="text" name="banner_url" x-model="activeEditUnit.banner_url" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ganti Banner Cover</label>
+                            <input type="file" name="banner_file" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:font-bold">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Logo Jurusan</label>
-                            <input type="text" name="logo_url" x-model="activeEditUnit.logo_url" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ganti Logo Jurusan</label>
+                            <input type="file" name="logo_file" accept="image/jpeg,image/png,image/webp" class="w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:font-bold">
                         </div>
 
                         <div class="flex items-center gap-2 pt-2">

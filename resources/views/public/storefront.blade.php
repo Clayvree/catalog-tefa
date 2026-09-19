@@ -105,6 +105,15 @@
                                     <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
                                         {{ $item->description }}
                                     </p>
+                                    @if($item->item_type->value === 'jasa')
+                                        <p class="text-xs font-bold text-emerald-600">Tersedia untuk konsultasi</p>
+                                    @elseif(!$item->track_stock)
+                                        <p class="text-xs font-bold text-emerald-600">Stok unlimited</p>
+                                    @else
+                                        <p class="text-xs font-bold {{ $item->stock > 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                                            {{ $item->stock > 0 ? 'Stok tersedia: ' . $item->stock : 'Stok habis' }}
+                                        </p>
+                                    @endif
                                 </div>
                                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
                                     <div>
@@ -112,9 +121,17 @@
                                         <span class="text-lg font-black text-slate-900">Rp{{ number_format((float)$item->price, 0, ',', '.') }}</span>
                                     </div>
                                     @auth
-                                        <button class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold transition">
-                                            Pesan
-                                        </button>
+                                        @if((!$item->track_stock || $item->stock > 0) && $item->item_type->value !== 'jasa')
+                                            <a href="{{ route('order.checkout', $item->slug) }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold transition">
+                                                Pesan
+                                            </a>
+                                        @elseif($item->stock < 1 && $item->item_type->value !== 'jasa')
+                                            <span class="px-3 py-2 rounded-xl bg-red-50 text-red-600 text-xs font-bold">Habis</span>
+                                        @else
+                                            <a href="{{ route('jasa.nego', $item->slug) }}" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                                                Konsultasi
+                                            </a>
+                                        @endif
                                     @else
                                         <a href="{{ route('login') }}" class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition">
                                             Login u/ Pesan
