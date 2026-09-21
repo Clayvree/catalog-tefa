@@ -32,7 +32,7 @@ Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/tentang-kami', [PublicController::class, 'about'])->name('about');
 
 Route::get('/contact', function () {
-    return view('public.contact');
+    return view('emails.contact');
 })->name('contact');
 
 // PROSES KIRIM EMAIL FORM CONTACT (TAMBAHKAN INI)
