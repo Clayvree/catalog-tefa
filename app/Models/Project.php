@@ -23,6 +23,7 @@ class Project extends Model
         'client_contact',
         'description',
         'estimated_price',
+        'catalog_item_id',
         'source_chat_file_url',
         'ai_extraction_data',
         'final_price',
@@ -43,6 +44,11 @@ class Project extends Model
     }
 
     // --- Relationships -------------------------------------------
+    public function catalogItem(): BelongsTo
+    {
+        return $this->belongsTo(CatalogItem::class);
+    }
+
     public function tefaUnit(): BelongsTo
     {
         return $this->belongsTo(TefaUnit::class);

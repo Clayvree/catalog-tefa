@@ -21,7 +21,10 @@ class Task extends Model
         'tefa_unit_id',
         'title',
         'description',
-        'assigned_worker_id',
+        'goals',
+        'team_notes',
+        'progress_percentage',
+        'leader_id',
         'skill_id',
         'ai_recommendation_notes',
         'status',
@@ -39,6 +42,7 @@ class Task extends Model
             'priority'     => TaskPriority::class,
             'due_date'     => 'date',
             'completed_at' => 'datetime',
+            'progress_percentage' => 'integer',
         ];
     }
 
@@ -53,9 +57,16 @@ class Task extends Model
         return $this->belongsTo(TefaUnit::class);
     }
 
-    public function assignedWorker(): BelongsTo
+    public function leader(): BelongsTo
     {
-        return $this->belongsTo(WorkerProfile::class, 'assigned_worker_id');
+        return $this->belongsTo(WorkerProfile::class, 'leader_id');
+    }
+
+    public function members(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(WorkerProfile::class, 'task_worker')
+                    ->withTimestamps()
+                    ->withPivot('member_task_note');
     }
 
     public function skill(): BelongsTo
@@ -66,7 +77,12 @@ class Task extends Model
     // --- Scopes -------------------------------------------------
     public function scopeForWorker(\Illuminate\Database\Eloquent\Builder $query, string $workerProfileId): \Illuminate\Database\Eloquent\Builder
     {
-        return $query->where('assigned_worker_id', $workerProfileId);
+        return $query->where(function ($q) use ($workerProfileId) {
+            $q->where('leader_id', $workerProfileId)
+              ->orWhereHas('members', function($sub) use ($workerProfileId) {
+                  $sub->where('worker_profiles.id', $workerProfileId);
+              });
+        });
     }
 
     public function scopeForUnit(\Illuminate\Database\Eloquent\Builder $query, string $tefaUnitId): \Illuminate\Database\Eloquent\Builder

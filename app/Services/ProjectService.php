@@ -32,19 +32,24 @@ class ProjectService
                 ]);
 
                 foreach ($validatedAiData['tasks'] as $aiTask) {
-                    Task::create([
+                    $task = Task::create([
                         'project_id'              => $project->id,
                         'tefa_unit_id'            => $tefaUnitId,
                         'title'                   => $aiTask['title'],
                         'description'             => $aiTask['instructions'],
-                        'skill_id'                => $aiTask['recommended_skill_id'] ?? null,
+                        'goals'                   => $aiTask['goals'] ?? null,
+                        'leader_id'               => $aiTask['leader_id'] ?? null,
                         'ai_recommendation_notes' => $aiTask['reasoning'] ?? null,
                         'priority'                => \App\Enums\TaskPriority::Medium,
                         'status'                  => \App\Enums\TaskStatus::Todo,
                     ]);
+                    
+                    if (!empty($aiTask['member_ids']) && is_array($aiTask['member_ids'])) {
+                        $task->members()->sync($aiTask['member_ids']);
+                    }
                 }
 
-                return $project->load('tasks');
+                return $project->load(['tasks.leader', 'tasks.members']);
             });
         } catch (\Exception $e) {
             Log::error('Failed to save AI extraction result: ' . $e->getMessage());

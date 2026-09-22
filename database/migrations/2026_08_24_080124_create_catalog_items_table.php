@@ -34,10 +34,18 @@ return new class extends Migration
             $table->index('status');
             $table->unique(['tefa_unit_id', 'slug']);
         });
+
+        Schema::table('projects', function (Blueprint $table) {
+            $table->foreign('catalog_item_id')->references('id')->on('catalog_items')->onDelete('set null');
+        });
     }
 
     public function down(): void
     {
+        Schema::table('projects', function (Blueprint $table) {
+            $table->dropForeign(['catalog_item_id']);
+        });
+
         Schema::dropIfExists('catalog_items');
     }
 };

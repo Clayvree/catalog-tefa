@@ -18,7 +18,7 @@ class ProjectController extends Controller
         $managedUnit = $request->user()->managedUnits()->first() ?? TefaUnit::first();
         $unitId = $managedUnit?->id;
 
-        $query = Project::with(['tasks.assignedWorker.user', 'creator'])->forUnit($unitId);
+        $query = Project::with(['tasks.leader.user', 'tasks.members.user', 'creator'])->forUnit($unitId);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -46,7 +46,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $project->load(['tasks.assignedWorker.user', 'tasks.skill', 'tefaUnit', 'creator']);
+        $project->load(['tasks.leader.user', 'tasks.members.user', 'tasks.skill', 'tefaUnit', 'creator']);
         return view('admin.projects.show', compact('project'));
     }
 
@@ -92,5 +92,16 @@ class ProjectController extends Controller
         $project->tasks()->delete();
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');
+    }
+
+    public function approveTask(Request $request, \App\Models\Task $task)
+    {
+        $task->update([
+            'status' => 'done',
+            'completed_at' => now(),
+            'progress_percentage' => 100,
+        ]);
+
+        return redirect()->back()->with('success', "Tugas '{$task->title}' berhasil di-ACC (Selesai).");
     }
 }

@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->decimal('estimated_price', 15, 2)->nullable()->after('description');
+        Schema::table('task_worker', function (Blueprint $table) {
+            $table->text('member_task_note')->nullable()->after('worker_profile_id');
         });
     }
 
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn('estimated_price');
+        Schema::table('task_worker', function (Blueprint $table) {
+            $table->dropColumn('member_task_note');
         });
     }
 };

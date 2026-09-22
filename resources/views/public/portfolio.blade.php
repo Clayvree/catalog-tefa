@@ -32,6 +32,16 @@
                             <h3 class="font-bold text-gray-900 mb-1 line-clamp-1">{{ $portfolio->title }}</h3>
                             <p class="text-sm text-gray-500 mb-4 line-clamp-2">{{ $portfolio->description }}</p>
                             
+                            @if($portfolio->review_notes)
+                            <div class="mb-4 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                                <div class="flex items-center gap-1.5 mb-1.5">
+                                    <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                    <span class="text-[10px] font-bold text-blue-700 uppercase tracking-wider">Direkomendasikan Guru</span>
+                                </div>
+                                <p class="text-xs text-blue-800 line-clamp-2 italic">"{{ $portfolio->review_notes }}"</p>
+                            </div>
+                            @endif
+                            
                             <div class="flex items-center gap-3 pt-3 border-t border-gray-100">
                                 <img src="{{ $portfolio->worker->avatar_url ? asset('storage/'.$portfolio->worker->avatar_url) : 'https://ui-avatars.com/api/?name='.urlencode($portfolio->worker->user->name ?? 'Siswa').'&color=1D4ED8&background=DBEAFE' }}" alt="Avatar" class="w-8 h-8 rounded-full">
                                 <div class="flex-1 min-w-0">

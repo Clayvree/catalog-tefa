@@ -26,7 +26,8 @@ class TaskPolicy
         }
 
         if ($user->role === UserRole::Worker) {
-            return $task->assigned_worker_id === $user->workerProfile?->id 
+            return $task->leader_id === $user->workerProfile?->id 
+                || $task->members()->where('worker_profiles.id', $user->workerProfile?->id)->exists()
                 || $task->tefa_unit_id === $user->workerProfile?->tefa_unit_id;
         }
 
@@ -45,7 +46,7 @@ class TaskPolicy
         }
 
         if ($user->role === UserRole::Worker) {
-            return $task->assigned_worker_id === $user->workerProfile?->id
+            return $task->leader_id === $user->workerProfile?->id
                 || $task->tefa_unit_id === $user->workerProfile?->tefa_unit_id;
         }
 

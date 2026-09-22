@@ -114,7 +114,8 @@
                                                     nisn: '{{ addslashes($worker->nisn ?? '') }}',
                                                     class_name: '{{ addslashes($worker->class_name ?? '') }}',
                                                     bio: '{{ addslashes($worker->bio ?? '') }}',
-                                                    skills_text: '{{ addslashes($worker->skills->pluck('name')->implode(', ')) }}'
+                                                    skills_text: '{{ addslashes($worker->skills->pluck('name')->implode(', ')) }}',
+                                                    overall_proficiency: '{{ $worker->skills->first()?->pivot->proficiency_level ?? 'intermediate' }}'
                                                 }; editModalOpen = true;" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition cursor-pointer">
                                                     Edit
                                                 </button>
@@ -181,10 +182,20 @@
                             </div>
 
                             <!-- Free-Form Typed Skills -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Keahlian Utama</label>
-                                <input type="text" name="skills_text" placeholder="Contoh: Laravel, Tailwind CSS, Vue.js, REST API, Figma" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                                <p class="text-[10px] text-slate-400 mt-1">💡 Ketik keahlian dipisahkan dengan tanda koma ( , ). AI akan membaca kata kunci ini saat mendelegasikan tugas.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Keahlian Utama</label>
+                                    <input type="text" name="skills_text" placeholder="Contoh: Laravel, Tailwind CSS, Vue.js, REST API, Figma" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                    <p class="text-[10px] text-slate-400 mt-1">💡 Ketik keahlian dipisahkan koma ( , ).</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tingkat Kemahiran</label>
+                                    <select name="overall_proficiency" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                        <option value="beginner">Beginner (Pemula)</option>
+                                        <option value="intermediate" selected>Intermediate (Menengah)</option>
+                                        <option value="advanced">Advanced (Ahli)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div>
@@ -243,10 +254,20 @@
                             </div>
 
                             <!-- Free-form Typed Skills on Edit -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Keahlian (Skills AI)</label>
-                                <input type="text" name="skills_text" x-model="activeWorker.skills_text" placeholder="Contoh: Laravel, Tailwind CSS, Vue.js, REST API" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                                <p class="text-[10px] text-slate-400 mt-1">💡 Pisahkan dengan koma ( , ).</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Keahlian (Skills AI)</label>
+                                    <input type="text" name="skills_text" x-model="activeWorker.skills_text" placeholder="Contoh: Laravel, Tailwind CSS, Vue.js, REST API" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                    <p class="text-[10px] text-slate-400 mt-1">💡 Pisahkan dengan koma ( , ).</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tingkat Kemahiran</label>
+                                    <select name="overall_proficiency" x-model="activeWorker.overall_proficiency" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                        <option value="beginner">Beginner (Pemula)</option>
+                                        <option value="intermediate">Intermediate (Menengah)</option>
+                                        <option value="advanced">Advanced (Ahli)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div>

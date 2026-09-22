@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
         // Projects Monitoring
         Route::resource('projects', AdminProjectController::class);
         Route::patch('/projects/{project}/status', [AdminProjectController::class, 'updateStatus'])->name('projects.status.update');
+        Route::patch('/tasks/{task}/approve', [AdminProjectController::class, 'approveTask'])->name('tasks.approve');
         
         // Products & Catalog CRUD (Khusus Admin Jurusan)
         Route::resource('products', AdminProductController::class);
@@ -112,6 +113,9 @@ Route::middleware('auth')->group(function () {
 
         // AI Knowledge Base (Konteks per Jurusan)
         Route::resource('knowledge', AdminKnowledgeBaseController::class)->only(['index', 'store', 'update', 'destroy']);
+
+        // Portofolio (Review & Approve)
+        Route::resource('portfolios', \App\Http\Controllers\Admin\PortfolioController::class)->only(['index', 'show', 'update', 'destroy']);
     });
 
     // --- WORKER / SISWA MODULE ---
@@ -120,6 +124,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
         Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
         Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
+        Route::patch('/tasks/{task}/notes', [TaskController::class, 'updateNotes'])->name('tasks.notes.update');
         Route::post('/tasks/{task}/proof', [TaskController::class, 'uploadProof'])->name('tasks.proof.upload');
         Route::resource('portfolios', WorkerPortfolioController::class)->only(['index', 'store', 'destroy']);
     });

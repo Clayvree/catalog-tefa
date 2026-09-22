@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\WaImportDraft;
+use App\Models\WorkerProfile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Exception;
@@ -19,8 +20,20 @@ class WaImportAiService
             }
             
             $chatContent = Storage::disk('local')->get($draft->chat_file_path);
+            
+            // Get workers + skills for prompt
+            $workers = WorkerProfile::with(['user', 'skills'])
+                ->where('tefa_unit_id', $draft->tefa_unit_id)
+                ->get()
+                ->map(function($w) {
+                    $skills = $w->skills->map(function($s) {
+                        return $s->name . ' (' . ucfirst($s->pivot->proficiency_level) . ')';
+                    })->join(', ');
+                    return "- ID: {$w->id} | Nama: {$w->user->name} | Skills & Kemahiran: {$skills}";
+                })
+                ->join("\n");
 
-            $prompt = $this->buildGeminiPrompt($chatContent);
+            $prompt = $this->buildGeminiPrompt($chatContent, $workers);
 
             $geminiApiKey = env('GEMINI_API_KEY');
             if (!$geminiApiKey) {
@@ -29,7 +42,7 @@ class WaImportAiService
 
             $response = Http::timeout(30)->withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={$geminiApiKey}", [
+            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$geminiApiKey}", [
                 'contents' => [
                     ['parts' => [['text' => $prompt]]]
                 ],
@@ -63,11 +76,11 @@ class WaImportAiService
         }
     }
 
-    private function buildGeminiPrompt(string $chatText): string
+    private function buildGeminiPrompt(string $chatText, string $workersText): string
     {
         return <<<PROMPT
 Anda adalah AI asisten untuk "TEFA Management Platform". 
-Tugas Anda mengekstrak informasi proyek dari percakapan WhatsApp antara pihak sekolah (Admin) dan Klien.
+Tugas Anda mengekstrak informasi proyek dari percakapan WhatsApp antara pihak sekolah (Admin) dan Klien, lalu membaginya menjadi tugas-tugas untuk siswa berdasarkan skill mereka.
 
 Instruksi:
 1. Temukan nama klien (dan kontaknya jika ada).
@@ -75,7 +88,11 @@ Instruksi:
 3. Buat ringkasan pesanan/proyek (summary).
 4. Temukan harga akhir yang disepakati (dalam bentuk angka bulat). Jika tidak ada, kembalikan null atau 0.
 5. Pecah pekerjaan tersebut menjadi beberapa sub-tugas (tasks) yang bisa dikerjakan oleh siswa.
-6. Untuk tiap sub-tugas, berikan alasan (reasoning) skill apa yang dibutuhkan.
+6. Untuk tiap sub-tugas, berikan target/goals yang jelas.
+7. Delegasi Tugas: Berdasarkan Daftar Siswa di bawah ini, rekomendasikan siapa yang paling cocok menjadi Ketua Tim (leader_id) dan siapa Anggota Pendukung (member_ids) berdasarkan kecocokan skill mereka dengan tugas tersebut. **PENTING**: Perhatikan tingkat kemahiran (Beginner, Intermediate, Advanced). Prioritaskan siswa dengan kemahiran lebih tinggi (Advanced/Intermediate) sebagai Ketua Tim. Jika tidak ada yang cocok, biarkan null/kosong.
+
+DAFTAR SISWA TERSEDIA:
+{$workersText}
 
 Keluarkan jawaban murni dalam format JSON sesuai skema berikut tanpa backticks atau teks pengantar:
 {
@@ -88,7 +105,10 @@ Keluarkan jawaban murni dalam format JSON sesuai skema berikut tanpa backticks a
     {
       "title": "string",
       "instructions": "string",
-      "reasoning": "string"
+      "goals": "string",
+      "reasoning": "string",
+      "leader_id": "string|null",
+      "member_ids": ["string"]
     }
   ]
 }
@@ -98,3 +118,4 @@ Teks Chat:
 PROMPT;
     }
 }
+

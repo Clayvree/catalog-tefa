@@ -70,7 +70,11 @@ class WhatsAppImportController extends Controller
                 ->with('error', 'Draft ini tidak dalam status siap direview.');
         }
 
-        return view('admin.projects.wa_review', compact('draft'));
+        $workers = \App\Models\WorkerProfile::with(['user', 'skills'])
+            ->where('tefa_unit_id', $tefaUnitId)
+            ->get();
+
+        return view('admin.projects.wa_review', compact('draft', 'workers'));
     }
 
     public function confirm(Request $request, WaImportDraft $draft)
@@ -87,6 +91,10 @@ class WhatsAppImportController extends Controller
             'tasks' => 'required|array|min:1',
             'tasks.*.title' => 'required|string|max:255',
             'tasks.*.instructions' => 'required|string',
+            'tasks.*.goals' => 'nullable|string',
+            'tasks.*.leader_id' => 'nullable|uuid',
+            'tasks.*.member_ids' => 'nullable|array',
+            'tasks.*.member_ids.*' => 'uuid',
             'tasks.*.reasoning' => 'nullable|string',
         ]);
 

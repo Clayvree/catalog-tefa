@@ -11,8 +11,9 @@ use App\Models\Portfolio;
 use App\Models\TefaUnit;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Database\Seeders\WorkerSeeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -62,6 +63,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $workerPPLG = User::updateOrCreate(
+            ['email' => 'nabil@tefa.id'],
+            [
+                'id'                => (string) Str::uuid(),
+                'name'              => 'Nabil (Worker PPLG)',
+                'password'          => Hash::make('password'),
+                'role'              => UserRole::Worker,
+                'email_verified_at' => now(),
+            ]
+        );
+
         $unitPplg = TefaUnit::updateOrCreate(['slug' => 'tefa-pplg-software-house'], [
             'id'          => (string) Str::uuid(),
             'name'        => 'TEFA PPLG Software House',
@@ -71,6 +83,62 @@ class DatabaseSeeder extends Seeder
             'is_active'   => true,
         ]);
         $adminPplg->managedUnits()->syncWithoutDetaching([$unitPplg->id]);
+
+        $workerProfilePPLG = \App\Models\WorkerProfile::updateOrCreate(
+            ['user_id' => $workerPPLG->id],
+            [
+                'id'           => (string) Str::uuid(),
+                'tefa_unit_id' => $unitPplg->id,
+                'class_name'   => 'XII PPLG 1',
+                'bio'          => 'Passionate web developer & designer.',
+            ]
+        );
+
+        $skillLaravel = \App\Models\Skill::updateOrCreate(['slug' => 'laravel'], ['name' => 'Laravel', 'color_hex' => '#ef4444']);
+        $skillVue = \App\Models\Skill::updateOrCreate(['slug' => 'vue-js'], ['name' => 'Vue JS', 'color_hex' => '#10b981']);
+        $workerProfilePPLG->skills()->syncWithoutDetaching([$skillLaravel->id, $skillVue->id]);
+
+        $portfoliosPplg = [
+            [
+                'tefa_unit_id'      => $unitPplg->id,
+                'worker_profile_id' => $workerProfilePPLG->id,
+                'title'             => 'Aplikasi Point of Sales (POS)',
+                'description'       => 'Sistem kasir berbasis web menggunakan Laravel & Vue.js.',
+                'status'            => 'approved',
+                'review_notes'      => 'Sangat memuaskan! Kode bersih dan fitur kasir berfungsi 100% tanpa bug.',
+                'reviewed_by'       => $adminPplg->id,
+                'reviewed_at'       => now(),
+                'thumbnail_url'     => 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80',
+            ],
+            [
+                'tefa_unit_id'      => $unitPplg->id,
+                'worker_profile_id' => $workerProfilePPLG->id,
+                'title'             => 'Landing Page Sekolah',
+                'description'       => 'Website company profile interaktif untuk sekolah.',
+                'status'            => 'pending',
+                'thumbnail_url'     => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80',
+            ],
+            [
+                'tefa_unit_id'      => $unitPplg->id,
+                'worker_profile_id' => $workerProfilePPLG->id,
+                'title'             => 'Sistem E-Voting OSIS',
+                'description'       => 'Aplikasi voting dengan keamanan ganda.',
+                'status'            => 'rejected',
+                'review_notes'      => 'Tolong perbaiki UI di bagian hasil voting, masih tumpang tindih di layar HP.',
+                'reviewed_by'       => $adminPplg->id,
+                'reviewed_at'       => now(),
+                'thumbnail_url'     => 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=600&q=80',
+            ]
+        ];
+
+        foreach ($portfoliosPplg as $pf) {
+            if (class_exists('App\Models\Portfolio')) {
+                Portfolio::updateOrCreate(
+                    ['title' => $pf['title']],
+                    array_merge($pf, ['id' => (string) Str::uuid()])
+                );
+            }
+        }
 
         $itemsPplg = [
             [
@@ -336,5 +404,8 @@ class DatabaseSeeder extends Seeder
         foreach ($itemsPspt as $item) {
             CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
         }
+
+        // Register WorkerSeeder at the very end
+        $this->call(WorkerSeeder::class);
     }
 }
