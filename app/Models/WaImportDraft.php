@@ -14,6 +14,7 @@ class WaImportDraft extends Model
 
     protected $fillable = [
         'tefa_unit_id',
+        'project_id',
         'uploaded_by',
         'chat_file_path',
         'status',

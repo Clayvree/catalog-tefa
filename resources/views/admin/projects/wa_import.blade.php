@@ -31,11 +31,22 @@
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 relative">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Upload Chat Ekspor (.txt)</h3>
-                        <p class="text-sm text-gray-500 mb-6">Sistem AI (Gemini) akan membaca percakapan Anda dengan klien, merangkum proyek, harga, dan memecahnya menjadi tugas spesifik untuk siswa.</p>
+                        <p class="text-sm text-gray-500 mb-4">Sistem AI (Gemini) akan membaca percakapan Anda dengan klien, merangkum proyek, harga, dan memecahnya menjadi tugas spesifik untuk siswa.</p>
                         
+                        @if($project ?? false)
+                            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6">
+                                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-1">Target Pembaruan Proyek</p>
+                                <p class="text-sm font-black text-indigo-900">{{ $project->title }}</p>
+                                <p class="text-xs text-indigo-700 mt-1">Klien: {{ $project->client_name }}</p>
+                            </div>
+                        @endif
+
                         <form action="{{ route('admin.projects.import-wa.store') }}" method="POST" enctype="multipart/form-data" @submit="isUploading = true">
                             @csrf
                             <input type="hidden" name="tefa_unit_id" value="{{ $tefaUnitId }}">
+                            @if($projectId)
+                                <input type="hidden" name="project_id" value="{{ $projectId }}">
+                            @endif
                             
                             <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-indigo-500 transition-colors bg-gray-50 mb-6 relative group">
                                 <input type="file" name="chat_file" accept=".txt" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="fileName = $event.target.files[0].name">

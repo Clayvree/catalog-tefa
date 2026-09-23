@@ -26,14 +26,29 @@
                             <span class="px-3 py-1 text-xs font-bold rounded-full bg-{{ \App\Enums\OrderStatus::from($order->status)->badgeColor() }}-100 text-{{ \App\Enums\OrderStatus::from($order->status)->badgeColor() }}-800">
                                 {{ \App\Enums\OrderStatus::from($order->status)->label() }}
                             </span>
-                            @if($order->fulfillment_status)
-                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
-                                    {{ $order->fulfillment_status->label() }}
-                                </span>
+                            @if($order->isDigital() || $order->fulfillment_method === 'digital_download')
+                                {{-- Digital: tidak tampilkan status barang, cukup tombol download jika sudah bayar --}}
+                                @if($order->payment_status === 'paid')
+                                    @php
+                                        $dlItem = $order->items->first()?->catalogItem;
+                                        $dlUrl = $dlItem?->digital_file_url ?? '#';
+                                    @endphp
+                                    <a href="{{ $dlUrl }}" target="_blank" class="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition">
+                                        ⬇️ Download
+                                    </a>
+                                @else
+                                    <span class="px-3 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-800">⏳ Menunggu Pembayaran</span>
+                                @endif
                             @else
-                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">
-                                    Menunggu Diproses
-                                </span>
+                                @if($order->fulfillment_status)
+                                    <span class="px-3 py-1 text-xs font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
+                                        {{ $order->fulfillment_status->label() }}
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">
+                                        Menunggu Diproses
+                                    </span>
+                                @endif
                             @endif
                         </div>
                     </div>

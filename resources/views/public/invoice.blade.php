@@ -62,21 +62,38 @@
                 </div>
 
                 <div class="space-y-2">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Status Barang</span>
-                    <div>
-                        @if($order->fulfillment_status)
-                            <span class="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
-                                {{ $order->fulfillment_status->label() }}
-                            </span>
+                    @if($order->isDigital() || $order->fulfillment_method === 'digital_download')
+                        <span class="text-slate-400 font-bold uppercase text-[10px]">Akses File Digital</span>
+                        @if($order->payment_status === 'paid')
+                            @php
+                                $firstItem = $order->items->first()?->catalogItem;
+                                $downloadUrl = $firstItem?->digital_file_url ?? '#';
+                            @endphp
+                            <div>
+                                <a href="{{ $downloadUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/20 transition">
+                                    ⬇️ Download File
+                                </a>
+                            </div>
                         @else
-                            <span class="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-slate-200 text-slate-700">Menunggu Diproses</span>
+                            <p class="text-xs text-amber-700 font-bold bg-amber-50 px-3 py-2 rounded-xl border border-amber-200">⏳ Tersedia setelah pembayaran lunas</p>
                         @endif
-                    </div>
-                    @if($order->tracking_number)
-                        <p class="text-slate-700"><span class="font-bold">Resi:</span> <span class="font-mono">{{ $order->tracking_number }}</span></p>
-                    @endif
-                    @if($order->estimated_ready_at)
-                        <p class="text-slate-700"><span class="font-bold">Estimasi:</span> {{ $order->estimated_ready_at->format('d M Y, H:i') }}</p>
+                    @else
+                        <span class="text-slate-400 font-bold uppercase text-[10px]">Status Barang</span>
+                        <div>
+                            @if($order->fulfillment_status)
+                                <span class="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
+                                    {{ $order->fulfillment_status->label() }}
+                                </span>
+                            @else
+                                <span class="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-slate-200 text-slate-700">Menunggu Diproses</span>
+                            @endif
+                        </div>
+                        @if($order->tracking_number)
+                            <p class="text-slate-700"><span class="font-bold">Resi:</span> <span class="font-mono">{{ $order->tracking_number }}</span></p>
+                        @endif
+                        @if($order->estimated_ready_at)
+                            <p class="text-slate-700"><span class="font-bold">Estimasi:</span> {{ $order->estimated_ready_at->format('d M Y, H:i') }}</p>
+                        @endif
                     @endif
                 </div>
             </div>

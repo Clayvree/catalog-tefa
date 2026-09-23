@@ -152,9 +152,24 @@
                                         </form>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('order.invoice', $order->id) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
-                                            Invoice &rarr;
-                                        </a>
+                                        <div class="flex flex-col gap-1 items-end">
+                                            <a href="{{ route('admin.orders.show', $order->id) }}" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition text-center inline-block min-w-20">
+                                                Detail &rarr;
+                                            </a>
+                                            <a href="{{ route('order.invoice', $order->id) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition text-center inline-block min-w-20">
+                                                Invoice ⧉
+                                            </a>
+                                            @if($order->customer_contact && strlen(preg_replace('/[^0-9]/', '', $order->customer_contact)) >= 10)
+                                                @php
+                                                    $phone = preg_replace('/[^0-9]/', '', $order->customer_contact);
+                                                    if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
+                                                    $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
+                                                @endphp
+                                                <a href="{{ $waUrl }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition flex items-center gap-1 min-w-20 justify-center">
+                                                    💬 Chat
+                                                </a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

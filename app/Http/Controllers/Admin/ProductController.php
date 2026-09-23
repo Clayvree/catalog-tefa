@@ -43,7 +43,8 @@ class ProductController extends Controller
         $stats = [
             'total' => CatalogItem::forUnit($unitId)->count(),
             'physical' => CatalogItem::forUnit($unitId)->where('item_type', ItemType::Produk->value)->count(),
-            'service_digital' => CatalogItem::forUnit($unitId)->whereIn('item_type', [ItemType::Jasa->value, 'kegiatan'])->count(),
+            'service' => CatalogItem::forUnit($unitId)->whereIn('item_type', [ItemType::Jasa->value, 'kegiatan'])->count(),
+            'digital' => CatalogItem::forUnit($unitId)->where('item_type', ItemType::Digital->value)->count(),
             'published' => CatalogItem::forUnit($unitId)->where('status', ItemStatus::Published->value)->count(),
         ];
 
@@ -73,7 +74,7 @@ class ProductController extends Controller
         $type = $validated['item_type'];
         $fulfillment = $this->normalizeFulfillment($type, $validated['fulfillment_type'] ?? null);
         $trackStock = ($type === ItemType::Jasa->value || $type === ItemType::Digital->value) ? false : $request->boolean('track_stock');
-        $stock = $trackStock ? (int) $validated['stock'] : null;
+        $stock = $trackStock ? (int) $validated['stock'] : 0;
         $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
         $path = $request->file('thumbnail_file')->store('products', 'public');
         $thumbnailUrl = '/storage/' . $path;
@@ -122,7 +123,7 @@ class ProductController extends Controller
         $type = $validated['item_type'];
         $fulfillment = $this->normalizeFulfillment($type, $validated['fulfillment_type'] ?? null);
         $trackStock = ($type === ItemType::Jasa->value || $type === ItemType::Digital->value) ? false : $request->boolean('track_stock');
-        $stock = $trackStock ? (int) $validated['stock'] : null;
+        $stock = $trackStock ? (int) $validated['stock'] : 0;
         $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
         $thumbnailUrl = $product->thumbnail_url;
 
@@ -158,16 +159,19 @@ class ProductController extends Controller
 
     private function normalizeFulfillment(string $type, ?string $fulfillment): string
     {
-        $allowed = match ($type) {
-            ItemType::Jasa->value => ['service_booking'],
-            ItemType::Digital->value => ['digital_download'],
-            default => ['shipping_only', 'pickup_only', 'both'],
-        };
+        // Digital dan Jasa selalu auto-set, tidak perlu dari form
+        if ($type === ItemType::Digital->value) {
+            return 'digital_download';
+        }
 
+        if ($type === ItemType::Jasa->value) {
+            return 'service_booking';
+        }
+
+        // Untuk produk fisik, gunakan nilai dari form (default: both)
+        $allowed = ['shipping_only', 'pickup_only', 'both'];
         if (!$fulfillment || !in_array($fulfillment, $allowed, true)) {
-            throw ValidationException::withMessages([
-                'fulfillment_type' => 'Metode penerimaan tidak sesuai dengan tipe item yang dipilih.',
-            ]);
+            return 'both';
         }
 
         return $fulfillment;

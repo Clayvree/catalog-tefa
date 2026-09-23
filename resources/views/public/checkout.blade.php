@@ -63,23 +63,24 @@
             <!-- Left Column: Checkout Inputs (8 cols) -->
             <div class="lg:col-span-8 space-y-6">
                 
-                <!-- 1. Data Pemesan -->
+                <!-- 1. Data Pemesan (Otomatis dari Akun) -->
                 <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
                     <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
                         <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center">1</span>
                         <h3 class="font-black text-base text-slate-900">Data Pemesan / Pembeli</h3>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
-                            <input type="text" name="customer_name" required value="{{ auth()->user()->name ?? old('customer_name') }}" placeholder="Contoh: Bpk. Bambang Wijaya" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">Nama Lengkap</span>
+                            <p class="font-bold text-slate-900 text-sm">{{ auth()->user()->name }}</p>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp / HP</label>
-                            <input type="text" name="customer_contact" required value="{{ old('customer_contact') }}" placeholder="Contoh: 081298765432" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">Nomor WhatsApp / HP</span>
+                            <p class="font-bold text-slate-900 text-sm">{{ auth()->user()->whatsapp_number ?? auth()->user()->phone ?? '-' }}</p>
                         </div>
                     </div>
+                    <p class="text-[10px] text-slate-400">Data diambil otomatis dari profil akun Anda.</p>
                 </div>
 
                 <!-- 2. Metode Penerimaan Produk (Fulfillment) -->

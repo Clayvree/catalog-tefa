@@ -114,13 +114,13 @@
                             $isStaff = in_array($role, ['superadmin', 'admin_jurusan', 'worker']);
                         @endphp
 
-                        @if($isStaff)
+
                             <!-- Dashboard Button (Staff Only) -->
-                            <a href="{{ route('dashboard') }}" class="hidden lg:inline-flex items-center gap-1.5 bg-slate-900 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-slate-900/10 hover:shadow-indigo-600/20 transition-all duration-200">
+                                                        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
                                 Dashboard
                             </a>
-                        @endif
+
 
                         <!-- My Orders Icon (Cart/Bag style) -->
                         <a href="{{ route('order.my_orders') }}" class="relative p-2 text-slate-600 hover:text-indigo-600 transition" title="Pesanan Saya">

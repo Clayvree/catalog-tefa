@@ -47,7 +47,7 @@
                         </a>
                     @elseif($role === 'admin_jurusan')
                         <a href="{{ route('admin.dashboard') }}" 
-                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? '    bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Dashboard
                         </a>
                         <a href="{{ route('admin.products.index') }}" 

@@ -45,16 +45,18 @@ Route::get('/tefa/{slug}', [PublicController::class, 'storefront'])->name('tefa.
 Route::get('/tefa/{slug}/katalog', [PublicController::class, 'catalog'])->name('tefa.catalog');
 Route::get('/tefa/{slug}/portofolio', [PublicController::class, 'portfolio'])->name('tefa.portfolio');
 
-// --- PUBLIC CHECKOUT & PAYMENT GATEWAY FLOW ---
-Route::get('/pesan/{slug}', [PublicOrderController::class, 'checkout'])->name('order.checkout');
-Route::post('/pesan/{slug}', [PublicOrderController::class, 'store'])->name('order.store');
-Route::get('/pesanan/invoice/{order}', [PublicOrderController::class, 'invoice'])->name('order.invoice');
-Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])->name('order.pay.simulate');
-Route::get('/pesanan-saya', [PublicOrderController::class, 'myOrders'])->name('order.my_orders');
+// --- AUTHENTICATED CHECKOUT, PAYMENT & ORDER FLOW ---
+Route::middleware('auth')->group(function () {
+    Route::get('/pesan/{slug}', [PublicOrderController::class, 'checkout'])->name('order.checkout');
+    Route::post('/pesan/{slug}', [PublicOrderController::class, 'store'])->name('order.store');
+    Route::get('/pesanan/invoice/{order}', [PublicOrderController::class, 'invoice'])->name('order.invoice');
+    Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])->name('order.pay.simulate');
+    Route::get('/pesanan-saya', [PublicOrderController::class, 'myOrders'])->name('order.my_orders');
 
-// --- KONSULTASI & NEGO HARGA JASA TEFA ---
-Route::get('/jasa/{slug}/nego', [PublicOrderController::class, 'nego'])->name('jasa.nego');
-Route::post('/jasa/{slug}/nego', [PublicOrderController::class, 'submitNego'])->name('jasa.nego.submit');
+    // --- KONSULTASI & NEGO HARGA JASA TEFA ---
+    Route::get('/jasa/{slug}/nego', [PublicOrderController::class, 'nego'])->name('jasa.nego');
+    Route::post('/jasa/{slug}/nego', [PublicOrderController::class, 'submitNego'])->name('jasa.nego.submit');
+});
 
 // --- AI CHAT WIDGET ---
 Route::post('/api/ai/chat', [AiChatController::class, 'message'])->name('api.ai.chat');

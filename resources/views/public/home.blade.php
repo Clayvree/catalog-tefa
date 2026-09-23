@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="pt-2 md:pt-0">
-                    <p class="text-2xl sm:text-4xl font-black text-indigo-600 tracking-tight">{{ $stats['total_products'] ?? '25' }}+</p>
+                    <p class="text-2xl sm:text-4xl font-black text-indigo-600 tracking-tight">{{ $stats['total_products'] ?? '25' }}</p>
                     <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Katalog Produk & Jasa</p>
                 </div>
 

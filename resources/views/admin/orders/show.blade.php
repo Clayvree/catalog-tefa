@@ -40,7 +40,19 @@
                             </div>
                             <div>
                                 <span class="block text-gray-500">Kontak (WA)</span>
-                                <span class="font-bold">{{ $order->customer_contact ?? '-' }}</span>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="font-bold">{{ $order->customer_contact ?? '-' }}</span>
+                                    @if($order->customer_contact && strlen(preg_replace('/[^0-9]/', '', $order->customer_contact)) >= 10)
+                                        @php
+                                            $phone = preg_replace('/[^0-9]/', '', $order->customer_contact);
+                                            if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
+                                            $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
+                                        @endphp
+                                        <a href="{{ $waUrl }}" target="_blank" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold text-[10px] hover:bg-emerald-200 transition inline-flex items-center gap-1">
+                                            💬 Chat WA
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                             @if($order->isDelivery())
                             <div class="col-span-2 mt-2">
@@ -122,7 +134,8 @@
                         </form>
                     </div>
 
-                    <!-- Progress / Pengiriman -->
+                    <!-- Progress / Pengiriman (Fisik & Jasa saja) -->
+                    @if(!$order->isDigital())
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <h3 class="text-lg font-bold mb-4">Pengiriman / Progress</h3>
                         
@@ -146,9 +159,6 @@
                                         <option value="review" {{ $order->fulfillment_status?->value === 'review' ? 'selected' : '' }}>Menunggu Review Klien</option>
                                         <option value="revision" {{ $order->fulfillment_status?->value === 'revision' ? 'selected' : '' }}>Revisi</option>
                                         <option value="completed" {{ $order->fulfillment_status?->value === 'completed' ? 'selected' : '' }}>Selesai</option>
-                                    @elseif($order->isDigital())
-                                        <option value="awaiting_payment" {{ $order->fulfillment_status?->value === 'awaiting_payment' ? 'selected' : '' }}>Menunggu Pembayaran</option>
-                                        <option value="download_ready" {{ $order->fulfillment_status?->value === 'download_ready' ? 'selected' : '' }}>Siap Diunduh</option>
                                     @endif
                                 </select>
                             </div>
@@ -168,6 +178,24 @@
                             <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-lg text-sm hover:bg-indigo-700">Update Progress</button>
                         </form>
                     </div>
+                    @else
+                    {{-- Digital: tampilkan info bahwa link otomatis diberikan setelah pembayaran lunas --}}
+                    <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl text-xs space-y-2">
+                        <p class="font-black text-indigo-800 flex items-center gap-1.5">⚡ Produk Digital — Otomatis</p>
+                        <p class="text-indigo-700">Link download akan langsung tersedia di invoice pelanggan begitu kamu konfirmasi pembayaran sebagai <strong>Sudah Dibayar</strong>.</p>
+                        @if($order->payment_status === 'paid')
+                            @php
+                                $dlItem = $order->items->first()?->catalogItem;
+                                $dlUrl = $dlItem?->digital_file_url ?? '#';
+                            @endphp
+                            <div class="pt-2">
+                                <a href="{{ $dlUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md transition">
+                                    ⬇️ Lihat Link Download
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

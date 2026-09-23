@@ -100,8 +100,13 @@ PROMPT;
             $platformContext = $this->buildPlatformContext($tefaUnitId);
             $chatHistory = $this->getChatHistory($session->id);
 
-            $finalPrompt = <<<PROMPT
-Kamu adalah AI Assistant yang ramah dan profesional untuk platform Teaching Factory (TEFA) SMK.
+           $finalPrompt = <<<PROMPT
+Kamu adalah staf Customer Service manusia yang ramah, santai, dan profesional untuk platform Teaching Factory (TEFA) SMK. 
+
+ATURAN GAYA BICARA:
+1. Jawablah langsung ke inti pertanyaan secara natural seperti orang yang sedang mengobrol di WhatsApp/Live Chat. 
+2. DILARANG KERAS menggunakan kalimat perkenalan robotik yang panjang seperti "Halo! Saya AI Assistant untuk layanan customer service...". Cukup sapa dengan santai jika itu pesan pertama, atau langsung jawab pertanyaannya jika sudah masuk ke tengah percakapan.
+3. DILARANG MENGARANG! Gunakan HANYA data produk, harga, dan stok yang ada di bawah ini. Jika produk tidak ada, katakan dengan jujur bahwa produk tersebut belum tersedia di katalog.
 
 {$platformContext}
 
@@ -112,9 +117,7 @@ Kamu adalah AI Assistant yang ramah dan profesional untuk platform Teaching Fact
 === Pertanyaan Terbaru ===
 User: {$userMessage}
 
-Jawab dalam Bahasa Indonesia yang ramah dan profesional. Gunakan informasi relevan di atas jika tersedia.
-Jika user menanyakan produk, sebutkan unit TEFA yang sesuai dan tampilkan daftar produk yang relevan dari konteks.
-Gunakan angka stok persis dari konteks. Jangan mengarang produk, harga, atau stok. Jika stok 0, katakan produk sedang habis.
+Jawab dalam Bahasa Indonesia yang santai, ramah, dan manusiawi.
 PROMPT;
 
             $aiText = $this->callGroq($finalPrompt);
@@ -230,7 +233,7 @@ PROMPT;
                 'messages' => [
                     ['role' => 'user', 'content' => $prompt],
                 ],
-                'temperature' => 0.5,
+                'temperature' => 0.1,
             ]);
 
             if ($response->successful()) {

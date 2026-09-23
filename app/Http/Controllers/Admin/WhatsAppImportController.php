@@ -21,13 +21,19 @@ class WhatsAppImportController extends Controller
     public function create(Request $request)
     {
         $tefaUnitId = $request->user()->managedUnits()->first()->id;
-        
-        $drafts = WaImportDraft::where('tefa_unit_id', $tefaUnitId)
-            ->latest()
-            ->take(10)
-            ->get();
+        $projectId = $request->query('project_id');
+        $project = null;
 
-        return view('admin.projects.wa_import', compact('tefaUnitId', 'drafts'));
+        $draftsQuery = WaImportDraft::where('tefa_unit_id', $tefaUnitId)->latest()->take(10);
+        
+        if ($projectId) {
+            $draftsQuery->where('project_id', $projectId);
+            $project = \App\Models\Project::find($projectId);
+        }
+
+        $drafts = $draftsQuery->get();
+
+        return view('admin.projects.wa_import', compact('tefaUnitId', 'drafts', 'projectId', 'project'));
     }
 
     public function store(Request $request)
@@ -44,6 +50,7 @@ class WhatsAppImportController extends Controller
         // Create draft
         $draft = WaImportDraft::create([
             'tefa_unit_id' => $request->input('tefa_unit_id'),
+            'project_id' => $request->input('project_id'),
             'uploaded_by' => $request->user()->id,
             'chat_file_path' => $path,
             'status' => 'processing',
@@ -106,7 +113,8 @@ class WhatsAppImportController extends Controller
         $project = $this->projectService->saveAiExtractionResult(
             $tefaUnitId,
             $request->user()->id,
-            $validated
+            $validated,
+            $draft->project_id
         );
 
         // Update draft status
