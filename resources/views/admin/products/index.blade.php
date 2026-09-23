@@ -266,7 +266,7 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div x-show="currentType !== 'jasa'" x-cloak>
+                            <div x-show="currentType === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stok Tersedia</label>
                                 <label class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-600">
                                     <input type="checkbox" name="track_stock" value="1" checked x-model="trackStock" class="rounded text-indigo-600"> Stok terbatas
@@ -388,7 +388,7 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div x-show="activeProduct.item_type !== 'jasa'" x-cloak>
+                            <div x-show="activeProduct.item_type === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stok</label>
                                 <label class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-600">
                                     <input type="checkbox" name="track_stock" value="1" x-model="activeProduct.track_stock" class="rounded text-indigo-600"> Stok terbatas

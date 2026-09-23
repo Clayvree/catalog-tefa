@@ -25,6 +25,10 @@
                                     <span class="ml-2 text-sm text-gray-600">Produk Fisik</span>
                                 </label>
                                 <label class="flex items-center">
+                                    <input type="radio" name="type" value="digital" {{ request('type') === 'digital' ? 'checked' : '' }} onchange="window.location.href='{{ route('tefa.catalog', ['slug' => $unit->slug, 'type' => 'digital']) }}'" class="text-blue-600 border-gray-300 focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-600">Produk Digital</span>
+                                </label>
+                                <label class="flex items-center">
                                     <input type="radio" name="type" value="jasa" {{ request('type') === 'jasa' ? 'checked' : '' }} onchange="window.location.href='{{ route('tefa.catalog', ['slug' => $unit->slug, 'type' => 'jasa']) }}'" class="text-blue-600 border-gray-300 focus:ring-blue-500">
                                     <span class="ml-2 text-sm text-gray-600">Jasa / Servis</span>
                                 </label>

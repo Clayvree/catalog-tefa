@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
+use App\Enums\UserRole;
+use App\Models\User;
 
 class PublicOrderController extends Controller
 {
@@ -45,10 +47,10 @@ class PublicOrderController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_contact' => 'required|string|max:50',
-            'fulfillment_method' => 'required|in:delivery,pickup_at_tefa,digital_download',
+            'fulfillment_method' => 'required|string',
             'shipping_address' => 'nullable|required_if:fulfillment_method,delivery|string',
             'shipping_city' => 'nullable|required_if:fulfillment_method,delivery|string|max:100',
-            'payment_method' => 'required|in:qris,bank_transfer,cod_workshop',
+            'payment_method' => 'required|string',
             'quantity' => 'required|integer|min:1|max:100',
             'notes' => 'nullable|string|max:500',
         ]);
@@ -64,8 +66,8 @@ class PublicOrderController extends Controller
 
             $quantity = (int) $validated['quantity'];
             $unitPrice = (float) $item->price;
-            $shippingFee = ($validated['fulfillment_method'] === 'delivery') ? 15000 : 0;
-            $totalPrice = ($unitPrice * $quantity) + $shippingFee;
+            $shippingCost = 0; // Akan diupdate Admin
+            $totalPrice = ($unitPrice * $quantity);
             $orderType = ($item->item_type === ItemType::Digital || $item->fulfillment_type === 'digital_download')
                 ? 'digital'
                 : 'physical';
@@ -86,6 +88,7 @@ class PublicOrderController extends Controller
                 'digital_access_token' => $orderType === 'digital' ? Str::random(32) : null,
                 'notes' => $validated['notes'] ?? null,
                 'total_price' => $totalPrice,
+                'shipping_cost' => $shippingCost,
                 'status' => 'pending',
                 'order_date' => now(),
             ]);
@@ -97,6 +100,7 @@ class PublicOrderController extends Controller
                 'unit_price' => $unitPrice,
                 'quantity' => $quantity,
                 'subtotal' => $unitPrice * $quantity,
+                'price_at_purchase' => $unitPrice,
             ]);
 
             if ($item->track_stock) {
@@ -115,27 +119,7 @@ class PublicOrderController extends Controller
         return view('public.invoice', compact('order'));
     }
 
-    public function simulatePayment(Request $request, Order $order)
-    {
-        $updates = [
-            'payment_status' => 'paid',
-            'status' => 'processed',
-        ];
-
-        if (!$order->fulfillment_status) {
-            if ($order->isDigital()) {
-                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::DownloadReady;
-            } elseif ($order->isService()) {
-                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::InProgressService;
-            } else {
-                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::Packing;
-            }
-        }
-
-        $order->update($updates);
-
-        return redirect()->back()->with('success', 'Pembayaran QRIS / Virtual Account Berhasil Dikonfirmasi!');
-    }
+    
 
     public function nego(string $slug)
     {
@@ -173,7 +157,8 @@ class PublicOrderController extends Controller
         ]);
 
         // Buat Template Pesan WhatsApp ke Admin Jurusan
-        $adminPhone = '6281234567890'; // Default WhatsApp TEFA
+        $admin = User::where('role', UserRole::AdminJurusan)->where('tefa_unit_id', $item->tefa_unit_id)->first();
+        $adminPhone = $admin->phone ?? '628164104669'; // Default WhatsApp TEFA
         $message = urlencode("Halo Admin TEFA {$item->tefaUnit->name},\n\nSaya ingin berkonsultasi & nego harga untuk layanan *{$item->title}*.\n\n*Nama Klien:* {$validated['client_name']}\n*Kontak:* {$validated['client_contact']}\n*Kebutuhan:* {$validated['project_brief']}\n*Estimasi Budget:* Rp" . number_format((float)($validated['budget_expectation'] ?? $item->price), 0, ',', '.') . "\n\nMohon informasi ketersediaan jadwal & penawaran resmi. Terima kasih!");
 
         $waUrl = "https://wa.me/{$adminPhone}?text={$message}";
@@ -181,18 +166,24 @@ class PublicOrderController extends Controller
         return redirect()->away($waUrl);
     }
 
-    public function myOrders(Request $request)
+        public function myOrders(Request $request)
     {
-        $user = $request->user();
-        if (!$user) {
-            return redirect()->route('login')->with('info', 'Silakan login untuk melihat riwayat pesanan Anda.');
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
 
-        $orders = Order::with(['items.catalogItem', 'tefaUnit'])
-            ->where('user_id', $user->id)
-            ->latest()
-            ->paginate(10);
+        $query = Order::with(['tefaUnit', 'items.catalogItem'])
+            ->where('user_id', auth()->id())
+            ->latest('order_date');
+
+        if ($request->has('type') && in_array($request->type, ['physical', 'digital', 'service'])) {
+            $query->where('order_type', $request->type);
+        }
+
+        $orders = $query->paginate(10)->withQueryString();
 
         return view('public.my_orders', compact('orders'));
     }
 }
+
+

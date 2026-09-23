@@ -6,7 +6,14 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <!-- Filter Navigasi -->
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                <a href="{{ route('order.my_orders') }}" class="px-4 py-2 rounded-full text-xs font-bold {{ !request('type') ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50' }}">Semua</a>
+                <a href="{{ route('order.my_orders', ['type' => 'physical']) }}" class="px-4 py-2 rounded-full text-xs font-bold {{ request('type') === 'physical' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50' }}">Produk Fisik</a>
+                <a href="{{ route('order.my_orders', ['type' => 'digital']) }}" class="px-4 py-2 rounded-full text-xs font-bold {{ request('type') === 'digital' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50' }}">Produk Digital</a>
+                <a href="{{ route('order.my_orders', ['type' => 'service']) }}" class="px-4 py-2 rounded-full text-xs font-bold {{ request('type') === 'service' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50' }}">Layanan Jasa</a>
+            </div>
             @forelse($orders as $order)
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4 pb-4 border-b border-gray-50">
@@ -23,6 +30,10 @@
                                 <span class="px-3 py-1 text-xs font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
                                     {{ $order->fulfillment_status->label() }}
                                 </span>
+                            @else
+                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">
+                                    Menunggu Diproses
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -35,7 +46,7 @@
                                     <li>{{ $item->quantity }}x {{ $item->item_title ?? $item->catalogItem?->title ?? 'Item' }}</li>
                                 @endforeach
                             </ul>
-                            <p class="mt-3 text-lg font-black text-indigo-600">Rp{{ number_format($order->total_price, 0, ',', '.') }}</p>
+                            <p class="mt-3 text-lg font-black text-indigo-600">Total: Rp{{ number_format($order->grand_total, 0, ',', '.') }}</p>
                         </div>
                         
                         <div class="bg-gray-50 p-4 rounded-xl text-sm">
@@ -93,3 +104,4 @@
         </div>
     </div>
 </x-app-layout>
+

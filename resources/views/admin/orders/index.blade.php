@@ -115,11 +115,19 @@
                                                 <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase">
                                                     ✓ Lunas
                                                 </span>
+                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1" onsubmit="return confirm('Anda yakin ingin membatalkan status lunas?')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="payment_status" value="unpaid">
+                                                    <button type="submit" class="text-[10px] text-slate-500 font-bold hover:underline cursor-pointer">
+                                                        [Batalkan Lunas]
+                                                    </button>
+                                                </form>
                                             @else
                                                 <span class="px-2.5 py-1 rounded-full bg-red-50 text-red-700 font-extrabold text-[10px] uppercase">
                                                     Belum Bayar
                                                 </span>
-                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1">
+                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1" onsubmit="return confirm('Anda yakin pesanan ini sudah dibayar lunas?')">
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="payment_status" value="paid">

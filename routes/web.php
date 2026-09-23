@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/dashboard', function () {
-        $role = auth()->user()->role->value;
+        $role = auth()->user()->role?->value;
         return match($role) {
             'superadmin'    => redirect()->route('superadmin.dashboard'),
             'admin_jurusan' => redirect()->route('admin.dashboard'),
@@ -106,6 +106,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
         Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
         Route::patch('/orders/{order}/payment', [AdminOrderController::class, 'confirmPayment'])->name('orders.payment.confirm');
+        Route::patch('/orders/{order}/shipping', [AdminOrderController::class, 'updateShipping'])->name('orders.shipping.update');
         Route::patch('/orders/{order}/fulfillment', [AdminOrderController::class, 'updateFulfillment'])->name('orders.fulfillment.update');
         
         // Workers CRUD

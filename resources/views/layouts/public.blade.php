@@ -101,7 +101,7 @@
                 </div>
 
                 <!-- Right Side Buttons -->
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
                     
                     <!-- Search Icon Shortcut (Mobile) -->
                     <a href="{{ route('produk.list') }}" class="p-2.5 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-slate-100 transition md:hidden">
@@ -109,11 +109,50 @@
                     </a>
 
                     @auth
-                        <!-- Dashboard Button -->
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-slate-900/10 hover:shadow-indigo-600/20 transition-all duration-200 transform hover:-translate-y-0.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                            Panel Dashboard
+                        @php
+                            $role = Auth::user()->role?->value;
+                            $isStaff = in_array($role, ['superadmin', 'admin_jurusan', 'worker']);
+                        @endphp
+
+                        @if($isStaff)
+                            <!-- Dashboard Button (Staff Only) -->
+                            <a href="{{ route('dashboard') }}" class="hidden lg:inline-flex items-center gap-1.5 bg-slate-900 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-slate-900/10 hover:shadow-indigo-600/20 transition-all duration-200">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
+                                Dashboard
+                            </a>
+                        @endif
+
+                        <!-- My Orders Icon (Cart/Bag style) -->
+                        <a href="{{ route('order.my_orders') }}" class="relative p-2 text-slate-600 hover:text-indigo-600 transition" title="Pesanan Saya">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                         </a>
+
+                        <!-- Profile Dropdown (Alpine.js) -->
+                        <div x-data="{ profileOpen: false }" class="relative hidden sm:block">
+                            <button @click="profileOpen = !profileOpen" @click.away="profileOpen = false" class="flex items-center gap-2 p-1 pl-2 pr-3 bg-white border border-slate-200 hover:border-indigo-300 rounded-full transition focus:outline-none">
+                                <span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </span>
+                                <span class="text-xs font-bold text-slate-700 max-w-[100px] truncate">{{ Auth::user()->name }}</span>
+                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+
+                            <div x-show="profileOpen" x-transition.opacity.duration.200ms style="display:none;" class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden py-1 z-50">
+                                <div class="px-4 py-2 border-b border-slate-50">
+                                    <p class="text-[10px] uppercase font-bold text-slate-400">Akun Anda</p>
+                                    <p class="text-xs text-slate-800 font-bold truncate">{{ Auth::user()->email }}</p>
+                                </div>
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-600">
+                                    ⚙️ Pengaturan Profil
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
+                                        🚪 Keluar / Log Out
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     @else
                         <a href="{{ route('login') }}" class="hidden sm:inline-block text-sm font-bold text-slate-700 hover:text-indigo-600 px-4 py-2 rounded-xl hover:bg-slate-100 transition">
                             Masuk
@@ -141,7 +180,15 @@
             <a href="{{ route('about') }}" class="block px-4 py-3 rounded-xl text-sm font-bold {{ request()->routeIs('about') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50' }}">Tentang TEFA</a>
             <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="w-full text-center py-3 bg-slate-900 text-white font-bold rounded-xl text-sm">Masuk Dashboard</a>
+                    @if($isStaff ?? false)
+                        <a href="{{ route('dashboard') }}" class="w-full text-center py-2.5 bg-slate-900 text-white font-bold rounded-xl text-sm">Masuk Dashboard</a>
+                    @endif
+                    <a href="{{ route('order.my_orders') }}" class="w-full text-center py-2.5 bg-indigo-50 text-indigo-600 font-bold rounded-xl text-sm border border-indigo-100">🛒 Pesanan Saya</a>
+                    <a href="{{ route('profile.edit') }}" class="w-full text-center py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-sm">⚙️ Pengaturan Profil</a>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="w-full text-center py-2.5 bg-red-50 text-red-600 font-bold rounded-xl text-sm border border-red-100">🚪 Keluar / Log Out</button>
+                    </form>
                 @else
                     <a href="{{ route('login') }}" class="w-full text-center py-2.5 bg-slate-100 text-slate-800 font-bold rounded-xl text-sm">Log in</a>
                     <a href="{{ route('register') }}" class="w-full text-center py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">Daftar Akun Baru</a>

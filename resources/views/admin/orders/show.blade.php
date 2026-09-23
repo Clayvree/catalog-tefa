@@ -72,8 +72,16 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="3" class="px-4 py-3 text-right text-gray-500">Total Pembayaran</td>
-                                    <td class="px-4 py-3 text-right font-black text-lg text-indigo-600">Rp{{ number_format($order->total_price, 0, ',', '.') }}</td>
+                                    <td colspan="3" class="px-4 py-3 text-right text-gray-500">Subtotal Item</td>
+                                    <td class="px-4 py-3 text-right font-bold text-gray-900">Rp{{ number_format($order->total_price, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-4 py-3 text-right text-gray-500">Ongkos Kirim</td>
+                                    <td class="px-4 py-3 text-right font-bold text-gray-900">Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-4 py-3 text-right font-bold text-indigo-600">Grand Total Pembayaran</td>
+                                    <td class="px-4 py-3 text-right font-black text-lg text-indigo-600">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -82,11 +90,27 @@
 
                 <!-- Sidebar Status -->
                 <div class="space-y-6">
+
+                    <!-- Ongkos Kirim (Jika Fisik Delivery) -->
+                    @if($order->isDelivery() && $order->payment_status === 'unpaid')
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold mb-4">Atur Ongkos Kirim</h3>
+                        <form action="{{ route('admin.orders.shipping.update', $order->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menyimpan ongkos kirim?')">
+                            @csrf @method('PATCH')
+                            <div class="mb-3">
+                                <label class="block text-xs font-bold text-gray-500 mb-1">Nominal Ongkir (Rp)</label>
+                                <input type="number" name="shipping_cost" value="{{ (int)$order->shipping_cost }}" class="w-full rounded-lg border-gray-300 text-sm">
+                            </div>
+                            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded-lg text-sm hover:bg-blue-700">Simpan Ongkir</button>
+                        </form>
+                    </div>
+                    @endif
+
                     <!-- Status Pembayaran -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <h3 class="text-lg font-bold mb-4">Pembayaran</h3>
                         
-                        <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST">
+                        <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin mengubah status pembayaran?')">
                             @csrf @method('PATCH')
                             <select name="payment_status" class="w-full rounded-lg border-gray-300 text-sm mb-3">
                                 <option value="unpaid" {{ $order->payment_status === 'unpaid' ? 'selected' : '' }}>Belum Dibayar</option>

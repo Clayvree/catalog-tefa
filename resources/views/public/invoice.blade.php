@@ -9,7 +9,7 @@
         <!-- Flash Message -->
         @if(session('success'))
             <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between shadow-sm">
-                <span>✓ {{ session('success') }}</span>
+                <span>✅ {{ session('success') }}</span>
             </div>
         @endif
 
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Customer & Fulfillment Details -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-2xl border border-slate-100 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-slate-50 p-5 rounded-2xl border border-slate-100 text-xs">
                 <div class="space-y-1">
                     <span class="text-slate-400 font-bold uppercase text-[10px]">Data Pelanggan</span>
                     <p class="font-black text-slate-900 text-sm">{{ $order->customer_name }}</p>
@@ -48,16 +48,35 @@
                 <div class="space-y-1">
                     <span class="text-slate-400 font-bold uppercase text-[10px]">Metode Penerimaan</span>
                     @if($order->fulfillment_method === 'delivery')
-                        <p class="font-bold text-slate-900">🛵 Diantar Kurir ke Alamat</p>
+                        <p class="font-bold text-slate-900">Pengiriman via Kurir ke Alamat</p>
                         <p class="text-slate-600 leading-relaxed">{{ $order->shipping_address }}, {{ $order->shipping_city }}</p>
                     @elseif($order->fulfillment_method === 'pickup_at_tefa')
-                        <p class="font-bold text-slate-900">🏢 Ambil Sendiri di Workshop TEFA</p>
+                        <p class="font-bold text-slate-900">Ambil Sendiri di Workshop TEFA</p>
                         <p class="text-slate-500">Unit: {{ $order->tefaUnit->name ?? 'Teaching Factory' }}</p>
                     @elseif($order->fulfillment_method === 'digital_download')
-                        <p class="font-bold text-slate-900">💻 Unduhan File Digital Instan</p>
+                        <p class="font-bold text-slate-900">Unduhan File Digital Instan</p>
                         <p class="text-slate-500">Akses langsung di halaman ini setelah lunas.</p>
                     @else
-                        <p class="font-bold text-slate-900">🛠️ Layanan Jasa Industri</p>
+                        <p class="font-bold text-slate-900">Layanan Jasa Industri</p>
+                    @endif
+                </div>
+
+                <div class="space-y-2">
+                    <span class="text-slate-400 font-bold uppercase text-[10px]">Status Barang</span>
+                    <div>
+                        @if($order->fulfillment_status)
+                            <span class="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
+                                {{ $order->fulfillment_status->label() }}
+                            </span>
+                        @else
+                            <span class="inline-block px-3 py-1 text-[11px] font-bold rounded-full bg-slate-200 text-slate-700">Menunggu Diproses</span>
+                        @endif
+                    </div>
+                    @if($order->tracking_number)
+                        <p class="text-slate-700"><span class="font-bold">Resi:</span> <span class="font-mono">{{ $order->tracking_number }}</span></p>
+                    @endif
+                    @if($order->estimated_ready_at)
+                        <p class="text-slate-700"><span class="font-bold">Estimasi:</span> {{ $order->estimated_ready_at->format('d M Y, H:i') }}</p>
                     @endif
                 </div>
             </div>
@@ -84,42 +103,43 @@
                 </div>
                 <div class="flex items-center justify-between text-slate-600">
                     <span>Biaya Ongkir / Penanganan</span>
-                    <span class="font-bold text-slate-800">{{ $order->fulfillment_method === 'delivery' ? 'Rp15.000' : 'Rp0' }}</span>
+                    <span class="font-bold text-slate-800">
+                        @if($order->shipping_cost > 0)
+                            Rp{{ number_format((float)$order->shipping_cost, 0, ',', '.') }}
+                        @else
+                            Disepakati via WA
+                        @endif
+                    </span>
                 </div>
                 <div class="pt-3 border-t border-indigo-200/60 flex items-center justify-between text-sm sm:text-base font-black text-slate-900">
                     <span>Total Tagihan</span>
-                    <span class="text-indigo-600 text-lg">Rp{{ number_format((float)$order->total_price, 0, ',', '.') }}</span>
+                    <span class="text-indigo-600 text-lg">Rp{{ number_format((float)$order->grand_total, 0, ',', '.') }}</span>
                 </div>
             </div>
 
-            <!-- Payment Action / QRIS Simulator (If Unpaid) -->
+                        <!-- Payment Action (Via WA) -->
             @if($order->payment_status !== 'paid')
                 <div class="p-6 rounded-3xl bg-slate-900 text-white space-y-6 text-center">
                     <div class="space-y-1">
-                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-400">Instruksi Pembayaran</span>
-                        <h3 class="text-lg font-black">Scan QRIS untuk Menyelesaikan Pembayaran</h3>
-                        <p class="text-xs text-slate-400">Buka aplikasi mobile banking atau e-wallet (BCA, GoPay, OVO, Dana) Anda.</p>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">Instruksi Pembayaran</span>
+                        <h3 class="text-lg font-black">Selesaikan Pembayaran via WhatsApp Admin</h3>
+                        <p class="text-xs text-slate-400">Silakan hubungi Admin melalui tombol di bawah ini untuk mengonfirmasi ongkos kirim (jika ada) dan melakukan pembayaran.</p>
                     </div>
 
-                    <!-- Dynamic QR Code Simulator -->
-                    <div class="inline-block p-4 bg-white rounded-2xl shadow-lg">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TEFAHUB-PAY-{{ $order->id }}-{{ (int)$order->total_price }}" alt="QRIS Code" class="w-44 h-44 mx-auto">
-                        <p class="text-[10px] font-mono text-slate-800 font-bold mt-2">NMID: ID102024TEFAHUB</p>
-                    </div>
+                    @php
+                        $adminWa = $order->tefaUnit->admins->first()?->whatsapp_number ?? '6281234567890';
+                        $waMsg = urlencode("Halo Admin TEFA, saya ingin mengonfirmasi pesanan saya dengan ID: {$order->id}. Mohon info total bayar dan nomor rekening/QRIS.");
+                    @endphp
 
-                    <!-- Simulation Trigger Button for Demo -->
-                    <form action="{{ route('order.pay.simulate', $order->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer">
-                            ⚡ Klik Di Sini untuk Konfirmasi Pembayaran Lunas (Simulasi Demo)
-                        </button>
-                    </form>
+                    <a href="https://wa.me/{{ $adminWa }}?text={{ $waMsg }}" target="_blank" class="block w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer">
+                        ðŸ’¬ Hubungi Admin via WhatsApp
+                    </a>
                 </div>
             @else
                 <!-- Paid Success Banner & Instant Access -->
                 <div class="p-6 sm:p-8 rounded-3xl bg-emerald-50 border border-emerald-200 text-center space-y-4">
                     <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-xl flex items-center justify-center mx-auto shadow-md">
-                        ✓
+                        ✅
                     </div>
                     <div class="space-y-1">
                         <h3 class="text-lg font-black text-emerald-900">Pembayaran Berhasil Dikonfirmasi!</h3>
@@ -136,38 +156,14 @@
                                 <span>⬇️ Akses & Download File Digital</span>
                             </a>
                         </div>
-                    @else
-                        <div class="p-4 rounded-2xl bg-white border border-emerald-200 text-xs text-slate-600 text-left space-y-2 mt-4">
-                            <span class="font-bold text-slate-900 block mb-1">Status Fulfillment:</span>
-                            @if($order->fulfillment_status)
-                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-{{ $order->fulfillment_status->badgeColor() }}-100 text-{{ $order->fulfillment_status->badgeColor() }}-800">
-                                    {{ $order->fulfillment_status->label() }}
-                                </span>
-                            @else
-                                <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">Menunggu Diproses</span>
-                            @endif
-
-                            @if($order->tracking_number)
-                                <p class="mt-2"><span class="font-bold">Resi:</span> {{ $order->tracking_number }}</p>
-                            @endif
-                            @if($order->estimated_ready_at)
-                                <p class="mt-1"><span class="font-bold">Estimasi:</span> {{ $order->estimated_ready_at->format('d M Y, H:i') }}</p>
-                            @endif
-                            @if($order->fulfillment_notes)
-                                <p class="mt-1 italic">"{{ $order->fulfillment_notes }}"</p>
-                            @endif
-                        </div>
                     @endif
                 </div>
             @endif
 
             <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                 <a href="{{ route('home') }}" class="text-xs font-bold text-indigo-600 hover:underline">
-                    ← Kembali ke Halaman Utama
+                    &larr; Kembali ke Halaman Utama
                 </a>
-                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
-                    🖨️ Cetak Invoice
-                </button>
             </div>
 
         </div>
@@ -175,3 +171,4 @@
     </div>
 </div>
 @endsection
+

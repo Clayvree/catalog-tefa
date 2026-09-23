@@ -92,6 +92,15 @@
                              Ajukan Portofolio
                         </a>
                     @endif
+                    
+                    @if(in_array($role, ['superadmin', 'admin_jurusan', 'worker']))
+                        <div class="w-px h-6 bg-slate-700 mx-2"></div>
+                    @endif
+                    
+                    <a href="{{ route('order.my_orders') }}" 
+                        class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('order.my_orders') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            🛒 Pesanan Saya
+                    </a>
                 </div>
             </div>
 
@@ -164,6 +173,16 @@
             <a href="{{ route('worker.tasks.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎯 Daftar Tugas</a>
             <a href="{{ route('worker.portfolios.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🏆 Ajukan Portofolio</a>
         @endif
+        <div class="h-px w-full bg-slate-800 my-2"></div>
+        <a href="{{ route('order.my_orders') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('order.my_orders') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">🛒 Pesanan Saya</a>
+        <a href="{{ route('profile.edit') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('profile.edit') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">⚙️ Pengaturan Profil</a>
+        <form method="POST" action="{{ route('logout') }}" class="block m-0">
+            @csrf
+            <button type="submit" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:text-red-300">
+                🚪 Keluar / Log Out
+            </button>
+        </form>
+        <div class="h-px w-full bg-slate-800 my-2"></div>
         <a href="{{ route('home') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-indigo-400">← Kembali ke Web Publik</a>
     </div>
 </nav>

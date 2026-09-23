@@ -1,9 +1,9 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.projects.index') }}" class="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">
-                    â†
+                    ←
                 </a>
                 <div>
                     <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Detail Proyek TEFA</span>
@@ -15,7 +15,7 @@
             
             <div class="flex items-center gap-2">
                 <button @click="$dispatch('open-edit-project-modal')" class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
-                    <span>âœï¸ Edit Judul & Rincian</span>
+                    <span>✏️ Edit Judul & Rincian</span>
                 </button>
 
                 <!-- Quick Status Change Form -->
@@ -39,7 +39,7 @@
             <!-- Flash Message -->
             @if(session('success'))
                 <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
-                    <span>âœ“ {{ session('success') }}</span>
+                    <span>✓ {{ session('success') }}</span>
                 </div>
             @endif
 
@@ -113,7 +113,7 @@
                                     <span>Pekerja Ditugaskan:</span>
                                     <div class="space-y-1 mt-1">
                                         <div class="flex items-center gap-1.5">
-                                            <span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[8px]">ðŸ‘‘</span>
+                                            <span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[8px]">👑</span>
                                             <strong class="text-slate-800">{{ $task->leader->user->name ?? 'Belum Ditugaskan' }}</strong>
                                             @if($task->leader)
                                                 <span class="text-[10px] text-slate-400">({{ $task->leader->class_name }})</span>
@@ -131,7 +131,7 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" onclick="return confirm('ACC tugas ini menjadi Selesai (100%)?')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm">
-                                            ✅ ACC / Selesai
+                                            ? ACC / Selesai
                                         </button>
                                     </form>
                                 @endif
@@ -140,7 +140,7 @@
 
                                 @if($task->proof_file_url)
                                     <a href="{{ $task->proof_file_url }}" target="_blank" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
-                                        <span>ðŸ“Ž Lihat Bukti Pengerjaan</span>
+                                        <span>📎 Lihat Bukti Pengerjaan</span>
                                     </a>
                                 @endif
                                 @if($task->status->value === 'review')
@@ -148,7 +148,7 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" onclick="return confirm('ACC tugas ini menjadi Selesai (100%)?')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm">
-                                            ✅ ACC / Selesai
+                                            ? ACC / Selesai
                                         </button>
                                     </form>
                                 @endif
@@ -170,7 +170,7 @@
                 <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 sm:p-8 space-y-6">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <h3 class="font-black text-base text-slate-900">Edit Data & Deskripsi Proyek</h3>
-                        <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">Ã—</button>
+                        <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
                     </div>
 
                     <form action="{{ route('admin.projects.update', $project->id) }}" method="POST" class="space-y-4">

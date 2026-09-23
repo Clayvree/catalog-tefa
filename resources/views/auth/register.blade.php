@@ -42,6 +42,15 @@
                         placeholder="nama@email.com">
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-slate-700 mb-1">
+                        Nomor Telephone
+                    </label>
+                    <input id="phone" type="text" name="phone" :value="old('phone')" required autocomplete="tel"
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition duration-150 text-sm placeholder-slate-400"
+                        placeholder="your whatsapp number">
+                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                </div>
 
                 <!-- Password -->
                 <div>

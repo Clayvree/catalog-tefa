@@ -13,6 +13,10 @@
                 <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 font-extrabold text-[10px] uppercase border border-purple-500/30">
                     💻 Produk Digital & Unduhan Instan
                 </span>
+            @elseif($item->item_type->value === 'jasa')
+                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px] uppercase border border-emerald-500/30">
+                    🛠️ Layanan Jasa
+                </span>
             @else
                 <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 font-extrabold text-[10px] uppercase border border-blue-500/30">
                     📦 Produk Fisik
@@ -20,7 +24,7 @@
             @endif
         </div>
         <h1 class="text-2xl sm:text-4xl font-black tracking-tight">Form Pemesanan & Checkout</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Selesaikan pembayaran resmi untuk pesanan unit produksi Teaching Factory.</p>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">Selesaikan pemesanan untuk unit produksi Teaching Factory.</p>
     </div>
 </div>
 
@@ -30,16 +34,10 @@
     trackStock: {{ $item->track_stock ? 'true' : 'false' }},
     unitPrice: {{ (int)$item->price }},
     itemType: '{{ $item->item_type->value }}',
-    fulfillment: '{{ ($item->item_type->value === 'digital' || $item->fulfillment_type === 'digital_download') ? 'digital_download' : (($item->fulfillment_type === 'pickup_only') ? 'pickup_at_tefa' : 'delivery') }}',
-    paymentMethod: 'qris',
-    get shippingFee() {
-        return (this.itemType === 'produk' && this.fulfillment === 'delivery') ? 15000 : 0;
-    },
+    fulfillment: '{{ ($item->item_type->value === 'digital' || $item->fulfillment_type === 'digital_download') ? 'digital_download' : (($item->item_type->value === 'jasa') ? 'onsite_service' : 'delivery') }}',
+    paymentMethod: 'wa',
     get subtotal() {
         return this.quantity * this.unitPrice;
-    },
-    get grandTotal() {
-        return this.subtotal + this.shippingFee;
     },
     formatRupiah(num) {
         return 'Rp' + num.toLocaleString('id-ID');
@@ -60,6 +58,7 @@
 
         <form action="{{ route('order.store', $item->slug) }}" method="POST" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             @csrf
+            <input type="hidden" name="payment_method" value="wa">
 
             <!-- Left Column: Checkout Inputs (8 cols) -->
             <div class="lg:col-span-8 space-y-6">
@@ -88,11 +87,7 @@
                     <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
                         <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center">2</span>
                         <h3 class="font-black text-base text-slate-900">
-                            @if($item->item_type->value === 'digital')
-                                Metode Akses Produk Digital
-                            @else
-                                Opsi Pengiriman / Penjemputan Fisik
-                            @endif
+                            Metode Pemenuhan / Pengiriman
                         </h3>
                     </div>
 
@@ -110,6 +105,19 @@
                                 Link file digital / source code / aset akan otomatis aktif dan dapat diunduh langsung di halaman invoice setelah pembayaran berhasil.
                             </p>
                         </div>
+                    @elseif($item->item_type->value === 'jasa')
+                        <!-- SERVICE FLOW -->
+                        <div class="p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <input type="hidden" name="fulfillment_method" value="onsite_service">
+                                    <span class="font-black text-sm text-emerald-900">🛠️ Layanan Jasa / Servis</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-emerald-800 leading-relaxed">
+                                Detail pelaksanaan dan pengerjaan jasa akan disepakati lebih lanjut dengan Admin via WhatsApp.
+                            </p>
+                        </div>
                     @else
                         <!-- PHYSICAL PRODUCT FLOW (Deliver vs Pickup) -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -121,7 +129,7 @@
                                         <input type="radio" name="fulfillment_method" value="delivery" x-model="fulfillment" class="text-indigo-600 focus:ring-indigo-500">
                                         <span class="font-bold text-xs text-slate-900">🛵 Diantar Kurir</span>
                                     </div>
-                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">+Rp15.000</span>
+                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">Disepakati via WA</span>
                                 </div>
                                 <p class="text-[11px] text-slate-500 pl-6">Paket dikirim langsung ke alamat rumah / kantor Anda via ekspedisi kurir TEFA.</p>
                             </label>
@@ -158,45 +166,7 @@
                     <!-- Notes Input -->
                     <div class="pt-2">
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Catatan Tambahan untuk Penjual (Opsional)</label>
-                        <input type="text" name="notes" placeholder="Contoh: Tolong dikemas dengan bubble wrap tebal..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                    </div>
-                </div>
-
-                <!-- 3. Metode Pembayaran (Payment Gateway) -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
-                    <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
-                        <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center">3</span>
-                        <h3 class="font-black text-base text-slate-900">Metode Pembayaran Resmi (Payment Gateway)</h3>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        
-                        <label class="p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col justify-between space-y-2" :class="paymentMethod === 'qris' ? 'border-indigo-600 bg-indigo-50/40' : 'border-slate-200 hover:border-slate-300'">
-                            <div class="flex items-center gap-2">
-                                <input type="radio" name="payment_method" value="qris" x-model="paymentMethod" class="text-indigo-600 focus:ring-indigo-500">
-                                <span class="font-bold text-xs text-slate-900">📱 QRIS Instan</span>
-                            </div>
-                            <span class="text-[10px] text-slate-400">BCA, GoPay, OVO, Dana, ShopeePay</span>
-                        </label>
-
-                        <label class="p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col justify-between space-y-2" :class="paymentMethod === 'bank_transfer' ? 'border-indigo-600 bg-indigo-50/40' : 'border-slate-200 hover:border-slate-300'">
-                            <div class="flex items-center gap-2">
-                                <input type="radio" name="payment_method" value="bank_transfer" x-model="paymentMethod" class="text-indigo-600 focus:ring-indigo-500">
-                                <span class="font-bold text-xs text-slate-900">🏦 Virtual Account</span>
-                            </div>
-                            <span class="text-[10px] text-slate-400">Mandiri, BRI, BNI, BSI</span>
-                        </label>
-
-                        @if($item->item_type->value === 'produk')
-                            <label class="p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col justify-between space-y-2" :class="paymentMethod === 'cod_workshop' ? 'border-indigo-600 bg-indigo-50/40' : 'border-slate-200 hover:border-slate-300'">
-                                <div class="flex items-center gap-2">
-                                    <input type="radio" name="payment_method" value="cod_workshop" x-model="paymentMethod" class="text-indigo-600 focus:ring-indigo-500">
-                                    <span class="font-bold text-xs text-slate-900">💵 Bayar di Workshop</span>
-                                </div>
-                                <span class="text-[10px] text-slate-400">Kasir TEFA Sekolah</span>
-                            </label>
-                        @endif
-
+                        <input type="text" name="notes" placeholder="Contoh: Tolong dikemas dengan rapi..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
                     </div>
                 </div>
 
@@ -240,17 +210,18 @@
                     </div>
                     <div class="flex items-center justify-between text-slate-500">
                         <span>Ongkos Kirim</span>
-                        <span class="font-bold text-slate-800" x-text="shippingFee > 0 ? formatRupiah(shippingFee) : 'Rp0 (Bebas Ongkir)'"></span>
+                        <span class="font-bold text-slate-800" x-show="fulfillment === 'delivery'">Disepakati via WA</span>
+                        <span class="font-bold text-slate-800" x-show="fulfillment !== 'delivery'">Rp0</span>
                     </div>
                     <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-sm font-black text-slate-900">
-                        <span>Total Pembayaran</span>
-                        <span class="text-indigo-600 text-base" x-text="formatRupiah(grandTotal)"></span>
+                        <span>Total Pembayaran (Estimasi)</span>
+                        <span class="text-indigo-600 text-base" x-text="formatRupiah(subtotal)"></span>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" @disabled($item->track_stock && $item->stock < 1) class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 cursor-pointer">
-                    {{ !$item->track_stock || $item->stock > 0 ? 'Lanjut Bayar via Payment Gateway →' : 'Produk Sedang Habis' }}
+                    {{ !$item->track_stock || $item->stock > 0 ? 'Buat Pesanan & Hubungi Admin via WA →' : 'Produk Sedang Habis' }}
                 </button>
 
                 <p class="text-[10px] text-slate-400 text-center">

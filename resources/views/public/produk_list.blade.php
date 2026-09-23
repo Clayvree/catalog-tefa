@@ -104,22 +104,26 @@
 
                         <!-- Tipe Penawaran -->
                         <div class="space-y-2">
-                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Tipe Layanan</h4>
-                            <div class="space-y-1">
-                                <a href="{{ route('produk.list', array_merge(request()->except('type'))) }}" 
-                                   class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ !request('type') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-                                    <span>Semua Tipe</span>
-                                </a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" 
-                                   class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-                                    <span>🛠️ Layanan Jasa</span>
-                                </a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" 
-                                   class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'produk' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-                                    <span>📦 Produk Fisik</span>
-                                </a>
-                            </div>
-                        </div>
+    <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Tipe Layanan</h4>
+    <div class="space-y-1">
+        <a href="{{ route('produk.list', array_merge(request()->except('type'))) }}"
+           class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ !request('type') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
+            <span>Semua Tipe</span>
+        </a>
+        <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}"
+           class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
+            <span>🛠️ Layanan Jasa</span>
+        </a>
+        <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}"
+           class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'produk' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
+            <span>📦 Produk Fisik</span>
+        </a>
+        <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'digital'])) }}"
+           class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'digital' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
+            <span>💻 Produk Digital</span>
+        </a>
+    </div>
+</div>
 
                         <!-- Kategori List -->
                         <div class="space-y-2 pt-4 border-t border-slate-100">
@@ -290,6 +294,7 @@
                                 <a href="{{ route('produk.list', array_merge(request()->except('type'))) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ !request('type') ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">Semua Tipe</a>
                                 <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">🛠️ Layanan Jasa</a>
                                 <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'produk' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">📦 Produk Fisik</a>
+                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'digital'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'digital' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">💻 Produk Digital</a>
                             </div>
                         </div>
 

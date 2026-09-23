@@ -18,9 +18,9 @@ class WorkerSeeder extends Seeder
         $user1 = User::updateOrCreate(
             ['email' => 'worker1@tefa.id'],
             [
-                'id' => (string) Str::uuid(),
                 'name' => 'Budi (Worker 1)',
                 'password' => Hash::make('password'),
+                'phone' => '6281234567021',
                 'role' => UserRole::Worker,
                 'email_verified_at' => now(),
             ]
@@ -52,9 +52,9 @@ class WorkerSeeder extends Seeder
         $user2 = User::updateOrCreate(
             ['email' => 'worker2@tefa.id'],
             [
-                'id' => (string) Str::uuid(),
                 'name' => 'Siti (Worker 2)',
                 'password' => Hash::make('password'),
+                'phone' => '6281234567022',
                 'role' => UserRole::Worker,
                 'email_verified_at' => now(),
             ]

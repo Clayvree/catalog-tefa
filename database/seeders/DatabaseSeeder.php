@@ -25,10 +25,23 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'superadmin@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Super Administrator',
                 'password'          => Hash::make('password'),
+                'phone'             => '628111111111',
+                'whatsapp_number' => '628111111111',
                 'role'              => UserRole::SuperAdmin,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'public@tefa.id'],
+            [
+                'name'              => 'public',
+                'password'          => Hash::make('password'),
+                'phone'             => '628111111112',
+                'whatsapp_number' => '628111111112',
+                'role'              => UserRole::Public,
                 'email_verified_at' => now(),
             ]
         );
@@ -55,9 +68,9 @@ class DatabaseSeeder extends Seeder
         $adminPplg = User::updateOrCreate(
             ['email' => 'bu.indra@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Bu Indra (Admin PPLG)',
                 'password'          => Hash::make('password'),
+                'phone'             => '6281268681430',
                 'role'              => UserRole::AdminJurusan,
                 'email_verified_at' => now(),
             ]
@@ -66,16 +79,15 @@ class DatabaseSeeder extends Seeder
         $workerPPLG = User::updateOrCreate(
             ['email' => 'nabil@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Nabil (Worker PPLG)',
                 'password'          => Hash::make('password'),
+                'phone'             => '6281234567011',
                 'role'              => UserRole::Worker,
                 'email_verified_at' => now(),
             ]
         );
 
         $unitPplg = TefaUnit::updateOrCreate(['slug' => 'tefa-pplg-software-house'], [
-            'id'          => (string) Str::uuid(),
             'name'        => 'TEFA PPLG Software House',
             'description' => 'Unit produksi Pengembangan Perangkat Lunak dan GIM (PPLG) melayani pembuatan aplikasi, website, game VR, dan sistem otomasi digital.',
             'banner_url'  => 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80',
@@ -209,9 +221,34 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
+        // Seed physical items for unit PPLG
         foreach ($itemsPplg as $item) {
             CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
         }
+
+        // Add a digital catalog item (example)
+        CatalogItem::updateOrCreate(
+            ['slug' => 'e-book-panduan-digital'],
+            [
+                'id' => (string) Str::uuid(),
+                'tefa_unit_id' => $unitPplg->id,
+                'category_id' => $catApp->id,
+                'title' => 'E‑Book Panduan Digital',
+                'slug' => 'e-book-panduan-digital',
+                'description' => 'Buku digital lengkap tentang strategi pemasaran dan teknologi modern.',
+                'price' => 0,
+                'item_type' => ItemType::Digital,
+                'status' => ItemStatus::Published,
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80',
+                'track_stock' => false,
+            ]
+        );
+
+        // Ensure stock tracking for all physical products
+        CatalogItem::where('item_type', ItemType::Produk)->update([
+            'track_stock' => true,
+            'stock' => 10,
+        ]);
 
         // ==========================================
         // 4. JURUSAN DKV (Pak Nova)
@@ -219,16 +256,16 @@ class DatabaseSeeder extends Seeder
         $adminDkv = User::updateOrCreate(
             ['email' => 'pak.nova@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Pak Nova (Admin DKV)',
                 'password'          => Hash::make('password'),
+                'phone'             => '6281234567002',
+                'whatsapp_number' => '6281234567002',
                 'role'              => UserRole::AdminJurusan,
                 'email_verified_at' => now(),
             ]
         );
 
         $unitDkv = TefaUnit::updateOrCreate(['slug' => 'tefa-dkv-creative-agency'], [
-            'id'          => (string) Str::uuid(),
             'name'        => 'TEFA DKV Creative Agency',
             'description' => 'Unit produksi Desain Komunikasi Visual (DKV) melayani jasa desain grafis, cetak outdoor/indoor, merchandise, branding kemasan, dan media visual.',
             'banner_url'  => 'https://images.unsplash.com/photo-1542744094-3a31f272c490?w=1200&q=80',
@@ -260,16 +297,16 @@ class DatabaseSeeder extends Seeder
         $adminTkj = User::updateOrCreate(
             ['email' => 'ibu.ayu@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Ibu Ayu (Admin TKJ)',
                 'password'          => Hash::make('password'),
+                'phone'             => '6281234567003',
+                'whatsapp_number' => '6281234567003',
                 'role'              => UserRole::AdminJurusan,
                 'email_verified_at' => now(),
             ]
         );
 
         $unitTkj = TefaUnit::updateOrCreate(['slug' => 'tefa-tkj-network-solutions'], [
-            'id'          => (string) Str::uuid(),
             'name'        => 'TEFA TKJ Network Solutions',
             'description' => 'Unit layanan Teknik Komputer & Jaringan (TKJ) spesialis perancangan, instalasi jaringan LAN/Wireless, pemasangan internet, serta servis software.',
             'banner_url'  => 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&q=80',
@@ -336,16 +373,16 @@ class DatabaseSeeder extends Seeder
         $adminAnimasi = User::updateOrCreate(
             ['email' => 'bu.reka@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Bu Reka (Admin Animasi)',
                 'password'          => Hash::make('password'),
+                'phone'             => '6281234567004',
+                'whatsapp_number' => '6281234567004',
                 'role'              => UserRole::AdminJurusan,
                 'email_verified_at' => now(),
             ]
         );
 
         $unitAnimasi = TefaUnit::updateOrCreate(['slug' => 'tefa-animasi-studio'], [
-            'id'          => (string) Str::uuid(),
             'name'        => 'TEFA Animation & Creative Studio',
             'description' => 'Unit produksi Animasi melayani perancangan karakter 2D/3D, ilustrasi digital, video edukasi, animasi promosi, hingga produksi video profil instansi.',
             'banner_url'  => 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80',
@@ -375,16 +412,16 @@ class DatabaseSeeder extends Seeder
         $adminPspt = User::updateOrCreate(
             ['email' => 'admin.pspt@tefa.id'],
             [
-                'id'                => (string) Str::uuid(),
                 'name'              => 'Admin PSPT (Broadcasting)',
                 'password'          => Hash::make('password'),
+                'phone'             => '6281234567005',
+                'whatsapp_number' => '6281234567005',
                 'role'              => UserRole::AdminJurusan,
                 'email_verified_at' => now(),
             ]
         );
 
         $unitPspt = TefaUnit::updateOrCreate(['slug' => 'tefa-pspt-broadcasting-house'], [
-            'id'          => (string) Str::uuid(),
             'name'        => 'TEFA PSPT Broadcasting House',
             'description' => 'Unit produksi Produksi dan Siaran Program Televisi (PSPT) melayani jasa video shooting, live streaming event, pengerjaan video klip, persewaan peralatan multicam, serta pengisian suara (Voice Over).',
             'banner_url'  => 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&q=80',

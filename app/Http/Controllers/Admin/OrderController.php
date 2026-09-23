@@ -60,6 +60,15 @@ class OrderController extends Controller
         return redirect()->back()->with('success', "Status pesanan #{$order->id} berhasil diubah ke {$validated['status']}!");
     }
 
+        public function updateShipping(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'shipping_cost' => 'required|numeric|min:0',
+        ]);
+        $order->update(['shipping_cost' => $validated['shipping_cost']]);
+        return redirect()->back()->with('success', "Ongkos kirim pesanan #{$order->id} berhasil diupdate!");
+    }
+
     public function confirmPayment(Request $request, Order $order)
     {
         $validated = $request->validate([
@@ -70,10 +79,13 @@ class OrderController extends Controller
 
         if ($validated['payment_status'] === 'paid' && !$order->fulfillment_status) {
             if ($order->isDigital()) {
+                $updates['status'] = 'completed';
                 $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::DownloadReady;
             } elseif ($order->isService()) {
+                $updates['status'] = 'processed';
                 $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::InProgressService;
             } else {
+                $updates['status'] = 'processed';
                 $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::Packing;
             }
         }
@@ -83,7 +95,7 @@ class OrderController extends Controller
         return redirect()->back()->with('success', "Status pembayaran pesanan #{$order->id} berhasil diperbarui!");
     }
 
-    public function updateFulfillment(Request $request, Order $order)
+        public function updateFulfillment(Request $request, Order $order)
     {
         $validated = $request->validate([
             'fulfillment_status' => 'required|string',
@@ -92,12 +104,19 @@ class OrderController extends Controller
             'fulfillment_notes'  => 'nullable|string',
         ]);
 
-        $order->update([
+        $updates = [
             'fulfillment_status' => $validated['fulfillment_status'],
             'estimated_ready_at' => $validated['estimated_ready_at'],
             'tracking_number'    => $validated['tracking_number'],
             'fulfillment_notes'  => $validated['fulfillment_notes'],
-        ]);
+        ];
+
+        // Jika status fulfillment = selesai/diterima/diambil, set order status ke completed
+        if (in_array($validated['fulfillment_status'], ['delivered', 'picked_up', 'completed'])) {
+            $updates['status'] = 'completed';
+        }
+
+        $order->update($updates);
 
         return redirect()->back()->with('success', "Status pengiriman/progress pesanan #{$order->id} berhasil diperbarui!");
     }

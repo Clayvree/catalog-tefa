@@ -72,7 +72,7 @@ class ProductController extends Controller
 
         $type = $validated['item_type'];
         $fulfillment = $this->normalizeFulfillment($type, $validated['fulfillment_type'] ?? null);
-        $trackStock = $type === ItemType::Jasa->value ? false : $request->boolean('track_stock');
+        $trackStock = ($type === ItemType::Jasa->value || $type === ItemType::Digital->value) ? false : $request->boolean('track_stock');
         $stock = $trackStock ? (int) $validated['stock'] : null;
         $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
         $path = $request->file('thumbnail_file')->store('products', 'public');
@@ -121,7 +121,7 @@ class ProductController extends Controller
 
         $type = $validated['item_type'];
         $fulfillment = $this->normalizeFulfillment($type, $validated['fulfillment_type'] ?? null);
-        $trackStock = $type === ItemType::Jasa->value ? false : $request->boolean('track_stock');
+        $trackStock = ($type === ItemType::Jasa->value || $type === ItemType::Digital->value) ? false : $request->boolean('track_stock');
         $stock = $trackStock ? (int) $validated['stock'] : null;
         $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
         $thumbnailUrl = $product->thumbnail_url;
