@@ -28,7 +28,7 @@
                 
                 <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                     <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
-                        🤖
+                        ✦ 
                     </div>
                     <h3 class="font-black text-lg text-slate-900">AI Task Orchestration</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
@@ -38,7 +38,7 @@
 
                 <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                     <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
-                        🛡️
+                        ⛊
                     </div>
                     <h3 class="font-black text-lg text-slate-900">Supervisi Instruktur Ahli</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
@@ -48,7 +48,7 @@
 
                 <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                     <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
-                        💼
+                        ⧉
                     </div>
                     <h3 class="font-black text-lg text-slate-900">Portofolio Kredibel</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
@@ -58,7 +58,7 @@
 
                 <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                     <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
-                        🤝
+                        ✔
                     </div>
                     <h3 class="font-black text-lg text-slate-900">Transparansi Kemitraan</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">

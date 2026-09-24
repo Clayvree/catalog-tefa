@@ -29,7 +29,7 @@
         <div class="bg-slate-900 text-white p-4 flex justify-between items-center border-b border-slate-800">
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
-                    🤖
+                    ✦ 
                 </div>
                 <div>
                     <h3 class="font-extrabold text-xs text-white">Konsultan AI TEFA</h3>
@@ -48,7 +48,7 @@
         <div class="flex-1 p-4 overflow-y-auto bg-slate-50 flex flex-col gap-3" id="chat-messages-container">
             <div class="flex gap-2 items-start">
                 <div class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">
-                    🤖
+                    ✦ 
                 </div>
                 <div class="bg-white border border-slate-200/80 text-slate-800 text-xs rounded-2xl rounded-tl-none px-3.5 py-2.5 shadow-sm leading-relaxed">
                     Halo! Ada yang bisa saya bantu terkait produk, jasa, atau konsultasi kebutuhan proyek Anda di TEFA?
@@ -57,7 +57,7 @@
 
             <template x-for="(msg, index) in messages" :key="index">
                 <div :class="msg.sender === 'user' ? 'flex flex-row-reverse gap-2 items-start' : 'flex gap-2 items-start'">
-                    <div x-show="msg.sender === 'ai'" class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">🤖</div>
+                    <div x-show="msg.sender === 'ai'" class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">✦</div>
                     <div 
                         :class="msg.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-200/80 text-slate-800 rounded-tl-none'"
                         class="text-xs rounded-2xl px-3.5 py-2.5 shadow-sm max-w-[82%] leading-relaxed"
@@ -68,7 +68,7 @@
             
             <!-- Loading Indicator -->
             <div x-show="isLoading" class="flex gap-2 items-start" style="display:none;">
-                <div class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">🤖</div>
+                <div class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">✦ </div>
                 <div class="bg-white border border-slate-200 text-slate-600 text-xs rounded-2xl rounded-tl-none px-3.5 py-3 shadow-sm flex items-center gap-1.5">
                     <div class="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce"></div>
                     <div class="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>

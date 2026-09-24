@@ -26,7 +26,7 @@
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div class="space-y-2 max-w-xl">
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-extrabold uppercase tracking-widest border border-indigo-500/30">
-                            🤖 AI Integration • Gemini Flash
+                            ✦ AI Integration • Gemini Flash
                         </div>
                         <h3 class="text-xl sm:text-2xl font-black tracking-tight">Otomasi Delegasi Tugas dari Chat WhatsApp</h3>
                         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
