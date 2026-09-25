@@ -62,10 +62,6 @@
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                              Proyek
                         </a>
-                        <a href="{{ route('admin.projects.import-wa.create') }}" 
-                           class="px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 {{ request()->routeIs('admin.projects.import-wa.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            <span> Import WA</span>
-                        </a>
                         <a href="{{ route('admin.workers.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.workers.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                              Siswa
@@ -164,7 +160,6 @@
             <a href="{{ route('admin.products.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">📦 Kelola Produk</a>
             <a href="{{ route('admin.orders.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🛒 Pesanan Masuk</a>
             <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">⚡ Proyek</a>
-            <a href="{{ route('admin.projects.import-wa.create') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🤖 Import WA</a>
             <a href="{{ route('admin.workers.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎓 Kelola Siswa</a>
             <a href="{{ route('admin.portfolios.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🏆 Review Portofolio</a>
             <a href="{{ route('admin.knowledge.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🧠 Konteks AI</a>

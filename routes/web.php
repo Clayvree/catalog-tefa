@@ -99,6 +99,7 @@ Route::middleware('auth')->group(function () {
         // Projects Monitoring
         Route::resource('projects', AdminProjectController::class);
         Route::patch('/projects/{project}/status', [AdminProjectController::class, 'updateStatus'])->name('projects.status.update');
+        Route::patch('/tasks/{task}', [AdminProjectController::class, 'updateTask'])->name('tasks.update');
         Route::patch('/tasks/{task}/approve', [AdminProjectController::class, 'approveTask'])->name('tasks.approve');
         
         // Products & Catalog CRUD (Khusus Admin Jurusan)

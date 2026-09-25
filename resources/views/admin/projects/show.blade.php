@@ -36,7 +36,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8 bg-slate-50 min-h-screen" x-data="{ editModalOpen: false }" @open-edit-project-modal.window="editModalOpen = true">
+    <div class="py-8 bg-slate-50 min-h-screen" x-data="{ editModalOpen: false, taskEditModalOpen: false, activeTask: { id: '', title: '', description: '', goals: '', reasoning: '', leader_id: '', member_ids: [], priority: 'medium', due_date: '' } }" @open-edit-project-modal.window="editModalOpen = true">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             
             <!-- Flash Message -->
@@ -67,16 +67,16 @@
                         </div>
                     </div>
                     <div>
-                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Nilai Kesepakatan Akhir</span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Nilai dari Negosiasi AI</span>
                         <p class="text-xl font-black text-indigo-600 mt-0.5">
-                            Rp{{ number_format((float)$project->final_price, 0, ',', '.') }}
+                            {{ $project->final_price !== null ? 'Rp' . number_format((float)$project->final_price, 0, ',', '.') : 'Belum disepakati' }}
                         </p>
-                        <p class="text-xs text-slate-400">Estimasi Awal: Rp{{ number_format((float)$project->estimated_price, 0, ',', '.') }}</p>
+                        <p class="text-xs text-slate-400">Diambil dari hasil ekstraksi chat terakhir.</p>
                     </div>
                     <div>
-                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Tenggat Waktu (Deadline)</span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Deadline dari Negosiasi AI</span>
                         <p class="text-base font-black text-slate-900 mt-0.5">{{ $project->deadline?->format('d F Y') ?? 'Fleksibel' }}</p>
-                        <p class="text-xs text-slate-400">Dibuat: {{ $project->created_at?->format('d M Y, H:i') }}</p>
+                        <p class="text-xs text-slate-400">Dibaca dari isi percakapan klien.</p>
                     </div>
                 </div>
 
@@ -88,6 +88,27 @@
                     <p class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 whitespace-pre-line">
                         {{ $project->description }}
                     </p>
+                </div>
+            </div>
+
+            <!-- Linked Transaction -->
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-black text-base text-slate-900">Transaksi Terkait</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Order jasa tetap terhubung ke proyek ini. AI hanya memperbarui detail negosiasi dan delegasinya.</p>
+                    </div>
+                    @if($project->orders->isNotEmpty())
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($project->orders as $order)
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold text-xs transition">
+                                    #{{ substr($order->id, 0, 8) }} · {{ ucfirst($order->status) }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <span class="px-3 py-2 rounded-xl bg-slate-100 text-slate-500 font-bold text-xs">Belum ada order terkait</span>
+                    @endif
                 </div>
             </div>
 
@@ -114,9 +135,16 @@
                                         <p class="text-[11px] text-slate-400">Prioritas: <strong class="text-slate-600">{{ $task->priority->label() }}</strong></p>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase {{ $task->status->value === 'done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800' }}">
-                                    {{ $task->status->value }}
-                                </span>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase {{ $task->status->value === 'done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800' }}">
+                                        {{ $task->status->value }}
+                                    </span>
+                                    <button type="button"
+                                        @click="activeTask = { id: @js($task->id), title: @js($task->title), description: @js($task->description), goals: @js($task->goals ?? ''), reasoning: @js($task->ai_recommendation_notes ?? ''), leader_id: @js($task->leader_id ?? ''), member_ids: @js($task->members->pluck('id')->values()), priority: @js($task->priority->value), due_date: @js($task->due_date?->format('Y-m-d') ?? '') }; taskEditModalOpen = true"
+                                        class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-indigo-600 hover:bg-indigo-50 text-[10px] font-bold">
+                                        ✏️ Edit Rincian
+                                    </button>
+                                </div>
                             </div>
 
                             <p class="text-xs text-slate-600 leading-relaxed">
@@ -175,6 +203,83 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Edit Task Modal -->
+        <div x-show="taskEditModalOpen" style="display:none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="task-modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-center justify-center min-h-screen px-4 py-8">
+                <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm" @click="taskEditModalOpen = false"></div>
+                <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 text-left">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <h3 id="task-modal-title" class="font-black text-base text-slate-900">Edit Rincian Sub-Tugas</h3>
+                        <button type="button" @click="taskEditModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
+                    </div>
+
+                    <form :action="`{{ url('/admin/tasks') }}/${activeTask.id}`" method="POST" class="space-y-4">
+                        @csrf
+                        @method('PATCH')
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Tugas</label>
+                            <input type="text" name="title" x-model="activeTask.title" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm font-bold">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Instruksi Pengerjaan</label>
+                            <textarea name="description" x-model="activeTask.description" rows="4" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Target / Goals</label>
+                            <textarea name="goals" x-model="activeTask.goals" rows="2" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ketua Tim</label>
+                                <select name="leader_id" x-model="activeTask.leader_id" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm">
+                                    <option value="">-- Belum Ditugaskan --</option>
+                                    @foreach($workers as $worker)
+                                        <option value="{{ $worker->id }}">{{ $worker->user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Anggota Pendukung</label>
+                                <select name="member_ids[]" x-model="activeTask.member_ids" multiple class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm h-24">
+                                    @foreach($workers as $worker)
+                                        <option value="{{ $worker->id }}">{{ $worker->user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Prioritas</label>
+                                <select name="priority" x-model="activeTask.priority" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm">
+                                    @foreach(\App\Enums\TaskPriority::cases() as $priority)
+                                        <option value="{{ $priority->value }}">{{ $priority->label() }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deadline Tugas</label>
+                                <input type="date" name="due_date" x-model="activeTask.due_date" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Catatan / Alasan Rekomendasi AI</label>
+                            <textarea name="reasoning" x-model="activeTask.reasoning" rows="2" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm"></textarea>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-end gap-2 border-t border-slate-100">
+                            <button type="button" @click="taskEditModalOpen = false" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
+                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md">Simpan Rincian</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Edit Modal in Show Page -->

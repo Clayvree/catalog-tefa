@@ -95,6 +95,7 @@ class WhatsAppImportController extends Controller
             'project_title' => 'required|string|max:255',
             'project_summary' => 'required|string',
             'agreed_price' => 'nullable|numeric|min:0',
+            'agreed_deadline' => 'nullable|date',
             'tasks' => 'required|array|min:1',
             'tasks.*.title' => 'required|string|max:255',
             'tasks.*.instructions' => 'required|string',

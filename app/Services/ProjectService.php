@@ -25,14 +25,15 @@ class ProjectService
                         'client_name'          => $validatedAiData['client_name'],
                         'client_contact'       => $validatedAiData['client_contact'] ?? null,
                         'description'          => $validatedAiData['project_summary'],
-                        'final_price'          => $validatedAiData['agreed_price'] ?? null,
+                        'final_price'          => $validatedAiData['agreed_price'] ?? $project->final_price,
+                        'deadline'             => $validatedAiData['agreed_deadline'] ?? $project->deadline,
                         'ai_extraction_data'   => $validatedAiData['raw_json'] ?? null,
                         'source_chat_file_url' => $validatedAiData['chat_file_url'] ?? null,
                         'status'               => \App\Enums\ProjectStatus::Active,
                     ]);
 
                     // Sync the price with the order if it exists
-                    if (isset($validatedAiData['agreed_price'])) {
+                    if (isset($validatedAiData['agreed_price']) && $validatedAiData['agreed_price'] !== null) {
                         $order = \App\Models\Order::where('project_id', $project->id)->first();
                         if ($order) {
                             $order->update(['total_price' => $validatedAiData['agreed_price']]);
@@ -53,6 +54,7 @@ class ProjectService
                         'client_contact'       => $validatedAiData['client_contact'] ?? null,
                         'description'          => $validatedAiData['project_summary'],
                         'final_price'          => $validatedAiData['agreed_price'] ?? null,
+                        'deadline'             => $validatedAiData['agreed_deadline'] ?? null,
                         'ai_extraction_data'   => $validatedAiData['raw_json'] ?? null,
                         'source_chat_file_url' => $validatedAiData['chat_file_url'] ?? null,
                         'created_by'           => $creatorId,

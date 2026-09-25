@@ -6,9 +6,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\TefaUnit;
+use App\Models\WorkerProfile;
+use App\Enums\TaskPriority;
 use App\Enums\ProjectStatus;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class ProjectController extends Controller
@@ -46,8 +50,13 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $project->load(['tasks.leader.user', 'tasks.members.user', 'tasks.skill', 'tefaUnit', 'creator']);
-        return view('admin.projects.show', compact('project'));
+        $project->load(['tasks.leader.user', 'tasks.members.user', 'tasks.skill', 'tefaUnit', 'creator', 'orders']);
+        $workers = WorkerProfile::with('user')
+            ->where('tefa_unit_id', $project->tefa_unit_id)
+            ->orderBy('user_id')
+            ->get();
+
+        return view('admin.projects.show', compact('project', 'workers'));
     }
 
     public function update(Request $request, Project $project)
@@ -72,6 +81,19 @@ class ProjectController extends Controller
             'status' => $validated['status'],
         ]);
 
+        $order = $project->orders()->first();
+        if ($order && isset($validated['final_price'])) {
+            $order->update(['total_price' => $validated['final_price']]);
+
+            $orderItem = $order->items()->first();
+            if ($orderItem) {
+                $orderItem->update([
+                    'unit_price' => $validated['final_price'],
+                    'subtotal' => $validated['final_price'] * $orderItem->quantity,
+                ]);
+            }
+        }
+
         return redirect()->back()->with('success', "Proyek '{$project->title}' berhasil diperbarui!");
     }
 
@@ -85,6 +107,44 @@ class ProjectController extends Controller
         $project->save();
 
         return redirect()->back()->with('success', "Status proyek '{$project->title}' berhasil diubah ke {$project->status->value}!");
+    }
+
+    public function updateTask(Request $request, Task $task)
+    {
+        $managedUnit = $request->user()->managedUnits()->first();
+        abort_if(!$managedUnit || $task->tefa_unit_id !== $managedUnit->id, 403);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'goals' => 'nullable|string',
+            'reasoning' => 'nullable|string',
+            'leader_id' => [
+                'nullable',
+                'uuid',
+                Rule::exists('worker_profiles', 'id')->where('tefa_unit_id', $managedUnit->id),
+            ],
+            'member_ids' => 'nullable|array',
+            'member_ids.*' => [
+                'uuid',
+                Rule::exists('worker_profiles', 'id')->where('tefa_unit_id', $managedUnit->id),
+            ],
+            'priority' => ['required', new \Illuminate\Validation\Rules\Enum(TaskPriority::class)],
+            'due_date' => 'nullable|date',
+        ]);
+
+        $task->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'goals' => $validated['goals'] ?? null,
+            'ai_recommendation_notes' => $validated['reasoning'] ?? null,
+            'leader_id' => $validated['leader_id'] ?? null,
+            'priority' => $validated['priority'],
+            'due_date' => $validated['due_date'] ?? null,
+        ]);
+        $task->members()->sync($validated['member_ids'] ?? []);
+
+        return redirect()->back()->with('success', "Rincian tugas '{$task->title}' berhasil diperbarui.");
     }
 
     public function destroy(Project $project)

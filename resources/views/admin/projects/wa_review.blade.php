@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-4">
-            <a href="{{ route('admin.projects.import-wa.create') }}" class="text-gray-500 hover:text-gray-700">
+            <a href="{{ $draft->project_id ? route('admin.projects.show', $draft->project_id) : route('admin.projects.import-wa.create') }}" class="text-gray-500 hover:text-gray-700">
                 &larr; Kembali
             </a>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -42,7 +42,13 @@
                     
                     <div class="mb-4">
                         <label class="block text-sm font-bold text-gray-700 mb-1">Harga Kesepakatan Akhir (Rp)</label>
-                        <input type="number" name="agreed_price" value="{{ old('agreed_price', $draft->ai_result['agreed_price'] ?? 0) }}" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-bold text-green-600 bg-green-50">
+                        <input type="number" name="agreed_price" value="{{ old('agreed_price', $draft->ai_result['agreed_price'] ?? '') }}" placeholder="Belum ada kesepakatan" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-bold text-green-600 bg-green-50">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Deadline Kesepakatan</label>
+                        <input type="date" name="agreed_deadline" value="{{ old('agreed_deadline', $draft->ai_result['agreed_deadline'] ?? '') }}" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-bold bg-amber-50">
+                        <p class="text-xs text-gray-500 mt-1">Diisi AI dari isi negosiasi. Kosongkan jika belum disepakati.</p>
                     </div>
 
                     <div class="mb-8">
@@ -97,7 +103,7 @@
                     </div>
 
                     <div class="mt-8 flex justify-end gap-3 border-t border-gray-100 pt-6">
-                        <a href="{{ route('admin.projects.import-wa.create') }}" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition">Batalkan</a>
+                        <a href="{{ $draft->project_id ? route('admin.projects.show', $draft->project_id) : route('admin.projects.import-wa.create') }}" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition">Batalkan</a>
                         <button type="submit" class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
                             Simpan & Delegasikan ke Tim
                         </button>
