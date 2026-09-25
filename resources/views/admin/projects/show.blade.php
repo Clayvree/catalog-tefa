@@ -15,7 +15,7 @@
             
             <div class="flex items-center gap-2">
                 <a href="{{ route('admin.projects.import-wa.create', ['project_id' => $project->id]) }}" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
-                    <span>🤖 Ekstrak Chat WA (AI)</span>
+                    <span>✦ Ekstrak Chat WA (AI)</span>
                 </a>
                 <button @click="$dispatch('open-edit-project-modal')" class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
                     <span>✏️ Edit Judul & Rincian</span>

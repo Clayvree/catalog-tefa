@@ -143,7 +143,7 @@
 
                         <!-- Consultation Badge -->
                         <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 space-y-1">
-                            <p class="font-bold text-indigo-800 text-[11px]">🤖 Konsultasi via AI</p>
+                            <p class="font-bold text-indigo-800 text-[11px]">✦  Konsultasi via AI</p>
                             <p class="text-[10px] text-indigo-700/80 leading-relaxed">
                                 Klik tombol bot di pojok kanan bawah untuk tanya spek & estimasi pengerjaan.
                             </p>

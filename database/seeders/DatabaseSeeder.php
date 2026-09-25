@@ -90,8 +90,8 @@ class DatabaseSeeder extends Seeder
         $unitPplg = TefaUnit::updateOrCreate(['slug' => 'tefa-pplg-software-house'], [
             'name'        => 'TEFA PPLG Software House',
             'description' => 'Unit produksi Pengembangan Perangkat Lunak dan GIM (PPLG) melayani pembuatan aplikasi, website, game VR, dan sistem otomasi digital.',
-            'banner_url'  => 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80',
-            'logo_url'    => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&q=80',
+            'banner_url'  => asset('assets/images/units/pplg.png'),
+            'logo_url'    => asset('assets/images/units/logo_pplg.jpeg'),
             'is_active'   => true,
         ]);
         $adminPplg->managedUnits()->syncWithoutDetaching([$unitPplg->id]);
@@ -114,119 +114,76 @@ class DatabaseSeeder extends Seeder
             [
                 'tefa_unit_id'      => $unitPplg->id,
                 'worker_profile_id' => $workerProfilePPLG->id,
-                'title'             => 'Aplikasi Point of Sales (POS)',
-                'description'       => 'Sistem kasir berbasis web menggunakan Laravel & Vue.js.',
+                'title'             => 'Aplikasi Absensi Digital (Absen Silap)',
+                'description'       => 'Sistem absensi siswa berbasis web yang dirancang untuk mencatat kehadiran secara real-time, dilengkapi fitur rekapitulasi data otomatis untuk memudahkan pihak sekolah.',
+                'thumbnail_url'     => 'images/portofolio/silap.png',
                 'status'            => 'approved',
-                'review_notes'      => 'Sangat memuaskan! Kode bersih dan fitur kasir berfungsi 100% tanpa bug.',
-                'reviewed_by'       => $adminPplg->id,
-                'reviewed_at'       => now(),
-                'thumbnail_url'     => 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80',
             ],
             [
                 'tefa_unit_id'      => $unitPplg->id,
                 'worker_profile_id' => $workerProfilePPLG->id,
-                'title'             => 'Landing Page Sekolah',
-                'description'       => 'Website company profile interaktif untuk sekolah.',
-                'status'            => 'pending',
-                'thumbnail_url'     => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80',
+                'title'             => 'Platform JMB',
+                'description'       => 'Portal layanan dan pusat akses informasi digital terpadu. Kunjungi platformnya di: https://jasamultiberkah.com/', 
+                'thumbnail_url'     => 'images/portofolio/jmb.png',
+                'status'            => 'approved',
             ],
             [
                 'tefa_unit_id'      => $unitPplg->id,
                 'worker_profile_id' => $workerProfilePPLG->id,
-                'title'             => 'Sistem E-Voting OSIS',
-                'description'       => 'Aplikasi voting dengan keamanan ganda.',
-                'status'            => 'rejected',
-                'review_notes'      => 'Tolong perbaiki UI di bagian hasil voting, masih tumpang tindih di layar HP.',
-                'reviewed_by'       => $adminPplg->id,
-                'reviewed_at'       => now(),
-                'thumbnail_url'     => 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=600&q=80',
-            ]
+                'title'             => 'Game VR: Warisan di Balik Layar',
+                'description'       => 'Gim berbasis Virtual Reality (VR) interaktif yang mengajak pemain menyelami cerita, petualangan, dan misteri di balik sebuah layar produksi.',
+                'thumbnail_url'     => 'images/portofolio/game.jpeg',
+                'status'            => 'approved',
+            ],
         ];
 
         foreach ($portfoliosPplg as $pf) {
-            if (class_exists('App\Models\Portfolio')) {
-                Portfolio::updateOrCreate(
-                    ['title' => $pf['title']],
-                    array_merge($pf, ['id' => (string) Str::uuid()])
-                );
-            }
+            Portfolio::updateOrCreate(
+                ['title' => $pf['title']], 
+                array_merge($pf, ['id' => (string) Str::uuid()]) 
+            );
         }
 
         $itemsPplg = [
-            [
-                'tefa_unit_id'  => $unitPplg->id,
-                'category_id'   => $catGame->id,
-                'title'         => 'Game VR Museum Virtual',
-                'slug'          => 'game-vr-museum',
-                'description'   => 'Aplikasi permainan Virtual Reality (VR) edukatif yang mensimulasikan tur museum secara interaktif dan imersif 3D.',
-                'price'         => 4500000,
-                'item_type'     => ItemType::Jasa,
-                'status'        => ItemStatus::Published,
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=600&q=80',
-            ],
-            [
-                'tefa_unit_id'  => $unitPplg->id,
-                'category_id'   => $catLogistik->id,
-                'title'         => 'Jasa Multi Berkah (Sistem Ekspedisi Kargo)',
-                'slug'          => 'jasa-multi-berkah-ekspedisi-kargo',
-                'description'   => 'Sistem manajemen dan pelacakan pengiriman barang kargo/ekspedisi lengkap dengan cetak resi dan laporan transaksi.',
-                'price'         => 3500000,
-                'item_type'     => ItemType::Jasa,
-                'status'        => ItemStatus::Published,
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=80',
-            ],
-            [
-                'tefa_unit_id'  => $unitPplg->id,
-                'category_id'   => $catApp->id,
-                'title'         => 'Aplikasi Absen Silap (Sistem Informasi Lapangan)',
-                'slug'          => 'aplikasi-absen-silap',
-                'description'   => 'Aplikasi presensi dan absensi digital real-time berbasis GPS/QR code yang memudahkan pendataan kehadiran secara akurat.',
-                'price'         => 2500000,
-                'item_type'     => ItemType::Jasa,
-                'status'        => ItemStatus::Published,
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&q=80',
-            ],
-            [
-                'tefa_unit_id'  => $unitPplg->id,
-                'category_id'   => $catIoT->id,
-                'title'         => 'Sistem Display Jadwal Masjid Digital',
-                'slug'          => 'jadwal-masjid-digital',
-                'description'   => 'Aplikasi display jadwal sholat otomatis berbasis layar TV/LED lengkap dengan pengingat azan, iqomah, dan pengumuman masjid.',
-                'price'         => 1500000,
-                'item_type'     => ItemType::Produk,
-                'status'        => ItemStatus::Published,
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=600&q=80',
-            ],
-            [
-                'tefa_unit_id'  => $unitPplg->id,
-                'category_id'   => $catIoT->id,
-                'title'         => 'Sistem Bel Sekolah Otomatis',
-                'slug'          => 'bel-sekolah-otomatis',
-                'description'   => 'Perangkat dan perangkat lunak bel sekolah otomatis berbasis jadwal terprogram dengan mp3 suara nada bel dua bahasa.',
-                'price'         => 1200000,
-                'item_type'     => ItemType::Produk,
-                'status'        => ItemStatus::Published,
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&q=80',
-            ],
-            [
-                'tefa_unit_id'  => $unitPplg->id,
-                'category_id'   => $catApp->id,
-                'title'         => 'Layanan Pembuatan Aplikasi Custom & Website',
-                'slug'          => 'layanan-pembuatan-aplikasi-website',
-                'description'   => 'Jasa kustomisasi dan pembuatan software, landing page, company profile, maupun aplikasi mobile/web sesuai kebutuhan klien.',
-                'price'         => 3000000,
-                'item_type'     => ItemType::Jasa,
-                'status'        => ItemStatus::Published,
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80',
-            ],
-        ];
+    [
+        'tefa_unit_id'  => $unitPplg->id,
+        'category_id'   => $catGame->id,
+        'title'         => 'Pembuatan Gim (Game Development)',
+        'slug'          => 'pembuatan-gim',
+        'description'   => 'Jasa pengembangan dan pembuatan berbagai jenis gim (game development) edukatif, 2D/3D, maupun Virtual Reality (VR) secara interaktif dan imersif.',
+        'price'         => 4500000,
+        'item_type'     => ItemType::Jasa,
+        'status'        => ItemStatus::Published,
+        'thumbnail_url' => 'https://i.pinimg.com/736x/fe/86/cd/fe86cdac93f99fe0c3d352b6b15754c3.jpg',
+    ],
+    [
+        'tefa_unit_id'  => $unitPplg->id,
+        'category_id'   => $catApp->id,
+        'title'         => 'Layanan Pembuatan Website',
+        'slug'          => 'layanan-pembuatan-website',
+        'description'   => 'Jasa pembuatan dan pengembangan website profesional, mulai dari landing page, company profile, e-commerce, hingga web-based system sesuai kebutuhan klien.',
+        'price'         => 3000000,
+        'item_type'     => ItemType::Jasa,
+        'status'        => ItemStatus::Published,
+        'thumbnail_url' => 'https://i.pinimg.com/1200x/03/79/e5/0379e54534bda2ee5836637f660f0c9b.jpg',
+    ],
+    [
+        'tefa_unit_id'  => $unitPplg->id,
+        'category_id'   => $catApp->id,
+        'title'         => 'Layanan Pembuatan Aplikasi',
+        'slug'          => 'layanan-pembuatan-aplikasi',
+        'description'   => 'Jasa pembuatan aplikasi mobile (Android/iOS) dan sistem informasi kustom (desktop/sistem terintegrasi) untuk mendukung digitalisasi bisnis maupun instansi.',
+        'price'         => 3500000,
+        'item_type'     => ItemType::Jasa,
+        'status'        => ItemStatus::Published,
+        'thumbnail_url' => 'https://i.pinimg.com/736x/12/d9/60/12d960630b251204eb0decc4f40d4054.jpg',
+    ],
+];
 
-        // Seed physical items for unit PPLG
         foreach ($itemsPplg as $item) {
             CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
         }
 
-        // Add a digital catalog item (example)
         CatalogItem::updateOrCreate(
             ['slug' => 'e-book-panduan-digital'],
             [
@@ -244,7 +201,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Ensure stock tracking for all physical products
         CatalogItem::where('item_type', ItemType::Produk)->update([
             'track_stock' => true,
             'stock' => 10,
@@ -268,30 +224,30 @@ class DatabaseSeeder extends Seeder
         $unitDkv = TefaUnit::updateOrCreate(['slug' => 'tefa-dkv-creative-agency'], [
             'name'        => 'TEFA DKV Creative Agency',
             'description' => 'Unit produksi Desain Komunikasi Visual (DKV) melayani jasa desain grafis, cetak outdoor/indoor, merchandise, branding kemasan, dan media visual.',
-            'banner_url'  => 'https://images.unsplash.com/photo-1542744094-3a31f272c490?w=1200&q=80',
-            'logo_url'    => 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=200&q=80',
+            'banner_url' => asset('assets/images/units/dkv.png'),
+            'logo_url'   => asset('assets/images/units/logo_dkv.jpg'),
             'is_active'   => true,
         ]);
         $adminDkv->managedUnits()->syncWithoutDetaching([$unitDkv->id]);
 
         $itemsDkv = [
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catMerch->id, 'title' => 'Gantungan Kunci Custom', 'slug' => 'gantungan-kunci-custom', 'description' => 'Pembuatan gantungan kunci custom dengan berbagai bahan dan desain menarik.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catDesain->id, 'title' => 'Jasa Mockup & Desain Visual', 'slug' => 'jasa-mockup-dan-desain', 'description' => 'Layanan pembuatan mockup produk dan eksplorasi desain visual profesional.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catDesain->id, 'title' => 'Desain Kaos & Pakaian', 'slug' => 'desain-kaos-pakaian', 'description' => 'Jasa perancangan desain apparel/pakaian unik untuk komunitas maupun brand.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Spanduk', 'slug' => 'desain-cetak-spanduk', 'description' => 'Layanan pembuatan desain sekaligus pencetakan spanduk promosi/event.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Baliho', 'slug' => 'desain-cetak-baliho', 'description' => 'Jasa pembuatan desain dan cetak baliho ukuran besar (outdoor).', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Banner', 'slug' => 'desain-cetak-banner', 'description' => 'Layanan cetak banner berdiri (X-Banner, Roll Banner) siap pakai.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Poster', 'slug' => 'desain-cetak-poster', 'description' => 'Pembuatan poster promosi atau cetak seni dengan kertas presisi tinggi.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catDesain->id, 'title' => 'Desain Logo & Identitas Brand', 'slug' => 'desain-logo-identitas-brand', 'description' => 'Pembuatan logo vektor dengan konsep mendalam dan panduan identitas visual.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Kemasan', 'slug' => 'desain-cetak-kemasan', 'description' => 'Perancangan struktur dan grafik packaging kemasan produk UMKM.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=80'],
-            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Undangan', 'slug' => 'desain-cetak-undangan', 'description' => 'Pencetakan kartu undangan acara dengan pilihan kertas dan finishing khusus.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catMerch->id, 'title' => 'Gantungan Kunci Custom', 'slug' => 'gantungan-kunci-custom', 'description' => 'Pembuatan gantungan kunci custom dengan berbagai bahan dan desain menarik.', 'price' => 15000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/15/e4/42/15e442facc4539f9c610c129bd9ab5fe.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catDesain->id, 'title' => 'Jasa Mockup & Desain Visual', 'slug' => 'jasa-mockup-dan-desain', 'description' => 'Layanan pembuatan mockup produk dan eksplorasi desain visual profesional.', 'price' => 150000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/00/8e/65/008e65f7e8934b4cd5b855905278d189.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catDesain->id, 'title' => 'Desain Kaos & Pakaian', 'slug' => 'desain-kaos-pakaian', 'description' => 'Jasa perancangan desain apparel/pakaian unik untuk komunitas maupun brand.', 'price' => 100000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/59/87/73/598773cdc0c9f3e299239b547ceeb3b6.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Spanduk', 'slug' => 'desain-cetak-spanduk', 'description' => 'Layanan pembuatan desain sekaligus pencetakan spanduk promosi/event.', 'price' => 75000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/7c/f3/44/7cf344f93376625f060276c2b542a886.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Baliho', 'slug' => 'desain-cetak-baliho', 'description' => 'Jasa pembuatan desain dan cetak baliho ukuran besar (outdoor).', 'price' => 350000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/ae/7f/a2/ae7fa2086f48697a7779a94c9da379ad.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Banner', 'slug' => 'desain-cetak-banner', 'description' => 'Layanan cetak banner berdiri (X-Banner, Roll Banner) siap pakai.', 'price' => 120000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/03/5b/49/035b49bcc3b3b4af80b851be3ee06785.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Poster', 'slug' => 'design-cetak-poster', 'description' => 'Pembuatan poster promosi atau cetak seni dengan kertas presisi tinggi.', 'price' => 50000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/c2/03/82/c20382a8fa95b88b1a8eb153cef70664.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catDesain->id, 'title' => 'Desain Logo & Identitas Brand', 'slug' => 'desain-logo-identitas-brand', 'description' => 'Pembuatan logo vektor dengan konsep mendalam dan panduan identitas visual.', 'price' => 250000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/96/02/8b/96028bcf083ba09183f1cdf6da32941b.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Kemasan', 'slug' => 'desain-cetak-kemasan', 'description' => 'Perancangan struktur dan grafik packaging kemasan produk UMKM.', 'price' => 200000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/d9/e4/8a/d9e48a2fec9d594a705eb2e2ddb9004a.jpg'],
+            ['tefa_unit_id' => $unitDkv->id, 'category_id' => $catCetak->id, 'title' => 'Desain & Cetak Undangan', 'slug' => 'desain-cetak-undangan', 'description' => 'Pencetakan kartu undangan acara dengan pilihan kertas dan finishing khusus.', 'price' => 150000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/bd/94/a9/bd94a90196f28dfbca1621ed8fc2144d.jpg'],
         ];
 
         foreach ($itemsDkv as $item) {
             CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
         }
 
-       // ==========================================
+        // ==========================================
         // 5. JURUSAN TKJ (Bu Ayu)
         // ==========================================
         $adminTkj = User::updateOrCreate(
@@ -309,24 +265,23 @@ class DatabaseSeeder extends Seeder
         $unitTkj = TefaUnit::updateOrCreate(['slug' => 'tefa-tkj-network-solutions'], [
             'name'        => 'TEFA TKJ Network Solutions',
             'description' => 'Unit layanan Teknik Komputer & Jaringan (TKJ) spesialis perancangan, instalasi jaringan LAN/Wireless, pemasangan internet, serta servis software.',
-            'banner_url'  => 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&q=80',
-            'logo_url'    => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=200&q=80',
+            'banner_url' => asset('assets/images/units/tkj.png'),
+            'logo_url'   => asset('assets/images/units/logo_tkj.jpg'),
             'is_active'   => true,
         ]);
         $adminTkj->managedUnits()->syncWithoutDetaching([$unitTkj->id]);
 
         $itemsTkj = [
-            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catJaringan->id, 'title' => 'Instalasi Jaringan LAN (Per Titik)', 'slug' => 'instalasi-jaringan-lan-pertitik', 'description' => 'Pemasangan kabel dan titik jaringan LAN dari switch ke PC. Tarif Rp50.000/titik.', 'price' => 50000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&q=80'],
-            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catJaringan->id, 'title' => 'Pemasangan Jaringan Internet (SSA)', 'slug' => 'pemasangan-jaringan-internet-ssa', 'description' => 'Penyambungan dan konfigurasi jaringan internet untuk rumah atau kantor.', 'price' => 300000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80'],
-            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catHardware->id, 'title' => 'Jasa Service Software Komputer / Laptop', 'slug' => 'jasa-service-software', 'description' => 'Perbaikan OS, install ulang, pembersihan virus, dan instalasi driver.', 'price' => 100000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1588702547919-26089e690ecc?w=600&q=80'],
-            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catJaringan->id, 'title' => 'Instalasi Jaringan Nirkabel (Wi-Fi / Access Point)', 'slug' => 'instalasi-nirkabel-wifi', 'description' => 'Pemasangan dan konfigurasi Access Point untuk jangkauan sinyal Wi-Fi.', 'price' => 100000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&q=80'],
+            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catJaringan->id, 'title' => 'Instalasi Jaringan LAN (Per Titik)', 'slug' => 'instalasi-jaringan-lan-pertitik', 'description' => 'Pemasangan kabel dan titik jaringan LAN dari switch ke PC. Tarif Rp50.000/titik.', 'price' => 50000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/b2/76/a0/b276a09d233b228a8ed92985ca89e8f2.jpg'],
+            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catJaringan->id, 'title' => 'Pemasangan Jaringan Internet (SSA)', 'slug' => 'pemasangan-jaringan-internet-ssa', 'description' => 'Penyambungan dan konfigurasi jaringan internet untuk rumah atau kantor.', 'price' => 300000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/c3/fd/a7/c3fda7f507fdc12e69bdb897fcd767dd.jpg'],
+            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catHardware->id, 'title' => 'Jasa Service Software Komputer / Laptop', 'slug' => 'jasa-service-software', 'description' => 'Perbaikan OS, install ulang, pembersihan virus, dan instalasi driver.', 'price' => 100000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/e6/83/68/e683680475d5a08b9ed843af2241f05b.jpg'],
+            ['tefa_unit_id' => $unitTkj->id, 'category_id' => $catJaringan->id, 'title' => 'Instalasi Jaringan Nirkabel (Wi-Fi / Access Point)', 'slug' => 'instalasi-nirkabel-wifi', 'description' => 'Pemasangan dan konfigurasi Access Point untuk jangkauan sinyal Wi-Fi.', 'price' => 100000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/50/22/e3/5022e39f9369e240c0307a1b2d7e122c.jpg'],
         ];
 
         foreach ($itemsTkj as $item) {
             CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
         }
 
-        // --- BUAT WORKER PROFILE UNTUK BU AYU (TKJ) ---
         $workerTkj = \App\Models\WorkerProfile::updateOrCreate(
             ['user_id' => $adminTkj->id],
             [
@@ -336,35 +291,38 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // --- PORTOFOLIO TKJ ---
         $portfoliosTkj = [
             [
                 'tefa_unit_id'      => $unitTkj->id,
                 'worker_profile_id' => $workerTkj->id,
                 'title'             => 'Konfigurasi Switch D-Link DGS-1100-08V2',
                 'description'       => 'Praktik penggunaan switch untuk menghubungkan perangkat dalam jaringan LAN.',
+                'thumbnail_url'     => 'images/portofolio/switch.jpeg',
+                'status'            => 'approved',
             ],
             [
                 'tefa_unit_id'      => $unitTkj->id,
                 'worker_profile_id' => $workerTkj->id,
                 'title'             => 'Konfigurasi TP-Link Wireless Router',
                 'description'       => 'Praktik konfigurasi router untuk menyediakan koneksi jaringan Wi-Fi.',
+                'thumbnail_url'     => 'images/portofolio/router.jpeg',
+                'status'            => 'approved',
             ],
             [
                 'tefa_unit_id'      => $unitTkj->id,
                 'worker_profile_id' => $workerTkj->id,
                 'title'             => 'Instalasi Kabel UTP & Switch TP-Link TL-SF1016D',
                 'description'       => 'Praktik penggunaan switch dan kabel UTP untuk menghubungkan perangkat jaringan.',
+                'thumbnail_url'     => 'images/portofolio/kabel.jpeg',
+                'status'            => 'approved',
             ],
         ];
 
         foreach ($portfoliosTkj as $pf) {
-            if (class_exists('App\Models\Portfolio')) {
-                Portfolio::updateOrCreate(
-                    ['title' => $pf['title']],
-                    array_merge($pf, ['id' => (string) Str::uuid()])
-                );
-            }
+            Portfolio::updateOrCreate(
+                ['title' => $pf['title']], 
+                array_merge($pf, ['id' => (string) Str::uuid()]) 
+            );
         }
 
         // ==========================================
@@ -385,21 +343,21 @@ class DatabaseSeeder extends Seeder
         $unitAnimasi = TefaUnit::updateOrCreate(['slug' => 'tefa-animasi-studio'], [
             'name'        => 'TEFA Animation & Creative Studio',
             'description' => 'Unit produksi Animasi melayani perancangan karakter 2D/3D, ilustrasi digital, video edukasi, animasi promosi, hingga produksi video profil instansi.',
-            'banner_url'  => 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80',
-            'logo_url'    => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&q=80',
+            'banner_url' => asset('assets/images/units/anm.jpeg'),
+            'logo_url'   => asset('assets/images/units/logo_anm.jpg'),
             'is_active'   => true,
         ]);
         $adminAnimasi->managedUnits()->syncWithoutDetaching([$unitAnimasi->id]);
 
         $itemsAnimasi = [
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catDesain->id, 'title' => 'Desain Karakter 2D', 'slug' => 'desain-karakter-2d', 'description' => 'Pembuatan konsep dan desain karakter 2D lengkap untuk komik, game, atau animasi.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catModel3D->id, 'title' => 'Desain Asset 3D', 'slug' => 'desain-asset-3d', 'description' => 'Layanan pemodelan aset 3D siap pakai untuk kebutuhan game engine atau animasi.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catMerch->id, 'title' => 'Sticker Custom', 'slug' => 'sticker-custom-animasi', 'description' => 'Pembuatan ilustrasi stiker kustom, stiker digital, atau cetakan merchandise.', 'price' => 0, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Video Edukasi Singkat 2D', 'slug' => 'video-edukasi-singkat-2d', 'description' => 'Pembuatan explainer video atau konten edukasi berbasis animasi 2D.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catDesain->id, 'title' => 'Ilustrasi Digital Custom', 'slug' => 'ilustrasi-digital-custom', 'description' => 'Gambar digital berkualitas tinggi untuk poster, buku, atau materi promosi.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Video Promosi Animasi', 'slug' => 'video-promosi-animasi', 'description' => 'Jasa pembuatan iklan komersial atau promosi produk berbentuk video animasi.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Animasi Maskot Brand', 'slug' => 'animasi-maskot-brand', 'description' => 'Pengembangan dan penjiwaan animasi dari karakter maskot perusahaan.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80'],
-            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Video Profil Sekolah / Instansi', 'slug' => 'video-profil-sekolah', 'description' => 'Produksi video company profile yang menggabungkan video real dengan animasi.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catDesain->id, 'title' => 'Desain Karakter 2D', 'slug' => 'desain-karakter-2d', 'description' => 'Pembuatan konsep dan desain karakter 2D lengkap untuk komik, game, atau animasi.', 'price' => 350000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/a9/28/4f/a9284fa242a4bd6c087ab9f056961e7b.jpg'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catModel3D->id, 'title' => 'Desain Asset 3D', 'slug' => 'desain-asset-3d', 'description' => 'Layanan pemodelan aset 3D siap pakai untuk kebutuhan game engine atau animasi.', 'price' => 500000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/4e/39/a4/4e39a4bd7a659ce9435c44d5fb0f4fec.jpg'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catMerch->id, 'title' => 'Sticker Custom', 'slug' => 'sticker-custom-animasi', 'description' => 'Pembuatan ilustrasi stiker kustom, stiker digital, atau cetakan merchandise.', 'price' => 50000, 'item_type' => ItemType::Produk, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/df/de/b3/dfdeb3d852ecb254e428e7cc636af249.jpg'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Video Edukasi Singkat 2D', 'slug' => 'video-edukasi-singkat-2d', 'description' => 'Pembuatan explainer video atau konten edukasi berbasis animasi 2D.', 'price' => 1500000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/1200x/54/fa/a6/54faa66c7d3fd374d789b99088066547.jpg'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catDesain->id, 'title' => 'Ilustrasi Digital Custom', 'slug' => 'ilustrasi-digital-custom', 'description' => 'Gambar digital berkualitas tinggi untuk poster, buku, atau materi promosi.', 'price' => 250000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8DFXvGuEckoWAeShMJPezUWEdQeajerL5PQr5jYHr-A&s=10'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Video Promosi Animasi', 'slug' => 'video-promosi-animasi', 'description' => 'Jasa pembuatan iklan komersial atau promosi produk berbentuk video animasi.', 'price' => 2000000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/26/9b/4d/269b4d3ddb24de0200c8b3726cafb71a.jpg'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Animasi Maskot Brand', 'slug' => 'animasi-maskot-brand', 'description' => 'Pengembangan dan penjiwaan animasi dari karakter maskot perusahaan.', 'price' => 1200000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/f8/57/19/f85719a148e7a7f0d9625b0da0be25ff.jpg'],
+            ['tefa_unit_id' => $unitAnimasi->id, 'category_id' => $catVideoAnim->id, 'title' => 'Video Profil Sekolah / Instansi', 'slug' => 'video-profil-sekolah', 'description' => 'Produksi video company profile yang menggabungkan video real dengan animasi.', 'price' => 3000000, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://i.pinimg.com/736x/51/00/4a/51004a62ed8fd4d3a95787114c76eac8.jpg'],
         ];
 
         foreach ($itemsAnimasi as $item) {
@@ -424,25 +382,119 @@ class DatabaseSeeder extends Seeder
         $unitPspt = TefaUnit::updateOrCreate(['slug' => 'tefa-pspt-broadcasting-house'], [
             'name'        => 'TEFA PSPT Broadcasting House',
             'description' => 'Unit produksi Produksi dan Siaran Program Televisi (PSPT) melayani jasa video shooting, live streaming event, pengerjaan video klip, persewaan peralatan multicam, serta pengisian suara (Voice Over).',
-            'banner_url'  => 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1200&q=80',
-            'logo_url'    => 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&q=80',
+            'banner_url' => asset('assets/images/units/pspt.jpeg'),
+            'logo_url'   => asset('assets/images/units/logo_pspt.jpg'),
             'is_active'   => true,
         ]);
         $adminPspt->managedUnits()->syncWithoutDetaching([$unitPspt->id]);
 
-        $itemsPspt = [
-            ['tefa_unit_id' => $unitPspt->id, 'category_id' => $catBroadcasting->id, 'title' => 'Jasa Production Video Commercial / Iklan', 'slug' => 'jasa-production-video-commercial', 'description' => 'Produksi video iklan komersial dari penulisan naskah, pengambilan gambar sinematik, hingga editing akhir.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&q=80'],
-            ['tefa_unit_id' => $unitPspt->id, 'category_id' => $catBroadcasting->id, 'title' => 'Layanan Live Streaming Multicam Event', 'slug' => 'layanan-live-streaming-multicam', 'description' => 'Jasa liputan siaran langsung (live streaming) multi-kamera untuk seminar, wisuda, atau event besar di YouTube/Zoom.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80'],
-            ['tefa_unit_id' => $unitPspt->id, 'category_id' => $catBroadcasting->id, 'title' => 'Jasa Video Editing & Post-Production', 'slug' => 'jasa-video-editing-post-production', 'description' => 'Pengeditan video profesional, color grading, penambahan efek suara, dan sound mixing.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1535016120720-40c646be5580?w=600&q=80'],
-            ['tefa_unit_id' => $unitPspt->id, 'category_id' => $catBroadcasting->id, 'title' => 'Jasa Voice Over & Sound Recording', 'slug' => 'jasa-voice-over-sound-recording', 'description' => 'Perekaman isi suara (dubbing/VO) untuk video profil, iklan, atau narasi film menggunakan studio kedap suara.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&q=80'],
-            ['tefa_unit_id' => $unitPspt->id, 'category_id' => $catBroadcasting->id, 'title' => 'Sewa Equipment Broadcast & Shooting Kit', 'slug' => 'sewa-equipment-broadcast', 'description' => 'Penyewaan alat produksi video seperti kamera sinema, lighting studio, microphone wireless, dan stabilizer.', 'price' => 0, 'item_type' => ItemType::Jasa, 'status' => ItemStatus::Published, 'thumbnail_url' => 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&q=80'],
-        ];
+       $itemsPspt = [
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Pembuatan Film Drama', 
+        'slug' => 'pembuatan-film-drama', 
+        'description' => 'Layanan produksi profesional untuk pembuatan film drama dan skenario menarik.', 
+        'price' => 3000000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/drama.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Pembuatan Film Cinematic Berbasis AI', 
+        'slug' => 'pembuatan-film-cinematic-berbasis-ai', 
+        'description' => 'Produksi film cinematic modern dengan memanfaatkan teknologi AI terkini.', 
+        'price' => 3500000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/cinematic.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Jasa Dokumenter', 
+        'slug' => 'jasa-dokumenter', 
+        'description' => 'Menerima publikasi media dokumenter perusahaan, kegiatan, dan profil institusi.', 
+        'price' => 2500000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/dokumenter.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Pelatihan / Workshop Jurnalistik', 
+        'slug' => 'pelatihan-workshop-jurnalistik', 
+        'description' => 'Program pemberdayaan melalui informasi dan keterampilan bercerita / jurnalistik.', 
+        'price' => 1500000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/workshop.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Jasa Talk Show', 
+        'slug' => 'jasa-talk-show', 
+        'description' => 'Menerima produksi acara talk show live maupun siaran tunda dengan kualitas profesional.', 
+        'price' => 2000000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/talkshow.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Pembuatan Iklan Layanan Masyarakat', 
+        'slug' => 'pembuatan-iklan-layanan-masyarakat', 
+        'description' => 'Pembuatan media kampanye dan iklan layanan masyarakat yang kreatif dan edukatif.', 
+        'price' => 2200000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/iklan.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Jasa News Magazine', 
+        'slug' => 'jasa-news-magazine', 
+        'description' => 'Layanan publikasi media online dan visual berbasis majalah berita profesional.', 
+        'price' => 1800000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/magazine.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Jasa Podcast', 
+        'slug' => 'jasa-podcast', 
+        'description' => 'Menerima produksi acara podcast live dan siaran tunda (on-demand) berkualitas tinggi.', 
+        'price' => 1200000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/podcast.jpeg')
+    ],
+    [
+        'tefa_unit_id' => $unitPspt->id, 
+        'category_id' => $catBroadcasting->id, 
+        'title' => 'Jasa Feature', 
+        'slug' => 'jasa-feature', 
+        'description' => 'Menerima publikasi media feature mencakup tema sejarah, wisata, kuliner, dan lainnya.', 
+        'price' => 1700000, 
+        'item_type' => ItemType::Jasa, 
+        'status' => ItemStatus::Published, 
+        'thumbnail_url' => asset('assets/images/units/feature.jpeg')
+    ],
+];
 
         foreach ($itemsPspt as $item) {
             CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
         }
 
-        // Register WorkerSeeder at the very end
+         // Register WorkerSeeder at the very end
         $this->call(WorkerSeeder::class);
     }
 }
