@@ -39,14 +39,14 @@
                 <form action="{{ route('jasa.nego.submit', $item->slug) }}" method="POST" class="space-y-5">
                     @csrf
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Anda / Nama Instansi</label>
-                            <input type="text" name="client_name" required value="{{ auth()->user()->name ?? old('client_name') }}" placeholder="Contoh: CV. Berkah Abadi / Bpk. Fajar" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">Nama Anda / Instansi</span>
+                            <p class="font-bold text-slate-900 text-sm">{{ auth()->user()->name }}</p>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp Aktif</label>
-                            <input type="text" name="client_contact" required value="{{ old('client_contact') }}" placeholder="Contoh: 081298765432" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">Nomor WhatsApp Aktif</span>
+                            <p class="font-bold text-slate-900 text-sm">{{ auth()->user()->whatsapp_number ?? auth()->user()->phone ?? '-' }}</p>
                         </div>
                     </div>
 

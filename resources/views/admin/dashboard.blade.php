@@ -26,16 +26,16 @@
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div class="space-y-2 max-w-xl">
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-extrabold uppercase tracking-widest border border-indigo-500/30">
-                            🤖 AI Integration • Gemini Flash
+                            ✦ AI Integration • Gemini Flash
                         </div>
                         <h3 class="text-xl sm:text-2xl font-black tracking-tight">Otomasi Delegasi Tugas dari Chat WhatsApp</h3>
                         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                            Upload file export chat (.txt) percakapan Anda dengan klien. AI akan mengekstrak kesepakatan harga, judul proyek, dan memecahnya ke tugas siswa otomatis.
+                            Buka detail proyek yang sesuai, lalu unggah chat negosiasi agar AI mengekstrak requirement, kesepakatan harga, deadline, dan pembagian tugas pada proyek yang sama.
                         </p>
                     </div>
 
-                    <a href="{{ route('admin.projects.import-wa.create') }}" class="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-xs sm:text-sm shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 flex-shrink-0">
-                        <span>Mulai Import Chat WA</span>
+                    <a href="{{ route('admin.projects.index') }}" class="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-xs sm:text-sm shadow-lg shadow-indigo-600/30 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 flex-shrink-0">
+                        <span>Buka Daftar Proyek</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
                 </div>

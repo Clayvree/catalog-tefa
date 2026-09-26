@@ -89,6 +89,17 @@
                                 <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                                     {{ $portfolio->description }}
                                 </p>
+                                
+                                @if($portfolio->review_notes)
+                                    <div class="mt-3 p-3 rounded-xl border {{ $portfolio->status->value === 'approved' ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100' }}">
+                                        <p class="text-[10px] font-bold {{ $portfolio->status->value === 'approved' ? 'text-emerald-700' : 'text-red-700' }} uppercase tracking-wider mb-1">
+                                            📝 Catatan Guru ({{ $portfolio->reviewer->name ?? 'Admin' }})
+                                        </p>
+                                        <p class="text-xs {{ $portfolio->status->value === 'approved' ? 'text-emerald-600' : 'text-red-600' }} line-clamp-3 italic">
+                                            "{{ $portfolio->review_notes }}"
+                                        </p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 

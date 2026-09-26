@@ -18,8 +18,11 @@ return new class extends Migration
             $table->text('error_message')->nullable();
             $table->timestamps();
 
+            $table->uuid('catalog_item_id')->nullable();
+            
             $table->foreign('tefa_unit_id')->references('id')->on('tefa_units')->onDelete('cascade');
             $table->foreign('uploaded_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('catalog_item_id')->references('id')->on('catalog_items')->onDelete('set null');
         });
     }
 

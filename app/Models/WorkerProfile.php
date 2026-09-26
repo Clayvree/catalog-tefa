@@ -43,13 +43,24 @@ class WorkerProfile extends Model
             ->withTimestamps();
     }
 
-    public function tasks(): HasMany
+    public function ledTasks(): HasMany
     {
-        return $this->hasMany(Task::class, 'assigned_worker_id');
+        return $this->hasMany(Task::class, 'leader_id');
+    }
+
+    public function memberTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_worker');
+    }
+
+    public function getTasksAttribute()
+    {
+        return $this->ledTasks->merge($this->memberTasks);
     }
 
     public function portfolios(): HasMany
     {
         return $this->hasMany(Portfolio::class);
     }
+
 }

@@ -14,6 +14,9 @@
             </div>
             
             <div class="flex items-center gap-2">
+                <a href="{{ route('admin.projects.import-wa.create', ['project_id' => $project->id]) }}" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+                    <span>✦ Ekstrak Chat WA (AI)</span>
+                </a>
                 <button @click="$dispatch('open-edit-project-modal')" class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
                     <span>✏️ Edit Judul & Rincian</span>
                 </button>
@@ -33,7 +36,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8 bg-slate-50 min-h-screen" x-data="{ editModalOpen: false }" @open-edit-project-modal.window="editModalOpen = true">
+    <div class="py-8 bg-slate-50 min-h-screen" x-data="{ editModalOpen: false, taskEditModalOpen: false, activeTask: { id: '', title: '', description: '', goals: '', reasoning: '', leader_id: '', member_ids: [], priority: 'medium', due_date: '' } }" @open-edit-project-modal.window="editModalOpen = true">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             
             <!-- Flash Message -->
@@ -49,19 +52,31 @@
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 uppercase">Nama Klien / Mitra</span>
                         <p class="text-base font-black text-slate-900 mt-0.5">{{ $project->client_name }}</p>
-                        <p class="text-xs text-slate-400">{{ $project->client_contact ?? 'Kontak via WhatsApp' }}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <p class="text-xs text-slate-500 font-medium">{{ $project->client_contact ?? '-' }}</p>
+                            @if($project->client_contact && strlen(preg_replace('/[^0-9]/', '', $project->client_contact)) >= 10)
+                                @php
+                                    $phone = preg_replace('/[^0-9]/', '', $project->client_contact);
+                                    if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
+                                    $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$project->client_name}, ini Admin TEFA. Saya ingin mengobrol mengenai penawaran proyek '{$project->title}'...");
+                                @endphp
+                                <a href="{{ $waUrl }}" target="_blank" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold text-[10px] hover:bg-emerald-200 transition inline-flex items-center gap-1">
+                                    💬 Chat WA
+                                </a>
+                            @endif
+                        </div>
                     </div>
                     <div>
-                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Nilai Kesepakatan Akhir</span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Nilai dari Negosiasi AI</span>
                         <p class="text-xl font-black text-indigo-600 mt-0.5">
-                            Rp{{ number_format((float)$project->final_price, 0, ',', '.') }}
+                            {{ $project->final_price !== null ? 'Rp' . number_format((float)$project->final_price, 0, ',', '.') : 'Belum disepakati' }}
                         </p>
-                        <p class="text-xs text-slate-400">Estimasi Awal: Rp{{ number_format((float)$project->estimated_price, 0, ',', '.') }}</p>
+                        <p class="text-xs text-slate-400">Diambil dari hasil ekstraksi chat terakhir.</p>
                     </div>
                     <div>
-                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Tenggat Waktu (Deadline)</span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Deadline dari Negosiasi AI</span>
                         <p class="text-base font-black text-slate-900 mt-0.5">{{ $project->deadline?->format('d F Y') ?? 'Fleksibel' }}</p>
-                        <p class="text-xs text-slate-400">Dibuat: {{ $project->created_at?->format('d M Y, H:i') }}</p>
+                        <p class="text-xs text-slate-400">Dibaca dari isi percakapan klien.</p>
                     </div>
                 </div>
 
@@ -73,6 +88,27 @@
                     <p class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 whitespace-pre-line">
                         {{ $project->description }}
                     </p>
+                </div>
+            </div>
+
+            <!-- Linked Transaction -->
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-black text-base text-slate-900">Transaksi Terkait</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Order jasa tetap terhubung ke proyek ini. AI hanya memperbarui detail negosiasi dan delegasinya.</p>
+                    </div>
+                    @if($project->orders->isNotEmpty())
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($project->orders as $order)
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold text-xs transition">
+                                    #{{ substr($order->id, 0, 8) }} · {{ ucfirst($order->status) }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <span class="px-3 py-2 rounded-xl bg-slate-100 text-slate-500 font-bold text-xs">Belum ada order terkait</span>
+                    @endif
                 </div>
             </div>
 
@@ -99,9 +135,16 @@
                                         <p class="text-[11px] text-slate-400">Prioritas: <strong class="text-slate-600">{{ $task->priority->label() }}</strong></p>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase {{ $task->status->value === 'done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800' }}">
-                                    {{ $task->status->value }}
-                                </span>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase {{ $task->status->value === 'done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800' }}">
+                                        {{ $task->status->value }}
+                                    </span>
+                                    <button type="button"
+                                        @click="activeTask = { id: @js($task->id), title: @js($task->title), description: @js($task->description), goals: @js($task->goals ?? ''), reasoning: @js($task->ai_recommendation_notes ?? ''), leader_id: @js($task->leader_id ?? ''), member_ids: @js($task->members->pluck('id')->values()), priority: @js($task->priority->value), due_date: @js($task->due_date?->format('Y-m-d') ?? '') }; taskEditModalOpen = true"
+                                        class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-indigo-600 hover:bg-indigo-50 text-[10px] font-bold">
+                                        ✏️ Edit Rincian
+                                    </button>
+                                </div>
                             </div>
 
                             <p class="text-xs text-slate-600 leading-relaxed">
@@ -110,17 +153,47 @@
 
                             <div class="pt-3 border-t border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500">
                                 <div>
-                                    <span>Pekerja Ditugaskan: </span>
-                                    <strong class="text-slate-800">{{ $task->assignedWorker->user->name ?? 'Belum Ditugaskan' }}</strong>
-                                    @if($task->assignedWorker)
-                                        <span class="text-[10px] text-slate-400">({{ $task->assignedWorker->class_name }})</span>
-                                    @endif
-                                </div>
+                                    <span>Pekerja Ditugaskan:</span>
+                                    <div class="space-y-1 mt-1">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[8px]">👑</span>
+                                            <strong class="text-slate-800">{{ $task->leader->user->name ?? 'Belum Ditugaskan' }}</strong>
+                                            @if($task->leader)
+                                                <span class="text-[10px] text-slate-400">({{ $task->leader->class_name }})</span>
+                                            @endif
+                                        </div>
+                                        @if($task->members->count() > 0)
+                                            <div class="pl-5 flex flex-wrap gap-1">
+                                                @foreach($task->members as $member)
+                                                    <span class="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">{{ explode(' ', $member->user->name)[0] }}</span>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                @if($task->status->value === 'review')
+                                    <form action="{{ route('admin.tasks.approve', $task->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" onclick="return confirm('ACC tugas ini menjadi Selesai (100%)?')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm">
+                                            ? ACC / Selesai
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
 
                                 @if($task->proof_file_url)
                                     <a href="{{ $task->proof_file_url }}" target="_blank" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
                                         <span>📎 Lihat Bukti Pengerjaan</span>
                                     </a>
+                                @endif
+                                @if($task->status->value === 'review')
+                                    <form action="{{ route('admin.tasks.approve', $task->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" onclick="return confirm('ACC tugas ini menjadi Selesai (100%)?')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm">
+                                            ? ACC / Selesai
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         </div>
@@ -132,6 +205,83 @@
 
         </div>
 
+        <!-- Edit Task Modal -->
+        <div x-show="taskEditModalOpen" style="display:none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="task-modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-center justify-center min-h-screen px-4 py-8">
+                <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm" @click="taskEditModalOpen = false"></div>
+                <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 text-left">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <h3 id="task-modal-title" class="font-black text-base text-slate-900">Edit Rincian Sub-Tugas</h3>
+                        <button type="button" @click="taskEditModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
+                    </div>
+
+                    <form :action="`{{ url('/admin/tasks') }}/${activeTask.id}`" method="POST" class="space-y-4">
+                        @csrf
+                        @method('PATCH')
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Tugas</label>
+                            <input type="text" name="title" x-model="activeTask.title" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm font-bold">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Instruksi Pengerjaan</label>
+                            <textarea name="description" x-model="activeTask.description" rows="4" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Target / Goals</label>
+                            <textarea name="goals" x-model="activeTask.goals" rows="2" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ketua Tim</label>
+                                <select name="leader_id" x-model="activeTask.leader_id" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm">
+                                    <option value="">-- Belum Ditugaskan --</option>
+                                    @foreach($workers as $worker)
+                                        <option value="{{ $worker->id }}">{{ $worker->user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Anggota Pendukung</label>
+                                <select name="member_ids[]" x-model="activeTask.member_ids" multiple class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm h-24">
+                                    @foreach($workers as $worker)
+                                        <option value="{{ $worker->id }}">{{ $worker->user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Prioritas</label>
+                                <select name="priority" x-model="activeTask.priority" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm">
+                                    @foreach(\App\Enums\TaskPriority::cases() as $priority)
+                                        <option value="{{ $priority->value }}">{{ $priority->label() }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deadline Tugas</label>
+                                <input type="date" name="due_date" x-model="activeTask.due_date" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Catatan / Alasan Rekomendasi AI</label>
+                            <textarea name="reasoning" x-model="activeTask.reasoning" rows="2" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600 text-sm"></textarea>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-end gap-2 border-t border-slate-100">
+                            <button type="button" @click="taskEditModalOpen = false" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">Batal</button>
+                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md">Simpan Rincian</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Edit Modal in Show Page -->
         <div x-show="editModalOpen" style="display:none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -140,7 +290,7 @@
                 <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 sm:p-8 space-y-6">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <h3 class="font-black text-base text-slate-900">Edit Data & Deskripsi Proyek</h3>
-                        <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">×</button>
+                        <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
                     </div>
 
                     <form action="{{ route('admin.projects.update', $project->id) }}" method="POST" class="space-y-4">
@@ -199,3 +349,4 @@
 
     </div>
 </x-app-layout>
+

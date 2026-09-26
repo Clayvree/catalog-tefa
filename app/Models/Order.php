@@ -33,6 +33,7 @@ class Order extends Model
         'customer_contact',
         'notes',
         'total_price',
+        'shipping_cost',
         'status',
         'fulfillment_status',
         'estimated_ready_at',
@@ -45,6 +46,7 @@ class Order extends Model
     {
         return [
             'total_price'        => 'decimal:2',
+            'shipping_cost'      => 'decimal:2',
             'order_date'         => 'datetime',
             'estimated_ready_at' => 'datetime',
             'fulfillment_status' => FulfillmentStatus::class,
@@ -90,5 +92,10 @@ class Order extends Model
     public function isPickup(): bool
     {
         return $this->fulfillment_method === 'pickup_at_tefa';
+    }
+
+    public function getGrandTotalAttribute(): float
+    {
+        return (float) $this->total_price + (float) $this->shipping_cost;
     }
 }

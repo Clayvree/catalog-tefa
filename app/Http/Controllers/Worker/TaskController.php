@@ -60,7 +60,7 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         $this->authorize('view', $task);
-        $task->load(['project.tefaUnit', 'skill', 'assignedWorker.user']);
+        $task->load(['project.tefaUnit', 'skill', 'leader.user', 'members.user']);
         return view('worker.tasks.show', ['task' => $task]);
     }
 
@@ -78,6 +78,35 @@ class TaskController extends Controller
         ]);
 
         return redirect()->back()->with('success', "Status tugas '{$task->title}' berhasil diubah ke {$task->status->value}!");
+    }
+    
+    public function updateNotes(Request $request, Task $task)
+    {
+        $this->authorize('update', $task);
+
+        $validated = $request->validate([
+            'team_notes' => 'nullable|string',
+            'progress_percentage' => 'required|integer|min:0|max:100',
+            'member_notes' => 'nullable|array',
+            'member_notes.*' => 'nullable|string'
+        ]);
+
+        $task->update([
+            'team_notes' => $validated['team_notes'],
+            'progress_percentage' => $validated['progress_percentage'],
+        ]);
+
+        if (isset($validated['member_notes'])) {
+            $syncData = [];
+            foreach ($validated['member_notes'] as $memberId => $note) {
+                // Get the existing members and preserve their timestamps/other pivot data
+                $syncData[$memberId] = ['member_task_note' => $note];
+            }
+            // Use syncWithoutDetaching to only update the pivot for provided members
+            $task->members()->syncWithoutDetaching($syncData);
+        }
+
+        return redirect()->back()->with('success', 'Catatan kolaborasi dan tugas anggota berhasil diupdate!');
     }
 
     public function uploadProof(Request $request, Task $task)

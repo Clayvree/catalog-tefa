@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->uuid('catalog_item_id')->nullable();
-        $table->foreign('catalog_item_id')->references('id')->on('catalog_items')->onDelete('set null');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('whatsapp_number', 25)->nullable()->after('email');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            //
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('whatsapp_number');
         });
     }
 };

@@ -115,11 +115,19 @@
                                                 <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase">
                                                     ✓ Lunas
                                                 </span>
+                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1" onsubmit="return confirm('Anda yakin ingin membatalkan status lunas?')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="payment_status" value="unpaid">
+                                                    <button type="submit" class="text-[10px] text-slate-500 font-bold hover:underline cursor-pointer">
+                                                        [Batalkan Lunas]
+                                                    </button>
+                                                </form>
                                             @else
                                                 <span class="px-2.5 py-1 rounded-full bg-red-50 text-red-700 font-extrabold text-[10px] uppercase">
                                                     Belum Bayar
                                                 </span>
-                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1">
+                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1" onsubmit="return confirm('Anda yakin pesanan ini sudah dibayar lunas?')">
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="payment_status" value="paid">
@@ -144,9 +152,24 @@
                                         </form>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('order.invoice', $order->id) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
-                                            Invoice &rarr;
-                                        </a>
+                                        <div class="flex flex-col gap-1 items-end">
+                                            <a href="{{ route('admin.orders.show', $order->id) }}" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition text-center inline-block min-w-20">
+                                                Detail &rarr;
+                                            </a>
+                                            <a href="{{ route('order.invoice', $order->id) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition text-center inline-block min-w-20">
+                                                Invoice ⧉
+                                            </a>
+                                            @if($order->customer_contact && strlen(preg_replace('/[^0-9]/', '', $order->customer_contact)) >= 10)
+                                                @php
+                                                    $phone = preg_replace('/[^0-9]/', '', $order->customer_contact);
+                                                    if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
+                                                    $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
+                                                @endphp
+                                                <a href="{{ $waUrl }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition flex items-center gap-1 min-w-20 justify-center">
+                                                    💬 Chat
+                                                </a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

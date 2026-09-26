@@ -35,8 +35,8 @@ class DashboardController extends Controller
             'pending_portfolios' => $unitId ? Portfolio::where('tefa_unit_id', $unitId)->where('status', 'pending')->count() : 0,
         ];
 
-        $projects = $unitId ? Project::with(['tasks.assignedWorker.user', 'creator'])->forUnit($unitId)->latest()->take(6)->get() : collect();
-        $workers = $unitId ? WorkerProfile::with(['user', 'tasks' => fn($q) => $q->where('status', '!=', 'done')])->where('tefa_unit_id', $unitId)->get() : collect();
+        $projects = $unitId ? Project::with(['tasks.leader.user', 'tasks.members.user', 'creator'])->forUnit($unitId)->latest()->take(6)->get() : collect();
+        $workers = $unitId ? WorkerProfile::with(['user', 'ledTasks' => fn($q) => $q->where('status', '!=', 'done'), 'memberTasks' => fn($q) => $q->where('status', '!=', 'done')])->where('tefa_unit_id', $unitId)->get() : collect();
         $pendingPortfolios = $unitId ? Portfolio::with('worker.user')->where('tefa_unit_id', $unitId)->where('status', 'pending')->latest()->get() : collect();
         $catalogItems = $unitId ? CatalogItem::forUnit($unitId)->latest()->take(5)->get() : collect();
 

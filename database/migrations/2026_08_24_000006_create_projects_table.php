@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('client_name');
             $table->string('client_contact')->nullable();
             $table->text('description')->nullable();
+            $table->decimal('estimated_price', 15, 2)->nullable();
+            $table->uuid('catalog_item_id')->nullable();
             $table->string('source_chat_file_url')->nullable();
             $table->json('ai_extraction_data')->nullable();
             $table->decimal('final_price', 15, 2)->nullable();

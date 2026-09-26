@@ -193,7 +193,7 @@
                                             <span class="text-[10px] font-bold text-indigo-600 uppercase">{{ $task->project->title ?? 'Proyek TEFA' }}</span>
                                             <h4 class="font-bold text-slate-900 text-sm mt-0.5">{{ $task->title }}</h4>
                                             @if($task->ai_recommendation_notes)
-                                                <p class="text-[10px] text-slate-500 mt-1">🤖 {{ $task->ai_recommendation_notes }}</p>
+                                                <p class="text-[10px] text-slate-500 mt-1">✦  {{ $task->ai_recommendation_notes }}</p>
                                             @endif
                                         </div>
                                     </td>

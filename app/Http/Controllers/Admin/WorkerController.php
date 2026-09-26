@@ -22,10 +22,12 @@ class WorkerController extends Controller
         $unitId = $managedUnit?->id;
 
         $workers = $unitId 
-            ? WorkerProfile::with(['user', 'skills', 'tasks'])->where('tefa_unit_id', $unitId)->latest()->get() 
+            ? WorkerProfile::with(['user', 'skills', 'ledTasks', 'memberTasks'])->where('tefa_unit_id', $unitId)->latest()->get() 
             : collect();
 
-        return view('admin.workers.index', compact('workers', 'managedUnit'));
+        $availableSkills = Skill::orderBy('name')->get();
+
+        return view('admin.workers.index', compact('workers', 'managedUnit', 'availableSkills'));
     }
 
     public function store(Request $request)
@@ -40,6 +42,7 @@ class WorkerController extends Controller
             'class_name' => 'required|string|max:50',
             'bio' => 'nullable|string',
             'skills_text' => 'nullable|string|max:500',
+            'overall_proficiency' => 'required|in:beginner,intermediate,advanced',
         ]);
 
         $user = User::create([
@@ -60,11 +63,10 @@ class WorkerController extends Controller
             'bio' => $validated['bio'] ?? null,
         ]);
 
-        // Process free-form typed skills
+        $skillsData = [];
+
         if (!empty($validated['skills_text'])) {
             $skillNames = array_filter(array_map('trim', explode(',', $validated['skills_text'])));
-            $skillsData = [];
-
             foreach ($skillNames as $skillName) {
                 if (!empty($skillName)) {
                     $slug = Str::slug($skillName);
@@ -72,16 +74,16 @@ class WorkerController extends Controller
                         ['slug' => $slug],
                         [
                             'name' => ucwords(strtolower($skillName)),
-                            'color_hex' => '#6366f1',
+                            'color_hex' => '#' . substr(md5($slug), 0, 6),
                         ]
                     );
-                    $skillsData[$skill->id] = ['proficiency_level' => 'intermediate'];
+                    $skillsData[$skill->id] = ['proficiency_level' => $validated['overall_proficiency']];
                 }
             }
+        }
 
-            if (!empty($skillsData)) {
-                $profile->skills()->sync($skillsData);
-            }
+        if (!empty($skillsData)) {
+            $profile->skills()->sync($skillsData);
         }
 
         return redirect()->back()->with('success', "Data siswa {$user->name} berhasil ditambahkan!");
@@ -97,6 +99,7 @@ class WorkerController extends Controller
             'class_name' => 'required|string|max:50',
             'bio' => 'nullable|string',
             'skills_text' => 'nullable|string|max:500',
+            'overall_proficiency' => 'required|in:beginner,intermediate,advanced',
         ]);
 
         $user = $worker->user;
@@ -113,11 +116,10 @@ class WorkerController extends Controller
             'bio' => $validated['bio'] ?? $worker->bio,
         ]);
 
-        // Process free-form typed skills
+        $skillsData = [];
+
         if (!empty($validated['skills_text'])) {
             $skillNames = array_filter(array_map('trim', explode(',', $validated['skills_text'])));
-            $skillsData = [];
-
             foreach ($skillNames as $skillName) {
                 if (!empty($skillName)) {
                     $slug = Str::slug($skillName);
@@ -125,17 +127,15 @@ class WorkerController extends Controller
                         ['slug' => $slug],
                         [
                             'name' => ucwords(strtolower($skillName)),
-                            'color_hex' => '#6366f1',
+                            'color_hex' => '#' . substr(md5($slug), 0, 6),
                         ]
                     );
-                    $skillsData[$skill->id] = ['proficiency_level' => 'intermediate'];
+                    $skillsData[$skill->id] = ['proficiency_level' => $validated['overall_proficiency']];
                 }
             }
-
-            $worker->skills()->sync($skillsData);
-        } else {
-            $worker->skills()->detach();
         }
+
+        $worker->skills()->sync($skillsData);
 
         return redirect()->back()->with('success', "Data siswa {$user->name} berhasil diperbarui!");
     }

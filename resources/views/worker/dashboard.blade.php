@@ -132,7 +132,7 @@
 
                                 @if($task->ai_recommendation_notes)
                                     <div class="p-2.5 rounded-xl bg-indigo-50/70 border border-indigo-100 text-[11px] text-indigo-900">
-                                        <span class="font-bold text-indigo-700">🤖 AI Match:</span> {{ $task->ai_recommendation_notes }}
+                                        <span class="font-bold text-indigo-700">✦ AI Match:</span> {{ $task->ai_recommendation_notes }}
                                     </div>
                                 @endif
 

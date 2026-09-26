@@ -7,9 +7,6 @@
                     Riwayat & Monitoring Proyek
                 </h2>
             </div>
-            <a href="{{ route('admin.projects.import-wa.create') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5 self-start sm:self-auto">
-                <span>🤖 + Proyek Baru via AI (WA)</span>
-            </a>
         </div>
     </x-slot>
 
@@ -124,6 +121,16 @@
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
+                                            @if($project->client_contact && strlen(preg_replace('/[^0-9]/', '', $project->client_contact)) >= 10)
+                                                @php
+                                                    $phone = preg_replace('/[^0-9]/', '', $project->client_contact);
+                                                    if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
+                                                    $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$project->client_name}, ini Admin TEFA. Saya ingin mengobrol mengenai penawaran proyek '{$project->title}'...");
+                                                @endphp
+                                                <a href="{{ $waUrl }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition flex items-center gap-1">
+                                                    💬 Chat
+                                                </a>
+                                            @endif
                                             <button @click="activeProject = {
                                                 id: '{{ $project->id }}',
                                                 title: '{{ addslashes($project->title) }}',

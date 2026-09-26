@@ -14,11 +14,13 @@ class WaImportDraft extends Model
 
     protected $fillable = [
         'tefa_unit_id',
+        'project_id',
         'uploaded_by',
         'chat_file_path',
         'status',
         'ai_result',
         'error_message',
+        'catalog_item_id',
     ];
 
     protected function casts(): array
@@ -36,5 +38,10 @@ class WaImportDraft extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function catalogItem(): BelongsTo
+    {
+        return $this->belongsTo(CatalogItem::class);
     }
 }

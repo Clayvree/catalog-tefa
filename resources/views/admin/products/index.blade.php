@@ -49,8 +49,12 @@
                     <p class="text-xl font-black text-indigo-600">{{ $stats['physical'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'jasa']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'jasa' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase">🛠️ Jasa & Digital</span>
-                    <p class="text-xl font-black text-emerald-600">{{ $stats['service_digital'] }}</p>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase">🛠️ Jasa</span>
+                    <p class="text-xl font-black text-emerald-600">{{ $stats['service'] }}</p>
+                </a>
+                <a href="{{ route('admin.products.index', ['type' => 'digital']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'digital' ? 'ring-2 ring-indigo-600' : '' }}">
+                    <span class="text-[10px] font-bold text-amber-600 uppercase">💾 Produk Digital</span>
+                    <p class="text-xl font-black text-amber-600">{{ $stats['digital'] }}</p>
                 </a>
                 <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-1">
                     <span class="text-[10px] font-bold text-slate-400 uppercase">Tayang Publik</span>
@@ -105,9 +109,13 @@
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px]">
                                                     📦 Produk Fisik
                                                 </span>
-                                            @else
+                                            @elseif($product->item_type->value === 'digital')
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px]">
+                                                    💻 Produk Digital
+                                                </span>
+                                            @elseif($product->item_type->value === 'jasa')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px]">
-                                                    🛠️ Jasa / Digital
+                                                    🛠️ Layanan Jasa
                                                 </span>
                                             @endif
 
@@ -266,7 +274,7 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div x-show="currentType !== 'jasa'" x-cloak>
+                            <div x-show="currentType === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stok Tersedia</label>
                                 <label class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-600">
                                     <input type="checkbox" name="track_stock" value="1" checked x-model="trackStock" class="rounded text-indigo-600"> Stok terbatas
@@ -388,7 +396,7 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div x-show="activeProduct.item_type !== 'jasa'" x-cloak>
+                            <div x-show="activeProduct.item_type === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stok</label>
                                 <label class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-600">
                                     <input type="checkbox" name="track_stock" value="1" x-model="activeProduct.track_stock" class="rounded text-indigo-600"> Stok terbatas

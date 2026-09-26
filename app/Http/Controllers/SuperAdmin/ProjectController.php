@@ -14,7 +14,7 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Project::with(['tefaUnit', 'tasks.assignedWorker.user', 'creator']);
+        $query = Project::with(['tefaUnit', 'tasks.leader.user', 'tasks.members.user', 'creator']);
 
         if ($request->filled('unit')) {
             $query->where('tefa_unit_id', $request->unit);

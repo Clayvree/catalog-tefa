@@ -19,7 +19,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
 
     public function findById(string $id): ?Project
     {
-        return Project::with(['tasks.assignedWorker.user', 'tasks.skill'])->find($id);
+        return Project::with(['tasks.leader.user', 'tasks.members.user', 'tasks.skill'])->find($id);
     }
 
     public function createWithTasks(array $projectData, array $tasksData): Project

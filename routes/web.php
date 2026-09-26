@@ -45,16 +45,18 @@ Route::get('/tefa/{slug}', [PublicController::class, 'storefront'])->name('tefa.
 Route::get('/tefa/{slug}/katalog', [PublicController::class, 'catalog'])->name('tefa.catalog');
 Route::get('/tefa/{slug}/portofolio', [PublicController::class, 'portfolio'])->name('tefa.portfolio');
 
-// --- PUBLIC CHECKOUT & PAYMENT GATEWAY FLOW ---
-Route::get('/pesan/{slug}', [PublicOrderController::class, 'checkout'])->name('order.checkout');
-Route::post('/pesan/{slug}', [PublicOrderController::class, 'store'])->name('order.store');
-Route::get('/pesanan/invoice/{order}', [PublicOrderController::class, 'invoice'])->name('order.invoice');
-Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])->name('order.pay.simulate');
-Route::get('/pesanan-saya', [PublicOrderController::class, 'myOrders'])->name('order.my_orders');
+// --- AUTHENTICATED CHECKOUT, PAYMENT & ORDER FLOW ---
+Route::middleware('auth')->group(function () {
+    Route::get('/pesan/{slug}', [PublicOrderController::class, 'checkout'])->name('order.checkout');
+    Route::post('/pesan/{slug}', [PublicOrderController::class, 'store'])->name('order.store');
+    Route::get('/pesanan/invoice/{order}', [PublicOrderController::class, 'invoice'])->name('order.invoice');
+    Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])->name('order.pay.simulate');
+    Route::get('/pesanan-saya', [PublicOrderController::class, 'myOrders'])->name('order.my_orders');
 
-// --- KONSULTASI & NEGO HARGA JASA TEFA ---
-Route::get('/jasa/{slug}/nego', [PublicOrderController::class, 'nego'])->name('jasa.nego');
-Route::post('/jasa/{slug}/nego', [PublicOrderController::class, 'submitNego'])->name('jasa.nego.submit');
+    // --- KONSULTASI & NEGO HARGA JASA TEFA ---
+    Route::get('/jasa/{slug}/nego', [PublicOrderController::class, 'nego'])->name('jasa.nego');
+    Route::post('/jasa/{slug}/nego', [PublicOrderController::class, 'submitNego'])->name('jasa.nego.submit');
+});
 
 // --- AI CHAT WIDGET ---
 Route::post('/api/ai/chat', [AiChatController::class, 'message'])->name('api.ai.chat');
@@ -65,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/dashboard', function () {
-        $role = auth()->user()->role->value;
+        $role = auth()->user()->role?->value;
         return match($role) {
             'superadmin'    => redirect()->route('superadmin.dashboard'),
             'admin_jurusan' => redirect()->route('admin.dashboard'),
@@ -97,6 +99,8 @@ Route::middleware('auth')->group(function () {
         // Projects Monitoring
         Route::resource('projects', AdminProjectController::class);
         Route::patch('/projects/{project}/status', [AdminProjectController::class, 'updateStatus'])->name('projects.status.update');
+        Route::patch('/tasks/{task}', [AdminProjectController::class, 'updateTask'])->name('tasks.update');
+        Route::patch('/tasks/{task}/approve', [AdminProjectController::class, 'approveTask'])->name('tasks.approve');
         
         // Products & Catalog CRUD (Khusus Admin Jurusan)
         Route::resource('products', AdminProductController::class);
@@ -105,6 +109,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
         Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
         Route::patch('/orders/{order}/payment', [AdminOrderController::class, 'confirmPayment'])->name('orders.payment.confirm');
+        Route::patch('/orders/{order}/shipping', [AdminOrderController::class, 'updateShipping'])->name('orders.shipping.update');
         Route::patch('/orders/{order}/fulfillment', [AdminOrderController::class, 'updateFulfillment'])->name('orders.fulfillment.update');
         
         // Workers CRUD
@@ -112,6 +117,9 @@ Route::middleware('auth')->group(function () {
 
         // AI Knowledge Base (Konteks per Jurusan)
         Route::resource('knowledge', AdminKnowledgeBaseController::class)->only(['index', 'store', 'update', 'destroy']);
+
+        // Portofolio (Review & Approve)
+        Route::resource('portfolios', \App\Http\Controllers\Admin\PortfolioController::class)->only(['index', 'show', 'update', 'destroy']);
     });
 
     // --- WORKER / SISWA MODULE ---
@@ -120,6 +128,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
         Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
         Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
+        Route::patch('/tasks/{task}/notes', [TaskController::class, 'updateNotes'])->name('tasks.notes.update');
         Route::post('/tasks/{task}/proof', [TaskController::class, 'uploadProof'])->name('tasks.proof.upload');
         Route::resource('portfolios', WorkerPortfolioController::class)->only(['index', 'store', 'destroy']);
     });

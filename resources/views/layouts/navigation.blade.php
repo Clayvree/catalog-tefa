@@ -47,7 +47,7 @@
                         </a>
                     @elseif($role === 'admin_jurusan')
                         <a href="{{ route('admin.dashboard') }}" 
-                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? '    bg-blue-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Dashboard
                         </a>
                         <a href="{{ route('admin.products.index') }}" 
@@ -62,13 +62,13 @@
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                              Proyek
                         </a>
-                        <a href="{{ route('admin.projects.import-wa.create') }}" 
-                           class="px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 {{ request()->routeIs('admin.projects.import-wa.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            <span> Import WA</span>
-                        </a>
                         <a href="{{ route('admin.workers.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.workers.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                              Siswa
+                        </a>
+                        <a href="{{ route('admin.portfolios.index') }}" 
+                           class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.portfolios.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                             Review Portofolio
                         </a>
                         <a href="{{ route('admin.knowledge.index') }}" 
                            class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
@@ -88,6 +88,15 @@
                              Ajukan Portofolio
                         </a>
                     @endif
+                    
+                    @if(in_array($role, ['superadmin', 'admin_jurusan', 'worker']))
+                        <div class="w-px h-6 bg-slate-700 mx-2"></div>
+                    @endif
+                    
+                    <a href="{{ route('order.my_orders') }}" 
+                        class="px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('order.my_orders') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            🛒 Pesanan Saya
+                    </a>
                 </div>
             </div>
 
@@ -151,14 +160,24 @@
             <a href="{{ route('admin.products.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">📦 Kelola Produk</a>
             <a href="{{ route('admin.orders.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🛒 Pesanan Masuk</a>
             <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">⚡ Proyek</a>
-            <a href="{{ route('admin.projects.import-wa.create') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🤖 Import WA</a>
             <a href="{{ route('admin.workers.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎓 Kelola Siswa</a>
+            <a href="{{ route('admin.portfolios.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🏆 Review Portofolio</a>
             <a href="{{ route('admin.knowledge.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🧠 Konteks AI</a>
         @elseif($role === 'worker')
             <a href="{{ route('worker.dashboard') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">📊 Statistik & Ringkasan</a>
             <a href="{{ route('worker.tasks.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🎯 Daftar Tugas</a>
             <a href="{{ route('worker.portfolios.index') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-slate-300">🏆 Ajukan Portofolio</a>
         @endif
+        <div class="h-px w-full bg-slate-800 my-2"></div>
+        <a href="{{ route('order.my_orders') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('order.my_orders') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">🛒 Pesanan Saya</a>
+        <a href="{{ route('profile.edit') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold {{ request()->routeIs('profile.edit') ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">⚙️ Pengaturan Profil</a>
+        <form method="POST" action="{{ route('logout') }}" class="block m-0">
+            @csrf
+            <button type="submit" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:text-red-300">
+                🚪 Keluar / Log Out
+            </button>
+        </form>
+        <div class="h-px w-full bg-slate-800 my-2"></div>
         <a href="{{ route('home') }}" class="block px-3 py-2.5 rounded-xl text-xs font-bold text-indigo-400">← Kembali ke Web Publik</a>
     </div>
 </nav>
