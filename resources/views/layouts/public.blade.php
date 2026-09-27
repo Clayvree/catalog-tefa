@@ -40,8 +40,7 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold text-[10px] tracking-wide uppercase border border-indigo-500/30">
-                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-                    TEFA 2.0 AI Integrated
+                    Teaching Factory Portal
                 </span>
                 <span class="text-slate-300 text-xs">Pesan produk & layanan industri langsung dari siswa vokasi tersertifikasi.</span>
             </div>
@@ -142,13 +141,15 @@
                                     <p class="text-[10px] uppercase font-bold text-slate-400">Akun Anda</p>
                                     <p class="text-xs text-slate-800 font-bold truncate">{{ Auth::user()->email }}</p>
                                 </div>
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-600">
-                                    ⚙️ Pengaturan Profil
+                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-600">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.7.36 1.5.36 2.2 0h.06a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                    Pengaturan Profil
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                                     @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
-                                        🚪 Keluar / Log Out
+                                    <button type="submit" class="w-full flex items-center gap-2 text-left px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
+                                        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                                        Keluar / Log Out
                                     </button>
                                 </form>
                             </div>
@@ -183,11 +184,11 @@
                     @if($isStaff ?? false)
                         <a href="{{ route('dashboard') }}" class="w-full text-center py-2.5 bg-slate-900 text-white font-bold rounded-xl text-sm">Masuk Dashboard</a>
                     @endif
-                    <a href="{{ route('order.my_orders') }}" class="w-full text-center py-2.5 bg-indigo-50 text-indigo-600 font-bold rounded-xl text-sm border border-indigo-100">🛒 Pesanan Saya</a>
-                    <a href="{{ route('profile.edit') }}" class="w-full text-center py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-sm">⚙️ Pengaturan Profil</a>
+                    <a href="{{ route('order.my_orders') }}" class="w-full text-center py-2.5 bg-indigo-50 text-indigo-600 font-bold rounded-xl text-sm border border-indigo-100">Pesanan Saya</a>
+                    <a href="{{ route('profile.edit') }}" class="w-full text-center py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-sm">Pengaturan Profil</a>
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
-                        <button type="submit" class="w-full text-center py-2.5 bg-red-50 text-red-600 font-bold rounded-xl text-sm border border-red-100">🚪 Keluar / Log Out</button>
+                        <button type="submit" class="w-full text-center py-2.5 bg-red-50 text-red-600 font-bold rounded-xl text-sm border border-red-100">Keluar / Log Out</button>
                     </form>
                 @else
                     <a href="{{ route('login') }}" class="w-full text-center py-2.5 bg-slate-100 text-slate-800 font-bold rounded-xl text-sm">Log in</a>
@@ -210,13 +211,13 @@
                 <!-- Brand Column -->
                 <div class="lg:col-span-2 space-y-5">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/20">
-                            ?
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <span class="text-2xl font-black text-white tracking-tight">Tefa<span class="text-indigo-400">Hub</span>.</span>
+                        <span class="text-2xl font-black text-white tracking-tight">Tefa<span class="text-indigo-400">Hub</span></span>
                     </div>
                     <p class="text-slate-400 text-sm leading-relaxed max-w-md">
-                        Platform Teaching Factory generasi baru yang mengintegrasikan kecerdasan buatan (AI) untuk automasi pendelegasian proyek dari chat WhatsApp langsung ke siswa berbakat dengan supervisi guru ahli.
+                        TefaHub adalah platform Teaching Factory yang menghubungkan pesanan riil dari industri dengan siswa SMK. Riwayat chat dengan klien bisa dibantu AI untuk dirangkum jadi draf tugas, dan setiap pengerjaan tetap diawasi guru pembimbing.
                     </p>
                     <div class="flex items-center gap-3 pt-2">
                         <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
@@ -224,7 +225,8 @@
                             AI Assistant Online
                         </div>
                         <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
-                            ??? Standar Industri Terverifikasi
+                            <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Standar Industri Terverifikasi
                         </div>
                     </div>
                 </div>

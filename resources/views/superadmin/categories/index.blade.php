@@ -19,7 +19,10 @@
             <!-- Flash Message -->
             @if(session('success'))
                 <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
-                    <span>✓ {{ session('success') }}</span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                        {{ session('success') }}
+                    </span>
                 </div>
             @endif
 
@@ -45,9 +48,9 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Standar</label>
                             <select name="type" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                <option value="jasa" @selected(old('type', 'jasa') === 'jasa')>🛠️ Layanan Jasa</option>
-                                <option value="produk" @selected(old('type') === 'produk')>📦 Produk Fisik</option>
-                                <option value="kegiatan" @selected(old('type') === 'kegiatan')>🎪 Event & Kegiatan</option>
+                                <option value="jasa" @selected(old('type', 'jasa') === 'jasa')>Layanan Jasa</option>
+                                <option value="produk" @selected(old('type') === 'produk')>Produk Fisik</option>
+                                <option value="kegiatan" @selected(old('type') === 'kegiatan')>Event & Kegiatan</option>
                             </select>
                             @error('type')
                                 <p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>
@@ -94,7 +97,9 @@
                                             @if($category->image)
                                                 <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-10 h-10 rounded-xl object-cover border border-slate-200">
                                             @else
-                                                <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 font-bold flex items-center justify-center text-xs">🏷️</span>
+                                                <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.59 9.59a2 2 0 0 0 2.82 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+                                                </span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4">

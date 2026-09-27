@@ -20,7 +20,7 @@
             {{-- Flash Message --}}
             @if(session('success'))
                 <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 shadow-sm">
-                    <span>&#x2713; {{ session('success') }}</span>
+                    <span class="flex items-center gap-2"><svg class="w-4 h-4 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>{{ session('success') }}</span>
                 </div>
             @endif
 
@@ -37,14 +37,14 @@
 
             {{-- Info Banner --}}
             <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs leading-relaxed shadow-sm">
-                <p class="font-extrabold text-sm mb-1">&#x1F916; Cara Kerja AI Dua Langkah</p>
+                <p class="font-extrabold text-sm mb-1 flex items-center gap-2"><svg class="w-4 h-4 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>Cara Kerja AI Dua Langkah</p>
                 <ol class="list-decimal list-inside space-y-1 text-[11px] font-medium text-indigo-700">
                     <li><span class="font-bold">Langkah 1 &mdash; Baca Judul:</span> AI membaca semua judul konteks untuk memutuskan topik mana yang relevan.</li>
                     <li><span class="font-bold">Langkah 2 &mdash; Baca Deskripsi:</span> Hanya deskripsi topik yang dipilih yang dibaca secara mendalam untuk membentuk jawaban.</li>
                 </ol>
                 <div class="mt-2 p-2.5 rounded-xl bg-indigo-100 border border-indigo-200 text-[10px] text-indigo-700 font-semibold space-y-0.5">
-                    <p>&#x1F30D; <span class="font-bold">Konteks Global</span> (tefa_unit_id = null): Tersedia untuk semua jurusan, digunakan oleh seluruh AI chatbot.</p>
-                    <p>&#x1F3EB; <span class="font-bold">Konteks Per Jurusan</span>: Hanya digunakan oleh AI chatbot jurusan yang bersangkutan.</p>
+                    <p class="flex items-start gap-1.5"><span><span class="font-bold">Konteks Global</span> (tefa_unit_id = null): Tersedia untuk semua jurusan, digunakan oleh seluruh AI chatbot.</span></p>
+                    <p class="flex items-start gap-1.5"><span><span class="font-bold">Konteks Per Jurusan</span>: Hanya digunakan oleh AI chatbot jurusan yang bersangkutan.</span></p>
                 </div>
             </div>
 
@@ -56,7 +56,7 @@
                 </a>
                 <a href="{{ route('superadmin.knowledge.index', ['global' => 1]) }}"
                     class="px-3 py-1.5 rounded-xl text-xs font-bold transition border {{ request()->has('global') ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400' }}">
-                    &#x1F30D; Global (Semua Jurusan)
+                    <svg class="w-3 h-3 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Global (Semua Jurusan)
                 </a>
                 @foreach($units as $u)
                     <a href="{{ route('superadmin.knowledge.index', ['unit' => $u->id]) }}"
@@ -94,22 +94,22 @@
                                     <td class="px-6 py-4">
                                         @if(is_null($item->tefa_unit_id))
                                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 font-bold text-[10px] border border-blue-200">
-                                                &#x1F30D; Global
+                                                <svg class="w-3 h-3 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Global
                                             </span>
                                         @else
                                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold text-[10px] border border-indigo-200">
-                                                &#x1F3EB; {{ $item->tefaUnit->name ?? 'Jurusan' }}
+                                                <svg class="w-3 h-3 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg> {{ $item->tefaUnit->name ?? 'Jurusan' }}
                                             </span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4">
                                         @if($item->is_active)
-                                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-200">
-                                                &#x25CF; Aktif
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] border border-slate-200">
-                                                &#x25CB; Nonaktif
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] border border-slate-200">
+                                                <span class="w-1.5 h-1.5 rounded-full border border-slate-400"></span> Nonaktif
                                             </span>
                                         @endif
                                     </td>
@@ -144,7 +144,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-12 text-center text-slate-400">
-                                        <p class="text-2xl mb-2">&#x1F9E0;</p>
+                                        <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-indigo-50 text-indigo-400 flex items-center justify-center"><svg class="w-5 h-5 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></div>
                                         <p class="font-bold">Belum ada konteks AI yang ditambahkan.</p>
                                     </td>
                                 </tr>
@@ -183,7 +183,7 @@
                             </label>
                             <select name="tefa_unit_id"
                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                <option value="">&#x1F30D; Global (Semua Jurusan)</option>
+                                <option value="">Global (Semua Jurusan)</option>
                                 @foreach($units as $u)
                                     <option value="{{ $u->id }}">{{ $u->name }}</option>
                                 @endforeach
@@ -200,8 +200,8 @@
                             <input type="text" name="title" required
                                 placeholder="Contoh: Visi Misi Sekolah, Program Beasiswa, Fasilitas Lab"
                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                            <p class="text-[10px] text-indigo-500 font-medium mt-1">
-                                &#x1F4A1; AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini. Buat sejelas mungkin.
+                            <p class="text-[10px] text-indigo-500 font-medium mt-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 6.4 12.5c.74.75 1.4 1.5 1.6 2.5"/></svg>AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini. Buat sejelas mungkin.
                             </p>
                         </div>
 
@@ -259,7 +259,7 @@
                             </label>
                             <select name="tefa_unit_id"
                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                <option value="" :selected="active.unit_id === ''">&#x1F30D; Global (Semua Jurusan)</option>
+                                <option value="" :selected="active.unit_id === ''">Global (Semua Jurusan)</option>
                                 @foreach($units as $u)
                                     <option value="{{ $u->id }}" :selected="active.unit_id === '{{ $u->id }}'">{{ $u->name }}</option>
                                 @endforeach
@@ -272,8 +272,8 @@
                             </label>
                             <input type="text" name="title" x-model="active.title" required
                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                            <p class="text-[10px] text-indigo-500 font-medium mt-1">
-                                &#x1F4A1; AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini.
+                            <p class="text-[10px] text-indigo-500 font-medium mt-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 flex-shrink-0 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 6.4 12.5c.74.75 1.4 1.5 1.6 2.5"/></svg>AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini.
                             </p>
                         </div>
 

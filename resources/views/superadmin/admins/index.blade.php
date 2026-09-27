@@ -29,7 +29,7 @@
 
             @if(session('error'))
                 <div class="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-bold flex items-center justify-between">
-                    <span>⚠️ {{ session('error') }}</span>
+                    <span> {{ session('error') }}</span>
                 </div>
             @endif
 
@@ -74,7 +74,7 @@
                                     <td class="px-6 py-4">
                                         @if($adminUser->managedUnits->isNotEmpty())
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold text-xs">
-                                                🏫 {{ $adminUser->managedUnits->first()->name }}
+                                                 {{ $adminUser->managedUnits->first()->name }}
                                             </span>
                                         @else
                                             <span class="text-amber-500 font-bold italic">Belum dihubungkan ke unit</span>

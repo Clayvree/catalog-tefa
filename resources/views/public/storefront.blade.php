@@ -50,7 +50,7 @@
             </div>
 
             <!-- Storefront Quick Stats -->
-            <div class="grid grid-cols-3 gap-4 py-6 border-t border-slate-100 text-center md:text-left">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-6 border-t border-slate-100 text-center md:text-left">
                 <div>
                     <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Katalog</span>
                     <span class="text-xl font-black text-slate-900">{{ $unit->catalog_items_count ?? '0' }} Layanan</span>

@@ -11,7 +11,7 @@
         @endphp
         @if($priority === 'high')
             <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-red-50 text-red-700 border border-red-200">
-                ⚡ Prioritas Tinggi
+                 Prioritas Tinggi
             </span>
         @elseif($priority === 'medium')
             <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-amber-50 text-amber-700 border border-amber-200">
@@ -39,7 +39,7 @@
     <!-- AI Match Reasoning (If extracted by AI) -->
     @if($task->ai_recommendation_notes)
         <div class="p-2 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[10px] text-indigo-900 leading-tight">
-            <span class="font-bold text-indigo-700">✦ AI Note:</span> {{ $task->ai_recommendation_notes }}
+            <span class="font-bold text-indigo-700"> AI Note:</span> {{ $task->ai_recommendation_notes }}
         </div>
     @endif
 
@@ -57,7 +57,7 @@
     <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
         @if ($task->status->value === 'todo')
             <button type="button" @click="submitStatus('{{ $task->id }}', 'in_progress')" class="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
-                <span>▶️ Mulai Kerjakan</span>
+                <span> Mulai Kerjakan</span>
             </button>
         @elseif ($task->status->value === 'in_progress')
             <button type="button" @click="openUploadModal({
@@ -67,11 +67,11 @@
                 proof_notes: '{{ addslashes($task->proof_notes ?? '') }}',
                 proof_url: '{{ addslashes($task->proof_file_url ?? '') }}'
             })" class="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
-                <span>📤 Kirim Bukti Pengerjaan</span>
+                <span> Kirim Bukti Pengerjaan</span>
             </button>
         @elseif ($task->status->value === 'review')
             <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-center space-y-1">
-                <span class="text-[10px] font-bold text-purple-700 block">⏳ Menunggu Verifikasi Guru/Admin</span>
+                <span class="text-[10px] font-bold text-purple-700 block"> Menunggu Verifikasi Guru/Admin</span>
                 @if($task->proof_file_url)
                     <a href="{{ $task->proof_file_url }}" target="_blank" class="text-[10px] font-bold text-indigo-600 hover:underline block">
                         Lihat Bukti Terkirim &rarr;

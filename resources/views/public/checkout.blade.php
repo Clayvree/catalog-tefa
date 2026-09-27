@@ -11,15 +11,15 @@
         <div class="flex items-center gap-2 mb-2">
             @if($item->item_type->value === 'digital')
                 <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 font-extrabold text-[10px] uppercase border border-purple-500/30">
-                    💻 Produk Digital & Unduhan Instan
+                     Produk Digital & Unduhan Instan
                 </span>
             @elseif($item->item_type->value === 'jasa')
                 <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px] uppercase border border-emerald-500/30">
-                    🛠️ Layanan Jasa
+                     Layanan Jasa
                 </span>
             @else
                 <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 font-extrabold text-[10px] uppercase border border-blue-500/30">
-                    📦 Produk Fisik
+                     Produk Fisik
                 </span>
             @endif
         </div>
@@ -98,7 +98,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <input type="hidden" name="fulfillment_method" value="digital_download">
-                                    <span class="font-black text-sm text-purple-900">💻 Akses Unduhan Digital Instan</span>
+                                    <span class="font-black text-sm text-purple-900"> Akses Unduhan Digital Instan</span>
                                 </div>
                                 <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">Bebas Ongkir (Rp0)</span>
                             </div>
@@ -112,7 +112,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <input type="hidden" name="fulfillment_method" value="onsite_service">
-                                    <span class="font-black text-sm text-emerald-900">🛠️ Layanan Jasa / Servis</span>
+                                    <span class="font-black text-sm text-emerald-900"> Layanan Jasa / Servis</span>
                                 </div>
                             </div>
                             <p class="text-xs text-emerald-800 leading-relaxed">
@@ -128,7 +128,7 @@
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="fulfillment_method" value="delivery" x-model="fulfillment" class="text-indigo-600 focus:ring-indigo-500">
-                                        <span class="font-bold text-xs text-slate-900">🛵 Diantar Kurir</span>
+                                        <span class="font-bold text-xs text-slate-900"> Diantar Kurir</span>
                                     </div>
                                     <span class="text-[10px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">Disepakati via WA</span>
                                 </div>
@@ -140,7 +140,7 @@
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-2">
                                         <input type="radio" name="fulfillment_method" value="pickup_at_tefa" x-model="fulfillment" class="text-indigo-600 focus:ring-indigo-500">
-                                        <span class="font-bold text-xs text-slate-900">🏢 Jemput Sendiri di Workshop TEFA</span>
+                                        <span class="font-bold text-xs text-slate-900"> Jemput Sendiri di Workshop TEFA</span>
                                     </div>
                                     <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Rp0 (Gratis)</span>
                                 </div>
@@ -226,7 +226,7 @@
                 </button>
 
                 <p class="text-[10px] text-slate-400 text-center">
-                    🔒 Transaksi resmi diverifikasi Teaching Factory & Sekolah.
+                     Transaksi resmi diverifikasi Teaching Factory & Sekolah.
                 </p>
             </div>
 

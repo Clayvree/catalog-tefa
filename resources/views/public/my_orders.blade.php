@@ -106,7 +106,9 @@
                 </div>
             @empty
                 <div class="text-center py-12 bg-white rounded-2xl shadow-sm border border-gray-100">
-                    <p class="text-4xl mb-4">🛒</p>
+                    <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    </div>
                     <h3 class="text-lg font-bold text-gray-900">Belum Ada Pesanan</h3>
                     <p class="text-gray-500 mt-2">Anda belum melakukan pemesanan apapun.</p>
                     <a href="{{ route('produk.list') }}" class="inline-block mt-6 px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition">
@@ -119,4 +121,3 @@
         </div>
     </div>
 </x-app-layout>
-

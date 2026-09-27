@@ -50,7 +50,7 @@
                         Semua ({{ $stats['total'] }})
                     </a>
                     <a href="{{ route('worker.tasks.index', ['priority' => 'high']) }}" class="px-3 py-1.5 rounded-xl font-bold text-xs transition flex items-center gap-1 {{ request('priority') === 'high' ? 'bg-red-600 text-white shadow-sm' : 'bg-red-50 text-red-700 hover:bg-red-100' }}">
-                        <span>⚡ Prioritas Tinggi ({{ $stats['high'] }})</span>
+                        <span> Prioritas Tinggi ({{ $stats['high'] }})</span>
                     </a>
                     <a href="{{ route('worker.tasks.index', ['priority' => 'medium']) }}" class="px-3 py-1.5 rounded-xl font-bold text-xs transition {{ request('priority') === 'medium' ? 'bg-amber-500 text-white shadow-sm' : 'bg-amber-50 text-amber-700 hover:bg-amber-100' }}">
                         Prioritas Sedang
@@ -64,10 +64,10 @@
                 <div class="flex items-center gap-2 self-end md:self-auto">
                     <div class="flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200 text-xs">
                         <button type="button" @click="viewMode = 'kanban'" :class="viewMode === 'kanban' ? 'bg-white text-slate-900 shadow-sm font-black' : 'text-slate-500 hover:text-slate-900'" class="px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5">
-                            <span>🎯 Papan Kanban</span>
+                            <span> Papan Kanban</span>
                         </button>
                         <button type="button" @click="viewMode = 'table'" :class="viewMode === 'table' ? 'bg-white text-slate-900 shadow-sm font-black' : 'text-slate-500 hover:text-slate-900'" class="px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5">
-                            <span>📋 Daftar Tabel</span>
+                            <span> Daftar Tabel</span>
                         </button>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                             @include('worker.tasks.partials.task-card', ['task' => $task])
                         @empty
                             <div class="h-48 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-slate-400 text-xs p-4 text-center">
-                                <span class="text-2xl mb-1">🎉</span>
+                                <span class="text-2xl mb-1"></span>
                                 <span>Tidak ada antrean tugas baru</span>
                             </div>
                         @endforelse
@@ -193,7 +193,7 @@
                                             <span class="text-[10px] font-bold text-indigo-600 uppercase">{{ $task->project->title ?? 'Proyek TEFA' }}</span>
                                             <h4 class="font-bold text-slate-900 text-sm mt-0.5">{{ $task->title }}</h4>
                                             @if($task->ai_recommendation_notes)
-                                                <p class="text-[10px] text-slate-500 mt-1">✦  {{ $task->ai_recommendation_notes }}</p>
+                                                <p class="text-[10px] text-slate-500 mt-1">  {{ $task->ai_recommendation_notes }}</p>
                                             @endif
                                         </div>
                                     </td>

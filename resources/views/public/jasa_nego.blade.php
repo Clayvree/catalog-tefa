@@ -10,7 +10,7 @@
         </a>
         <div class="flex items-center gap-2 mb-2">
             <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px] uppercase border border-emerald-500/30">
-                🛠️ Layanan Jasa & Kustom Proyek
+                 Layanan Jasa & Kustom Proyek
             </span>
             <span class="text-xs text-slate-400">• Negosiasi & Penawaran Kustom</span>
         </div>
@@ -69,7 +69,7 @@
 
                     <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <p class="text-[11px] text-slate-400">
-                            💡 Data pengajuan akan otomatis diteruskan ke WhatsApp Admin Jurusan untuk negosiasi langsung.
+                             Data pengajuan akan otomatis diteruskan ke WhatsApp Admin Jurusan untuk negosiasi langsung.
                         </p>
 
                         <button type="submit" class="px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 cursor-pointer">

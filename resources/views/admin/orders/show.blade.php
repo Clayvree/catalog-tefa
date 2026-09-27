@@ -33,7 +33,7 @@
                             </span>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-4 text-sm mb-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-6">
                             <div>
                                 <span class="block text-gray-500">Nama</span>
                                 <span class="font-bold">{{ $order->customer_name }}</span>
@@ -49,7 +49,8 @@
                                             $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
                                         @endphp
                                         <a href="{{ $waUrl }}" target="_blank" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold text-[10px] hover:bg-emerald-200 transition inline-flex items-center gap-1">
-                                            💬 Chat WA
+                                            <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                            Chat WA
                                         </a>
                                     @endif
                                 </div>
@@ -63,7 +64,8 @@
                         </div>
                         
                         <h3 class="text-lg font-bold mb-4">Item Pesanan</h3>
-                        <table class="w-full text-sm text-left">
+                        <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                        <table class="w-full text-sm text-left min-w-[480px]">
                             <thead class="bg-gray-50 text-gray-500">
                                 <tr>
                                     <th class="px-4 py-2 rounded-l-lg">Produk</th>
@@ -97,6 +99,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        </div>
                     </div>
                 </div>
 
@@ -181,7 +184,10 @@
                     @else
                     {{-- Digital: tampilkan info bahwa link otomatis diberikan setelah pembayaran lunas --}}
                     <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl text-xs space-y-2">
-                        <p class="font-black text-indigo-800 flex items-center gap-1.5">⚡ Produk Digital — Otomatis</p>
+                        <p class="font-black text-indigo-800 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                            Produk Digital &mdash; Otomatis
+                        </p>
                         <p class="text-indigo-700">Link download akan langsung tersedia di invoice pelanggan begitu kamu konfirmasi pembayaran sebagai <strong>Sudah Dibayar</strong>.</p>
                         @if($order->payment_status === 'paid')
                             @php
@@ -190,7 +196,8 @@
                             @endphp
                             <div class="pt-2">
                                 <a href="{{ $dlUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md transition">
-                                    ⬇️ Lihat Link Download
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+                                    Lihat Link Download
                                 </a>
                             </div>
                         @endif

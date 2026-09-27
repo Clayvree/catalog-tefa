@@ -9,7 +9,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('worker.tasks.index') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5 cursor-pointer">
-                    <span>🎯 Buka Papan Tugas</span>
+                    <span> Buka Papan Tugas</span>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
             </div>
@@ -40,7 +40,7 @@
                             </span>
                         </div>
                         <p class="text-xs text-indigo-200">
-                            {{ $profile->class_name ?? 'Siswa Vokasi' }} • {{ $profile->tefaUnit->name ?? 'Teaching Factory' }}
+                            {{ $profile->class_name ?? 'Siswa Vokasi' }} •{{ $profile->tefaUnit->name ?? 'Teaching Factory' }}
                         </p>
                         <p class="text-[11px] text-slate-400 font-mono">NISN: {{ $profile->nisn ?? '-' }} • {{ Auth::user()->email }}</p>
                     </div>
@@ -132,7 +132,7 @@
 
                                 @if($task->ai_recommendation_notes)
                                     <div class="p-2.5 rounded-xl bg-indigo-50/70 border border-indigo-100 text-[11px] text-indigo-900">
-                                        <span class="font-bold text-indigo-700">✦ AI Match:</span> {{ $task->ai_recommendation_notes }}
+                                        <span class="font-bold text-indigo-700"> AI Match:</span> {{ $task->ai_recommendation_notes }}
                                     </div>
                                 @endif
 
@@ -146,7 +146,7 @@
                             </div>
                         @empty
                             <div class="py-12 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-2">
-                                <span class="text-3xl">🎉</span>
+                                <span class="text-3xl"></span>
                                 <p class="text-sm font-bold text-slate-700">Semua tugas beres!</p>
                                 <p class="text-xs text-slate-500">Tidak ada tugas yang tertunda. Tunggu delegasi proyek baru dari AI.</p>
                             </div>

@@ -10,12 +10,18 @@
             
             @if(session('success'))
                 <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center justify-between shadow-sm">
-                    <span>✅ {{ session('success') }}</span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                        {{ session('success') }}
+                    </span>
                 </div>
             @endif
             @if(session('error'))
                 <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm font-bold flex items-center justify-between shadow-sm">
-                    <span>❌ {{ session('error') }}</span>
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+                        {{ session('error') }}
+                    </span>
                 </div>
             @endif
             
@@ -105,7 +111,9 @@
                             </div>
                         @empty
                             <div class="col-span-full py-12 flex flex-col items-center justify-center text-center">
-                                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-3xl mb-4">??</div>
+                                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mb-4">
+                                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="m9 13.5-1.5 7L12 18l4.5 2.5-1.5-7"/></svg>
+                                </div>
                                 <h3 class="text-slate-800 font-bold mb-1">Belum Ada Portofolio</h3>
                                 <p class="text-sm text-slate-500">Tidak ada data portofolio yang sesuai dengan filter.</p>
                             </div>

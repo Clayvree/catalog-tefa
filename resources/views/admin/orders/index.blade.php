@@ -30,15 +30,15 @@
                     <p class="text-xl font-black text-slate-900">{{ $stats['total'] }}</p>
                 </a>
                 <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('status') === 'pending' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-amber-500 uppercase">⏳ Perlu Diproses</span>
+                    <span class="text-[10px] font-bold text-amber-500 uppercase"> Perlu Diproses</span>
                     <p class="text-xl font-black text-amber-500">{{ $stats['pending'] }}</p>
                 </a>
                 <a href="{{ route('admin.orders.index', ['type' => 'physical']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'physical' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-indigo-600 uppercase">🛵 Pengiriman Kurir / Ambil</span>
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase"> Pengiriman Kurir / Ambil</span>
                     <p class="text-xl font-black text-indigo-600">{{ $stats['delivery'] + $stats['pickup'] }}</p>
                 </a>
                 <a href="{{ route('admin.orders.index', ['type' => 'digital']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'digital' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase">💻 Produk Digital</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase"> Produk Digital</span>
                     <p class="text-xl font-black text-emerald-600">{{ $stats['digital'] }}</p>
                 </a>
             </div>
@@ -88,23 +88,23 @@
                                         <div class="space-y-1 max-w-xs">
                                             @if($order->fulfillment_method === 'delivery')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px]">
-                                                    🛵 Diantar Kurir ke Alamat
+                                                     Diantar Kurir ke Alamat
                                                 </span>
                                                 <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
                                                     {{ $order->shipping_address }}, {{ $order->shipping_city }}
                                                 </p>
                                             @elseif($order->fulfillment_method === 'pickup_at_tefa')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px]">
-                                                    🏢 Ambil di Workshop Jurusan TEFA
+                                                     Ambil di Workshop Jurusan TEFA
                                                 </span>
                                                 <p class="text-[10px] text-slate-400">Diambil langsung oleh pembeli</p>
                                             @elseif($order->fulfillment_method === 'digital_download')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px]">
-                                                    💻 Akses Download Digital
+                                                     Akses Download Digital
                                                 </span>
                                             @else
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold text-[10px]">
-                                                    🛠️ Booking Layanan Jasa
+                                                     Booking Layanan Jasa
                                                 </span>
                                             @endif
                                         </div>
@@ -166,7 +166,7 @@
                                                     $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
                                                 @endphp
                                                 <a href="{{ $waUrl }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition flex items-center gap-1 min-w-20 justify-center">
-                                                    💬 Chat
+                                                     Chat
                                                 </a>
                                             @endif
                                         </div>

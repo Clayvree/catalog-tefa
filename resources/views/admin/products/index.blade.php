@@ -45,15 +45,15 @@
                     <p class="text-xl font-black text-slate-900">{{ $stats['total'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'produk']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'produk' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-indigo-600 uppercase">📦 Produk Fisik</span>
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase"> Produk Fisik</span>
                     <p class="text-xl font-black text-indigo-600">{{ $stats['physical'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'jasa']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'jasa' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase">🛠️ Jasa</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase"> Jasa</span>
                     <p class="text-xl font-black text-emerald-600">{{ $stats['service'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'digital']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'digital' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-amber-600 uppercase">💾 Produk Digital</span>
+                    <span class="text-[10px] font-bold text-amber-600 uppercase"> Produk Digital</span>
                     <p class="text-xl font-black text-amber-600">{{ $stats['digital'] }}</p>
                 </a>
                 <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-1">
@@ -107,29 +107,29 @@
                                         <div class="space-y-1">
                                             @if($product->item_type->value === 'produk')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px]">
-                                                    📦 Produk Fisik
+                                                     Produk Fisik
                                                 </span>
                                             @elseif($product->item_type->value === 'digital')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px]">
-                                                    💻 Produk Digital
+                                                     Produk Digital
                                                 </span>
                                             @elseif($product->item_type->value === 'jasa')
                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px]">
-                                                    🛠️ Layanan Jasa
+                                                     Layanan Jasa
                                                 </span>
                                             @endif
 
                                             <div class="text-[10px] text-slate-400">
                                                 @if($product->fulfillment_type === 'both')
-                                                    🛵 Dikirim & 🏢 Ambil di Workshop
+                                                     Dikirim &  Ambil di Workshop
                                                 @elseif($product->fulfillment_type === 'shipping_only')
-                                                    🛵 Khusus Dikirim Kurir
+                                                     Khusus Dikirim Kurir
                                                 @elseif($product->fulfillment_type === 'pickup_only')
-                                                    🏢 Khusus Ambil di Workshop
+                                                     Khusus Ambil di Workshop
                                                 @elseif($product->fulfillment_type === 'digital_download')
-                                                    💻 Download File Digital
+                                                     Download File Digital
                                                 @else
-                                                    🛠️ Layanan Booking
+                                                     Layanan Booking
                                                 @endif
                                             </div>
                                         </div>
@@ -243,9 +243,9 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Produk / Layanan</label>
                                 <select name="item_type" x-model="currentType" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                    <option value="produk">📦 Produk Fisik (Antar / Jemput)</option>
-                                    <option value="digital">💻 Produk Digital (Auto Payment Gateway)</option>
-                                    <option value="jasa">🛠️ Layanan Jasa (Nego Admin WA)</option>
+                                    <option value="produk"> Produk Fisik (Antar / Jemput)</option>
+                                    <option value="digital"> Produk Digital (Auto Payment Gateway)</option>
+                                    <option value="jasa"> Layanan Jasa (Nego Admin WA)</option>
                                 </select>
                             </div>
                         </div>
@@ -254,11 +254,11 @@
                             <div x-show="currentType === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Metode Pengambilan / Penerimaan</label>
                                 <select name="fulfillment_type" x-model="currentFulfillment" :disabled="currentType !== 'produk'" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                    <option value="both">🛵 Bisa Diantar & 🏢 Ambil di Workshop</option>
-                                    <option value="pickup_only">🏢 Khusus Ambil di Workshop TEFA</option>
-                                    <option value="shipping_only">🛵 Khusus Dikirim Kurir</option>
-                                    <option value="digital_download">💻 Download Aset / File Digital</option>
-                                    <option value="service_booking">🛠️ Booking Layanan Jasa</option>
+                                    <option value="both"> Bisa Diantar &  Ambil di Workshop</option>
+                                    <option value="pickup_only"> Khusus Ambil di Workshop TEFA</option>
+                                    <option value="shipping_only"> Khusus Dikirim Kurir</option>
+                                    <option value="digital_download"> Download Aset / File Digital</option>
+                                    <option value="service_booking"> Booking Layanan Jasa</option>
                                 </select>
                             </div>
 
@@ -365,9 +365,9 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Item</label>
                                 <select name="item_type" x-model="activeProduct.item_type" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                    <option value="produk">📦 Produk Fisik (Antar / Jemput)</option>
-                                    <option value="digital">💻 Produk Digital (Auto Payment Gateway)</option>
-                                    <option value="jasa">🛠️ Layanan Jasa (Nego Admin WA)</option>
+                                    <option value="produk"> Produk Fisik (Antar / Jemput)</option>
+                                    <option value="digital"> Produk Digital (Auto Payment Gateway)</option>
+                                    <option value="jasa"> Layanan Jasa (Nego Admin WA)</option>
                                 </select>
                             </div>
                         </div>
@@ -376,11 +376,11 @@
                             <div x-show="activeProduct.item_type === 'produk'" x-cloak>
                                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Metode Pengambilan</label>
                                 <select name="fulfillment_type" x-model="activeProduct.fulfillment_type" :disabled="activeProduct.item_type !== 'produk'" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
-                                    <option value="both">🛵 Bisa Diantar & 🏢 Ambil di Workshop</option>
-                                    <option value="pickup_only">🏢 Khusus Ambil di Workshop TEFA</option>
-                                    <option value="shipping_only">🛵 Khusus Dikirim Kurir</option>
-                                    <option value="digital_download">💻 Download Aset / File Digital</option>
-                                    <option value="service_booking">🛠️ Booking Layanan Jasa</option>
+                                    <option value="both"> Bisa Diantar &  Ambil di Workshop</option>
+                                    <option value="pickup_only"> Khusus Ambil di Workshop TEFA</option>
+                                    <option value="shipping_only"> Khusus Dikirim Kurir</option>
+                                    <option value="digital_download"> Download Aset / File Digital</option>
+                                    <option value="service_booking"> Booking Layanan Jasa</option>
                                 </select>
                             </div>
 

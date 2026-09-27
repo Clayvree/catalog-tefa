@@ -9,7 +9,10 @@
         <!-- Flash Message -->
         @if(session('success'))
             <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between shadow-sm">
-                <span>✅ {{ session('success') }}</span>
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                    {{ session('success') }}
+                </span>
             </div>
         @endif
 
@@ -71,11 +74,15 @@
                             @endphp
                             <div>
                                 <a href="{{ $downloadUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/20 transition">
-                                    ⬇️ Download File
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+                                    Download File
                                 </a>
                             </div>
                         @else
-                            <p class="text-xs text-amber-700 font-bold bg-amber-50 px-3 py-2 rounded-xl border border-amber-200">⏳ Tersedia setelah pembayaran lunas</p>
+                            <p class="text-xs text-amber-700 font-bold bg-amber-50 px-3 py-2 rounded-xl border border-amber-200 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                Tersedia setelah pembayaran lunas
+                            </p>
                         @endif
                     @else
                         <span class="text-slate-400 font-bold uppercase text-[10px]">Status Barang</span>
@@ -148,15 +155,16 @@
                         $waMsg = urlencode("Halo Admin TEFA, saya ingin mengonfirmasi pesanan saya dengan ID: {$order->id}. Mohon info total bayar dan nomor rekening/QRIS.");
                     @endphp
 
-                    <a href="https://wa.me/{{ $adminWa }}?text={{ $waMsg }}" target="_blank" class="block w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer">
-                        ðŸ’¬ Hubungi Admin via WhatsApp
+                    <a href="https://wa.me/{{ $adminWa }}?text={{ $waMsg }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        Hubungi Admin via WhatsApp
                     </a>
                 </div>
             @else
                 <!-- Paid Success Banner & Instant Access -->
                 <div class="p-6 sm:p-8 rounded-3xl bg-emerald-50 border border-emerald-200 text-center space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-xl flex items-center justify-center mx-auto shadow-md">
-                        ✅
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mx-auto shadow-md">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
                     </div>
                     <div class="space-y-1">
                         <h3 class="text-lg font-black text-emerald-900">Pembayaran Berhasil Dikonfirmasi!</h3>
@@ -170,7 +178,8 @@
                         @endphp
                         <div class="pt-3">
                             <a href="{{ $downloadUrl }}" target="_blank" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition">
-                                <span>⬇️ Akses & Download File Digital</span>
+                                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+                                <span>Akses & Download File Digital</span>
                             </a>
                         </div>
                     @endif
@@ -188,4 +197,3 @@
     </div>
 </div>
 @endsection
-

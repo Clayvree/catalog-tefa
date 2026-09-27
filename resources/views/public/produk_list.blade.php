@@ -112,15 +112,15 @@
         </a>
         <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}"
            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-            <span>🛠️ Layanan Jasa</span>
+            <span> Layanan Jasa</span>
         </a>
         <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}"
            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'produk' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-            <span>📦 Produk Fisik</span>
+            <span> Produk Fisik</span>
         </a>
         <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'digital'])) }}"
            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'digital' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-            <span>💻 Produk Digital</span>
+            <span> Produk Digital</span>
         </a>
     </div>
 </div>
@@ -143,7 +143,7 @@
 
                         <!-- Consultation Badge -->
                         <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 space-y-1">
-                            <p class="font-bold text-indigo-800 text-[11px]">✦  Konsultasi via AI</p>
+                            <p class="font-bold text-indigo-800 text-[11px]">  Konsultasi via AI</p>
                             <p class="text-[10px] text-indigo-700/80 leading-relaxed">
                                 Klik tombol bot di pojok kanan bawah untuk tanya spek & estimasi pengerjaan.
                             </p>
@@ -227,21 +227,24 @@
                                         @if($item->item_type->value === 'jasa')
                                             <a href="{{ route('jasa.nego', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-emerald-600/20">
-                                                <span class="hidden sm:inline">💬 Nego & Konsultasi</span>
+                                                <span class="hidden sm:inline"> Nego & Konsultasi</span>
                                                 <span class="sm:hidden">Nego</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
                                         @elseif($item->item_type->value === 'digital' && (!$item->track_stock || $item->stock > 0))
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-purple-600/20">
-                                                <span class="hidden sm:inline">⚡ Beli Digital</span>
+                                                <span class="hidden sm:inline-flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                                                    Beli Digital
+                                                </span>
                                                 <span class="sm:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
                                         @elseif(!$item->track_stock || $item->stock > 0)
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
                                                class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
-                                                <span class="hidden sm:inline">🛒 Beli Sekarang</span>
+                                                <span class="hidden sm:inline">Beli Sekarang</span>
                                                 <span class="sm:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
@@ -255,7 +258,9 @@
                             </div>
                         @empty
                             <div class="col-span-full py-16 px-4 bg-white rounded-2xl sm:rounded-3xl border border-dashed border-slate-300 text-center space-y-3">
-                                <div class="text-3xl">🔍</div>
+                                <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
                                 <h3 class="text-sm font-bold text-slate-800">Tidak ada produk yang cocok</h3>
                                 <p class="text-xs text-slate-500">Coba gunakan kata kunci atau kategori lain.</p>
                                 <a href="{{ route('produk.list') }}" class="inline-block px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl">Reset Filter</a>

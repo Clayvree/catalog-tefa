@@ -27,7 +27,8 @@
             {{-- Flash Message --}}
             @if(session('success'))
                 <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 shadow-sm">
-                    <span>&#x2713; {{ session('success') }}</span>
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                    <span>{{ session('success') }}</span>
                 </div>
             @endif
 
@@ -44,13 +45,16 @@
 
             {{-- Info Banner --}}
             <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs leading-relaxed shadow-sm">
-                <p class="font-extrabold text-sm mb-1">&#x1F916; Cara Kerja AI Dua Langkah</p>
+                <p class="font-extrabold text-sm mb-1 flex items-center gap-2">
+                    Cara Kerja AI Dua Langkah
+                </p>
                 <ol class="list-decimal list-inside space-y-1 text-[11px] font-medium text-indigo-700">
                     <li><span class="font-bold">Langkah 1 &mdash; Baca Judul:</span> AI membaca semua <span class="font-bold">judul</span> konteks untuk memutuskan topik mana yang relevan dengan pertanyaan pengunjung.</li>
                     <li><span class="font-bold">Langkah 2 &mdash; Baca Deskripsi:</span> Hanya deskripsi dari topik yang dipilih yang dibaca secara mendalam untuk membentuk jawaban.</li>
                 </ol>
-                <p class="mt-2 text-[10px] text-indigo-500 font-semibold">
-                    &#x1F4A1; Tips: Buat judul yang jelas dan deskriptif agar AI bisa memilih konteks yang tepat.
+                <p class="mt-2 text-[10px] text-indigo-500 font-semibold flex items-center gap-1.5">
+                    <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 6.4 12.5c.74.75 1.4 1.5 1.6 2.5"/></svg>
+                    Tips: Buat judul yang jelas dan deskriptif agar AI bisa memilih konteks yang tepat.
                 </p>
             </div>
 
@@ -62,12 +66,14 @@
                             <div class="flex flex-wrap items-center gap-2 mb-1.5">
                                 <h3 class="font-black text-sm text-slate-900">{{ $item->title }}</h3>
                                 @if($item->is_active)
-                                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-200">
-                                        &#x25CF; Aktif
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                        Aktif
                                     </span>
                                 @else
-                                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] border border-slate-200">
-                                        &#x25CB; Nonaktif
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full border border-slate-400 flex-shrink-0"></span>
+                                        Nonaktif
                                     </span>
                                 @endif
                             </div>
@@ -100,7 +106,9 @@
                     </div>
                 @empty
                     <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-                        <p class="text-3xl mb-3">&#x1F9E0;</p>
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-400 flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+                        </div>
                         <p class="text-sm font-bold text-slate-500">Belum ada konteks AI untuk jurusan ini.</p>
                         <p class="text-xs text-slate-400 mt-1">Tambah konteks agar AI chatbot bisa menjawab pertanyaan tentang jurusan Anda.</p>
                         <button type="button" @click="addModalOpen = true"
@@ -141,8 +149,9 @@
                             <input type="text" name="title" required
                                 placeholder="Contoh: Program Unggulan RPL, Biaya Pendaftaran, Prestasi Siswa"
                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                            <p class="text-[10px] text-indigo-500 font-medium mt-1">
-                                &#x1F4A1; AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini. Buat sejelas mungkin.
+                            <p class="text-[10px] text-indigo-500 font-medium mt-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 6.4 12.5c.74.75 1.4 1.5 1.6 2.5"/></svg>
+                                AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini. Buat sejelas mungkin.
                             </p>
                         </div>
 
@@ -199,8 +208,9 @@
                             </label>
                             <input type="text" name="title" x-model="active.title" required
                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                            <p class="text-[10px] text-indigo-500 font-medium mt-1">
-                                &#x1F4A1; AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini.
+                            <p class="text-[10px] text-indigo-500 font-medium mt-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 6.4 12.5c.74.75 1.4 1.5 1.6 2.5"/></svg>
+                                AI membaca judul ini untuk memutuskan kapan harus menggunakan konteks ini.
                             </p>
                         </div>
 
