@@ -33,7 +33,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="antialiased text-slate-900 bg-slate-50 flex flex-col min-h-screen selection:bg-indigo-600 selection:text-white" x-data="{ mobileMenuOpen: false }">
+<body class="antialiased text-slate-900 bg-slate-50 flex flex-col min-h-screen overflow-x-hidden selection:bg-indigo-600 selection:text-white" x-data="{ mobileMenuOpen: false }">
 
     <!-- Top Announcement Bar -->
     <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-slate-800">
@@ -61,12 +61,12 @@
             <div class="flex justify-between items-center h-20">
                 
                 <!-- Brand Logo -->
-                <div class="flex items-center gap-10">
-                    <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+                <div class="flex items-center gap-4 md:gap-10 min-w-0">
+                    <a href="{{ route('home') }}" class="flex items-center gap-3 group flex-shrink-0">
                         <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/25 group-hover:scale-105 transition-transform duration-300">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <div>
+                        <div class="hidden sm:block">
                             <span class="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-1">
                                 Tefa<span class="text-indigo-600">Hub</span>
                             </span>
@@ -75,32 +75,32 @@
                     </a>
 
                     <!-- Nav Links Desktop -->
-                    <div class="hidden md:flex items-center space-x-1">
+                    <div class="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar min-w-0">
                         <a href="{{ route('home') }}" 
-                           class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('home') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
+                           class="whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('home') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                             Beranda
                         </a>
                         <a href="{{ route('jurusan.list') }}" 
-                           class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('jurusan.*', 'tefa.storefront') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
+                           class="whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('jurusan.*', 'tefa.storefront') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                             Unit Jurusan
                         </a>
                         <a href="{{ route('produk.list') }}" 
-                           class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('produk.list') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
+                           class="whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('produk.list') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                             Katalog Produk & Jasa
                         </a>
                         <a href="{{ route('about') }}" 
-                           class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('about') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
+                           class="whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('about') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                             Tentang TEFA
                         </a>
                         <a href="{{ route('contact') }}" 
-                        class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('contact') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
+                        class="whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 {{ request()->routeIs('contact') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60' }}">
                         Hubungi Kami        
                         </a>
                     </div>
                 </div>
 
                 <!-- Right Side Buttons -->
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                     
                     <!-- Search Icon Shortcut (Mobile) -->
                     <a href="{{ route('produk.list') }}" class="p-2.5 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-slate-100 transition md:hidden">
@@ -155,12 +155,13 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="hidden sm:inline-block text-sm font-bold text-slate-700 hover:text-indigo-600 px-4 py-2 rounded-xl hover:bg-slate-100 transition">
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-slate-700 hover:text-indigo-600 px-2.5 sm:px-4 py-2 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
                             Masuk
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all duration-200 transform hover:-translate-y-0.5">
-                            Daftar Mitra
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 sm:px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all duration-200 transform hover:-translate-y-0.5 whitespace-nowrap">
+                            <span class="hidden sm:inline">Daftar Mitra</span>
+                            <span class="sm:hidden">Daftar</span>
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @endauth
 
@@ -179,8 +180,9 @@
             <a href="{{ route('jurusan.list') }}" class="block px-4 py-3 rounded-xl text-sm font-bold {{ request()->routeIs('jurusan.*') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50' }}">Unit Jurusan</a>
             <a href="{{ route('produk.list') }}" class="block px-4 py-3 rounded-xl text-sm font-bold {{ request()->routeIs('produk.list') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50' }}">Katalog Produk & Jasa</a>
             <a href="{{ route('about') }}" class="block px-4 py-3 rounded-xl text-sm font-bold {{ request()->routeIs('about') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50' }}">Tentang TEFA</a>
-            <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                @auth
+            <a href="{{ route('contact') }}" class="block px-4 py-3 rounded-xl text-sm font-bold {{ request()->routeIs('contact') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50' }}">Hubungi Kami</a>
+            @auth
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
                     @if($isStaff ?? false)
                         <a href="{{ route('dashboard') }}" class="w-full text-center py-2.5 bg-slate-900 text-white font-bold rounded-xl text-sm">Masuk Dashboard</a>
                     @endif
@@ -190,11 +192,8 @@
                         @csrf
                         <button type="submit" class="w-full text-center py-2.5 bg-red-50 text-red-600 font-bold rounded-xl text-sm border border-red-100">Keluar / Log Out</button>
                     </form>
-                @else
-                    <a href="{{ route('login') }}" class="w-full text-center py-2.5 bg-slate-100 text-slate-800 font-bold rounded-xl text-sm">Log in</a>
-                    <a href="{{ route('register') }}" class="w-full text-center py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">Daftar Akun Baru</a>
-                @endauth
-            </div>
+                </div>
+            @endauth
         </div>
     </nav>
 
