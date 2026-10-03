@@ -34,4 +34,16 @@ class DashboardController extends Controller
 
         return view('superadmin.dashboard', compact('stats', 'recentProjects', 'topUnits'));
     }
+
+    public function catalogBrochure()
+    {
+        $units = TefaUnit::query()
+            ->where('is_active', true)
+            ->whereHas('catalogItems', fn ($query) => $query->published())
+            ->with(['catalogItems' => fn ($query) => $query->published()->with('category')->orderBy('title')])
+            ->orderBy('name')
+            ->get();
+
+        return view('superadmin.catalog-brochure', compact('units'));
+    }
 }

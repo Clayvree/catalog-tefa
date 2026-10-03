@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     // --- SUPERADMIN MODULE ---
     Route::middleware('role:superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/catalog-brochure', [SuperAdminDashboardController::class, 'catalogBrochure'])->name('catalog-brochure');
         Route::get('/projects', [SuperAdminProjectController::class, 'index'])->name('projects.index');
         Route::resource('units', TefaUnitController::class)->except(['show', 'create', 'edit']);
         Route::resource('admins', AdminUserController::class)->except(['show', 'create', 'edit']);
