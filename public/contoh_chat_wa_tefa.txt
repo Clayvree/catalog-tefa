@@ -1,0 +1,10 @@
+[2026-10-03 10:00:00] Klien (Bapak Budi - CV Maju Bersama): Halo Min, saya dari CV Maju Bersama mau pesan jasa pembuatan Company Profile Website. Kira-kira harganya berapa ya?
+[2026-10-03 10:05:00] Admin TEFA: Halo Bapak Budi, terima kasih sudah menghubungi kami. Untuk Website Company Profile, biasanya kami mulai dari harga Rp 1.500.000 (Paket Standar). Boleh tahu detail kebutuhannya seperti apa?
+[2026-10-03 10:10:00] Klien (Bapak Budi - CV Maju Bersama): Saya butuh sekitar 5 halaman (Home, About Us, Services, Portfolio, Contact Us). Desainnya mau yang modern, clean, dan mobile-friendly ya. Saya sedia budget Rp 1.800.000.
+[2026-10-03 10:15:00] Admin TEFA: Baik Pak Budi, dengan 5 halaman dan desain custom modern, kami bisa kerjakan di harga kesepakatan Rp 1.800.000. Pengerjaannya akan memakan waktu kurang lebih 2 minggu.
+[2026-10-03 10:20:00] Klien (Bapak Budi - CV Maju Bersama): Oke deal di harga Rp 1.800.000. Lanjut ya min. Tolong bagi-bagi tugas timnya nanti dikabarin progresnya.
+[2026-10-03 10:25:00] Admin TEFA: Siap Pak Budi. Nanti tim kami akan membaginya menjadi 3 tugas utama: 
+1. Desain UI/UX & Wireframe (sekitar 3 hari)
+2. Slicing HTML/CSS Frontend & Mobile Responsiveness (sekitar 5 hari)
+3. Setup Backend & Admin Panel CMS sederhana (sekitar 6 hari)
+Terima kasih ya Pak atas kepercayaannya!
