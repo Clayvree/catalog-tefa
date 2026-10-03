@@ -38,7 +38,7 @@
                     </button>
 
                     <!-- Mobile Filter Drawer Trigger Button -->
-                    <button type="button" @click="mobileFilterOpen = true" class="lg:hidden p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5 text-xs font-bold flex-shrink-0">
+                    <button type="button" @click="mobileFilterOpen = true" class="md:hidden p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5 text-xs font-bold flex-shrink-0">
                         <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                         <span>Filter</span>
                         @if(request('category') || request('type'))
@@ -88,11 +88,11 @@
 
             </div>
 
-            <!-- Content Area: Desktop Sidebar + Product Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+            <!-- Content Area: Sidebar (tablet & up) + Product Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
                 
-                <!-- Left Sidebar Filters (Desktop Only) -->
-                <div class="hidden lg:block lg:col-span-3">
+                <!-- Left Sidebar Filters (Tablet & Desktop) -->
+                <div class="hidden md:block md:col-span-4 lg:col-span-3">
                     <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm sticky top-28 space-y-6">
                         
                         <div class="flex items-center justify-between pb-4 border-b border-slate-100">
@@ -112,15 +112,24 @@
         </a>
         <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}"
            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-            <span> Layanan Jasa</span>
+            <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Layanan Jasa
+            </span>
         </a>
         <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}"
            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'produk' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-            <span> Produk Fisik</span>
+            <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+                Produk Fisik
+            </span>
         </a>
         <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'digital'])) }}"
            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request('type') === 'digital' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : 'text-slate-600 hover:bg-slate-50' }}">
-            <span> Produk Digital</span>
+            <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                Produk Digital
+            </span>
         </a>
     </div>
 </div>
@@ -143,7 +152,10 @@
 
                         <!-- Consultation Badge -->
                         <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 space-y-1">
-                            <p class="font-bold text-indigo-800 text-[11px]">  Konsultasi via AI</p>
+                            <p class="font-bold text-indigo-800 text-[11px] flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                Konsultasi via AI
+                            </p>
                             <p class="text-[10px] text-indigo-700/80 leading-relaxed">
                                 Klik tombol bot di pojok kanan bawah untuk tanya spek & estimasi pengerjaan.
                             </p>
@@ -153,7 +165,7 @@
                 </div>
 
                 <!-- Products Grid Column -->
-                <div class="lg:col-span-9 space-y-4">
+                <div class="md:col-span-8 lg:col-span-9 space-y-4">
                     
                     <!-- Result Count & Sort Bar -->
                     <div class="flex items-center justify-between text-xs text-slate-500 px-1">
@@ -170,7 +182,7 @@
                     </div>
 
                     <!-- Products Grid (2 cols on Mobile / Android, 3 cols on Desktop) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-2.5 sm:gap-4 lg:gap-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 lg:gap-6">
                         @forelse($items as $item)
                             <div class="group bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 flex flex-col">
                                 
@@ -207,8 +219,8 @@
                                     </div>
 
                                     <!-- Price & CTA -->
-                                    <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
-                                        <div>
+                                    <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-auto">
+                                        <div class="min-w-0 flex-1">
                                             <span class="block text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase">Mulai</span>
                                             <span class="text-xs sm:text-base font-black text-indigo-600">
                                                 Rp{{ number_format((float)$item->price, 0, ',', '.') }}
@@ -226,26 +238,32 @@
                                         
                                         @if($item->item_type->value === 'jasa')
                                             <a href="{{ route('jasa.nego', $item->slug) }}" 
-                                               class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-emerald-600/20">
-                                                <span class="hidden sm:inline"> Nego & Konsultasi</span>
-                                                <span class="sm:hidden">Nego</span>
+                                               class="flex-shrink-0 p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-emerald-600/20">
+                                                <span class="hidden xl:inline-flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                                    Nego & Konsultasi
+                                                </span>
+                                                <span class="xl:hidden">Nego</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
                                         @elseif($item->item_type->value === 'digital' && (!$item->track_stock || $item->stock > 0))
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
-                                               class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-purple-600/20">
-                                                <span class="hidden sm:inline-flex items-center gap-1">
+                                               class="flex-shrink-0 p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-purple-600/20">
+                                                <span class="hidden xl:inline-flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
                                                     Beli Digital
                                                 </span>
-                                                <span class="sm:hidden">Beli</span>
+                                                <span class="xl:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
                                         @elseif(!$item->track_stock || $item->stock > 0)
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
-                                               class="p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
-                                                <span class="hidden sm:inline">Beli Sekarang</span>
-                                                <span class="sm:hidden">Beli</span>
+                                               class="flex-shrink-0 p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
+                                                <span class="hidden xl:inline-flex items-center gap-1">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                                                    Beli Sekarang
+                                                </span>
+                                                <span class="xl:hidden">Beli</span>
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </a>
                                         @elseif($item->item_type->value !== 'jasa')
@@ -280,7 +298,7 @@
         </div>
 
         <!-- Mobile Filter Drawer (Modal) -->
-        <div x-show="mobileFilterOpen" style="display:none;" class="fixed inset-0 z-50 overflow-hidden lg:hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        <div x-show="mobileFilterOpen" style="display:none;" class="fixed inset-0 z-50 overflow-hidden md:hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
             <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity" @click="mobileFilterOpen = false"></div>
             
             <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
@@ -297,9 +315,18 @@
                             <h4 class="text-xs font-bold text-slate-400 uppercase">Tipe Penawaran</h4>
                             <div class="space-y-1">
                                 <a href="{{ route('produk.list', array_merge(request()->except('type'))) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ !request('type') ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">Semua Tipe</a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">🛠️ Layanan Jasa</a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'produk' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">📦 Produk Fisik</a>
-                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'digital'])) }}" class="block px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'digital' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">💻 Produk Digital</a>
+                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'jasa'])) }}" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'jasa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                    Layanan Jasa
+                                </a>
+                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'produk'])) }}" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'produk' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+                                    Produk Fisik
+                                </a>
+                                <a href="{{ route('produk.list', array_merge(request()->all(), ['type' => 'digital'])) }}" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold {{ request('type') === 'digital' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700' }}">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                                    Produk Digital
+                                </a>
                             </div>
                         </div>
 
