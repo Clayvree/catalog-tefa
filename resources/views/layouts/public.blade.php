@@ -241,14 +241,18 @@
                     </ul>
                 </div>
 
-                <!-- Unit Layanan -->
+                <!-- Unit Layanan (dinamis dari data Unit TEFA aktif) -->
+                @php
+                    $footerUnits = \App\Models\TefaUnit::where('is_active', true)->orderBy('name')->get(['name', 'slug']);
+                @endphp
                 <div>
                     <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-5">Unit Produksi</h4>
                     <ul class="space-y-3 text-sm font-medium">
-                        <li><a href="{{ route('produk.list', ['type' => 'jasa']) }}" class="hover:text-indigo-400 transition-colors">Software & IT Solutions</a></li>
-                        <li><a href="{{ route('produk.list', ['type' => 'jasa']) }}" class="hover:text-indigo-400 transition-colors">Desain & Kreatif Agency</a></li>
-                        <li><a href="{{ route('produk.list', ['type' => 'jasa']) }}" class="hover:text-indigo-400 transition-colors">Bengkel Servis Otomotif</a></li>
-                        <li><a href="{{ route('produk.list', ['type' => 'produk']) }}" class="hover:text-indigo-400 transition-colors">Artisan Bakery & Kuliner</a></li>
+                        @forelse($footerUnits as $unit)
+                            <li><a href="{{ route('tefa.storefront', $unit->slug) }}" class="hover:text-indigo-400 transition-colors">{{ $unit->name }}</a></li>
+                        @empty
+                            <li><a href="{{ route('jurusan.list') }}" class="hover:text-indigo-400 transition-colors">Lihat Semua Unit TEFA</a></li>
+                        @endforelse
                     </ul>
                 </div>
 
