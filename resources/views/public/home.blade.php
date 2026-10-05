@@ -365,49 +365,6 @@
         </div>
     </section>
 
-    <!-- 6. CARA KERJA ALUR AI -->
-    <section class="py-12 sm:py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-16 space-y-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Teknologi Terkini</span>
-                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Alur Pengerjaan Terpadu AI</h2>
-                <p class="text-slate-500 text-xs sm:text-sm">
-                    Automasi cerdas dari diskusi chat WhatsApp hingga pengerjaan siswa terampil.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                
-                <div class="bg-slate-50 p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black text-base flex items-center justify-center">1</div>
-                    <h3 class="font-extrabold text-sm text-slate-900">Chat WhatsApp / AI</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Diskusikan kebutuhan proyek Anda dengan Admin TEFA atau via AI bot.</p>
-                </div>
-
-                <div class="bg-slate-50 p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black text-base flex items-center justify-center">2</div>
-                    <h3 class="font-extrabold text-sm text-slate-900">AI Task Breakdown</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Gemini AI mengekstrak kesepakatan chat dan memecahnya ke tugas siswa.</p>
-                </div>
-
-                <div class="bg-slate-50 p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black text-base flex items-center justify-center">3</div>
-                    <h3 class="font-extrabold text-sm text-slate-900">Pengerjaan Siswa</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Tugas masuk ke Kanban siswa berbakat dengan supervisi guru ahli.</p>
-                </div>
-
-                <div class="bg-slate-50 p-5 rounded-2xl sm:rounded-3xl border border-slate-200/80 space-y-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-black text-base flex items-center justify-center">✓</div>
-                    <h3 class="font-extrabold text-sm text-slate-900">Validasi & Pengiriman</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Hasil kerja lolos uji mutu standar industri dan diserahkan ke klien.</p>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
     <!-- 7. PORTFOLIO SHOWCASE -->
     <section class="py-12 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
