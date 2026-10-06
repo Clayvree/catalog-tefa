@@ -79,16 +79,42 @@
                                 </div>
                                 <div class="p-4 flex-1 flex flex-col">
                                     <div class="flex items-center gap-2 mb-3">
-                                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs uppercase overflow-hidden">
-                                            @if($portfolio->worker->avatar_url)
-                                                <img src="{{ asset('storage/' . $portfolio->worker->avatar_url) }}" class="w-full h-full object-cover">
-                                            @else
-                                                {{ substr($portfolio->worker->user->name ?? 'U', 0, 1) }}
+                                        @php
+                                            $allNames = collect([$portfolio->worker->user->name ?? 'Anonim']);
+                                            foreach ($portfolio->contributors as $c) { $allNames->push($c->display_name); }
+                                        @endphp
+                                        <!-- Avatar Stack -->
+                                        <div class="flex items-center">
+                                            @php $avatarColors2 = ['bg-indigo-100 text-indigo-700','bg-violet-100 text-violet-700','bg-pink-100 text-pink-700','bg-amber-100 text-amber-700']; @endphp
+                                            <div class="w-8 h-8 rounded-full ring-2 ring-white bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs uppercase overflow-hidden flex-shrink-0">
+                                                @if($portfolio->worker->avatar_url)
+                                                    <img src="{{ asset('storage/' . $portfolio->worker->avatar_url) }}" class="w-full h-full object-cover">
+                                                @else
+                                                    {{ substr($portfolio->worker->user->name ?? 'U', 0, 1) }}
+                                                @endif
+                                            </div>
+                                            @foreach($portfolio->contributors->take(3) as $ci => $contrib)
+                                                <div class="w-8 h-8 rounded-full ring-2 ring-white {{ $avatarColors2[$ci % 4] }} flex items-center justify-center font-bold text-xs overflow-hidden flex-shrink-0 -ml-2" title="{{ $contrib->display_name }}">
+                                                    @if($contrib->avatar_url)
+                                                        <img src="{{ asset('storage/' . $contrib->avatar_url) }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        {{ substr($contrib->display_name, 0, 1) }}
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                            @if($portfolio->contributors->count() > 3)
+                                                <div class="w-8 h-8 rounded-full ring-2 ring-white bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 -ml-2">
+                                                    +{{ $portfolio->contributors->count() - 3 }}
+                                                </div>
                                             @endif
                                         </div>
-                                        <div class="text-xs">
-                                            <p class="font-bold text-slate-800">{{ $portfolio->worker->user->name ?? 'Siswa Anonim' }}</p>
-                                            <p class="text-slate-500">{{ $portfolio->created_at->format('d M Y, H:i') }}</p>
+                                        <div class="text-xs min-w-0">
+                                            <p class="font-bold text-slate-800 truncate">{{ $portfolio->worker->user->name ?? 'Siswa Anonim' }}</p>
+                                            @if($portfolio->contributors->count() > 0)
+                                                <p class="text-slate-400 text-[10px]">+ {{ $portfolio->contributors->count() }} kontributor</p>
+                                            @else
+                                                <p class="text-slate-500">{{ $portfolio->created_at->format('d M Y, H:i') }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                     

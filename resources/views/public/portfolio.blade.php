@@ -42,11 +42,59 @@
                             </div>
                             @endif
                             
-                            <div class="flex items-center gap-3 pt-3 border-t border-gray-100">
-                                <img src="{{ $portfolio->worker->avatar_url ? asset('storage/'.$portfolio->worker->avatar_url) : 'https://ui-avatars.com/api/?name='.urlencode($portfolio->worker->user->name ?? 'Siswa').'&color=1D4ED8&background=DBEAFE' }}" alt="Avatar" class="w-8 h-8 rounded-full">
+                            <div class="flex items-start gap-3 pt-3 border-t border-gray-100">
+                                {{-- Avatar stack semua kontributor --}}
+                                @php
+                                    $allContributors = collect();
+                                    // Pengaju utama
+                                    $allContributors->push([
+                                        'name'       => $portfolio->worker->user->name ?? 'Anonim',
+                                        'avatar_url' => $portfolio->worker->avatar_url ?? null,
+                                        'role'       => 'Pengaju',
+                                    ]);
+                                    // Kontributor tambahan
+                                    foreach ($portfolio->contributors as $c) {
+                                        $allContributors->push([
+                                            'name'       => $c->display_name,
+                                            'avatar_url' => $c->avatar_url,
+                                            'role'       => $c->role ?: 'Kontributor',
+                                        ]);
+                                    }
+                                @endphp
+
+                                <div class="flex items-center flex-shrink-0">
+                                    @foreach($allContributors->take(4) as $i => $person)
+                                        @php
+                                            $avatarColors = ['bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-pink-100 text-pink-700','bg-amber-100 text-amber-700'];
+                                            $color = $avatarColors[$i % count($avatarColors)];
+                                        @endphp
+                                        <div title="{{ $person['name'] }} · {{ $person['role'] }}"
+                                             class="w-8 h-8 rounded-full ring-2 ring-white overflow-hidden {{ $color }} flex items-center justify-center text-xs font-bold flex-shrink-0 {{ $i > 0 ? '-ml-2' : '' }}">
+                                            @if($person['avatar_url'])
+                                                <img src="{{ asset('storage/' . $person['avatar_url']) }}" class="w-full h-full object-cover">
+                                            @else
+                                                {{ substr($person['name'], 0, 1) }}
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                    @if($allContributors->count() > 4)
+                                        <div class="w-8 h-8 rounded-full ring-2 ring-white bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 -ml-2">
+                                            +{{ $allContributors->count() - 4 }}
+                                        </div>
+                                    @endif
+                                </div>
+
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate">{{ $portfolio->worker->user->name ?? 'Anonim' }}</p>
-                                    <p class="text-xs text-gray-500 truncate">Siswa / Worker</p>
+                                    @if($allContributors->count() === 1)
+                                        <p class="text-sm font-medium text-gray-900 truncate">{{ $allContributors->first()['name'] }}</p>
+                                        <p class="text-xs text-gray-500 truncate">Siswa / Worker</p>
+                                    @else
+                                        <p class="text-sm font-medium text-gray-900 truncate">
+                                            {{ $allContributors->first()['name'] }}
+                                            <span class="text-gray-400 font-normal">& {{ $allContributors->count() - 1 }} lainnya</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 truncate">Tim Kolaborasi</p>
+                                    @endif
                                 </div>
                             </div>
                         </div>

@@ -132,6 +132,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/tasks/{task}/notes', [TaskController::class, 'updateNotes'])->name('tasks.notes.update');
         Route::post('/tasks/{task}/proof', [TaskController::class, 'uploadProof'])->name('tasks.proof.upload');
         Route::resource('portfolios', WorkerPortfolioController::class)->only(['index', 'store', 'destroy']);
+        Route::patch('/portfolios/{portfolio}/contributors', [WorkerPortfolioController::class, 'updateContributors'])->name('portfolios.contributors.update');
     });
 });
 

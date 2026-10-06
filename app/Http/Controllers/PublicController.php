@@ -127,7 +127,7 @@ class PublicController extends Controller
     public function portfolio(string $slug)
     {
         $unit = TefaUnit::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        $portfolios = Portfolio::with(['worker.user'])->where('tefa_unit_id', $unit->id)->where('status', 'approved')->latest()->paginate(12);
+        $portfolios = Portfolio::with(['worker.user', 'contributors.workerProfile.user'])->where('tefa_unit_id', $unit->id)->where('status', 'approved')->latest()->paginate(12);
         return view('public.portfolio', compact('unit', 'portfolios'));
     }
 }

@@ -63,4 +63,9 @@ class WorkerProfile extends Model
         return $this->hasMany(Portfolio::class);
     }
 
+    public function portfolioContributions(): HasMany
+    {
+        return $this->hasMany(PortfolioContributor::class);
+    }
+
 }

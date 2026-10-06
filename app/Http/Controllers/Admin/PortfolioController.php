@@ -18,7 +18,7 @@ class PortfolioController extends Controller
         
         $status = $request->query('status', 'all');
 
-        $query = Portfolio::with(['worker.user'])
+        $query = Portfolio::with(['worker.user', 'contributors.workerProfile.user'])
             ->where('tefa_unit_id', $tefaUnitId)
             ->latest();
 
@@ -43,7 +43,7 @@ class PortfolioController extends Controller
         $tefaUnitId = $request->user()->managedUnits()->first()->id;
         abort_if($portfolio->tefa_unit_id !== $tefaUnitId, 403, 'Akses ditolak.');
 
-        $portfolio->load(['worker.user', 'reviewer']);
+        $portfolio->load(['worker.user', 'reviewer', 'contributors.workerProfile.user']);
 
         return view('admin.portfolios.show', compact('portfolio'));
     }

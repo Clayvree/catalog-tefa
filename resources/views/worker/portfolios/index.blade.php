@@ -13,7 +13,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8 bg-slate-50 min-h-screen" x-data="{ addModalOpen: false }" @open-add-portfolio-modal.window="addModalOpen = true">
+    <div class="py-8 bg-slate-50 min-h-screen" x-data="portfolioPage()" @open-add-portfolio-modal.window="addModalOpen = true">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             
             <!-- Flash Message -->
@@ -59,7 +59,8 @@
             <!-- Portfolio Cards Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @forelse($portfolios as $portfolio)
-                    <div class="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div class="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
+                         x-data="{ editContribOpen: false }">
                         
                         <div>
                             <!-- Thumbnail -->
@@ -100,6 +101,37 @@
                                         </p>
                                     </div>
                                 @endif
+
+                                <!-- Kontributor Avatar Stack -->
+                                @if($portfolio->contributors->count() > 0)
+                                    <div class="pt-2">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Tim / Kontributor</p>
+                                        <div class="flex items-center gap-1.5">
+                                            {{-- Avatar pengaju (diri sendiri) --}}
+                                            <div title="{{ $workerProfile->user->name }} (Pengaju)" class="w-7 h-7 rounded-full ring-2 ring-white overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-black text-[10px] flex-shrink-0">
+                                                @if($workerProfile->avatar_url)
+                                                    <img src="{{ asset('storage/' . $workerProfile->avatar_url) }}" class="w-full h-full object-cover">
+                                                @else
+                                                    {{ substr($workerProfile->user->name ?? 'S', 0, 1) }}
+                                                @endif
+                                            </div>
+                                            {{-- Avatar kontributor lain --}}
+                                            @foreach($portfolio->contributors->take(4) as $contributor)
+                                                <div title="{{ $contributor->display_name }}{{ $contributor->role ? ' · ' . $contributor->role : '' }}"
+                                                     class="w-7 h-7 rounded-full ring-2 ring-white overflow-hidden bg-slate-200 flex items-center justify-center text-slate-600 font-black text-[10px] flex-shrink-0 -ml-2">
+                                                    @if($contributor->avatar_url)
+                                                        <img src="{{ asset('storage/' . $contributor->avatar_url) }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        {{ substr($contributor->display_name, 0, 1) }}
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                            @if($portfolio->contributors->count() > 4)
+                                                <span class="text-[10px] font-bold text-slate-500 ml-1">+{{ $portfolio->contributors->count() - 4 }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -113,13 +145,92 @@
 
                             <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
                                 <span class="text-[10px] text-slate-400">{{ $portfolio->tefaUnit->name ?? 'TEFA' }}</span>
-                                <form action="{{ route('worker.portfolios.destroy', $portfolio->id) }}" method="POST" onsubmit="return confirm('Hapus pengajuan portofolio ini?')" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-[11px] font-bold text-red-600 hover:underline cursor-pointer">
-                                        Hapus
+                                <div class="flex items-center gap-3">
+                                    <button type="button" @click="editContribOpen = true" class="text-[11px] font-bold text-indigo-600 hover:underline cursor-pointer">
+                                        👥 Tim
                                     </button>
-                                </form>
+                                    <form action="{{ route('worker.portfolios.destroy', $portfolio->id) }}" method="POST" onsubmit="return confirm('Hapus pengajuan portofolio ini?')" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-[11px] font-bold text-red-600 hover:underline cursor-pointer">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Edit Kontributor Modal (per card) -->
+                        <div x-show="editContribOpen" style="display:none;" class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+                            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm" @click="editContribOpen = false"></div>
+                                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 sm:p-8 space-y-5"
+                                     x-data="contributorForm({{ json_encode($portfolio->contributors->map(fn($c) => ['worker_profile_id' => $c->worker_profile_id, 'guest_name' => $c->guest_name, 'role' => $c->role, 'display_name' => $c->display_name])->values()) }})">
+
+                                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                                        <div>
+                                            <span class="text-[10px] font-bold text-indigo-600 uppercase">Kelola Tim</span>
+                                            <h3 class="font-black text-base text-slate-900 mt-0.5">Kontributor Proyek</h3>
+                                            <p class="text-[11px] text-slate-500 mt-0.5">{{ $portfolio->title }}</p>
+                                        </div>
+                                        <button type="button" @click="editContribOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl cursor-pointer">×</button>
+                                    </div>
+
+                                    <form action="{{ route('worker.portfolios.contributors.update', $portfolio->id) }}" method="POST" class="space-y-4">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <!-- Daftar Kontributor Dinamis -->
+                                        <div class="space-y-3">
+                                            <template x-for="(item, idx) in contributors" :key="idx">
+                                                <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 relative">
+                                                    <button type="button" @click="remove(idx)" class="absolute top-2 right-2.5 text-slate-400 hover:text-red-500 text-sm font-bold cursor-pointer">×</button>
+
+                                                    <!-- Pilih siswa (dengan akun) atau nama bebas -->
+                                                    <div x-show="item.worker_profile_id !== null || item.useDropdown">
+                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Siswa (punya akun TEFA)</label>
+                                                        <select :name="`contributors[${idx}][worker_profile_id]`" x-model="item.worker_profile_id"
+                                                                class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                            <option value="">-- Pilih siswa --</option>
+                                                            @foreach($unitWorkers as $uw)
+                                                                <option value="{{ $uw->id }}">{{ $uw->user->name ?? '-' }} ({{ $uw->class_name ?? 'Kelas?' }})</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <button type="button" @click="item.worker_profile_id = null; item.useDropdown = false; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
+                                                            Ganti ke nama manual →
+                                                        </button>
+                                                    </div>
+
+                                                    <div x-show="item.worker_profile_id === null && !item.useDropdown">
+                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama (tanpa akun TEFA)</label>
+                                                        <input type="text" :name="`contributors[${idx}][guest_name]`" x-model="item.guest_name"
+                                                               placeholder="Nama lengkap kontributor..."
+                                                               class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                        <button type="button" @click="item.useDropdown = true; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
+                                                            Pilih dari daftar siswa →
+                                                        </button>
+                                                    </div>
+
+                                                    <div>
+                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Peran / Role (opsional)</label>
+                                                        <input type="text" :name="`contributors[${idx}][role]`" x-model="item.role"
+                                                               placeholder="cth: UI Design, Backend, Ilustrasi..."
+                                                               class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+
+                                        <button type="button" @click="addGuest()" class="w-full py-2 border-2 border-dashed border-slate-300 hover:border-indigo-400 text-slate-500 hover:text-indigo-600 rounded-2xl text-xs font-bold transition cursor-pointer">
+                                            + Tambah Kontributor
+                                        </button>
+
+                                        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                                            <button type="button" @click="editContribOpen = false" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold cursor-pointer">Batal</button>
+                                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md cursor-pointer">Simpan Tim</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 
@@ -149,7 +260,8 @@
             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" @click="addModalOpen = false"></div>
                 
-                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 sm:p-8 space-y-6">
+                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 sm:p-8 space-y-6"
+                     x-data="contributorForm([])">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div>
                             <span class="text-[10px] font-bold text-indigo-600 uppercase">Student Showcase</span>
@@ -182,6 +294,58 @@
                             <p class="text-[10px] text-slate-400 mt-1">JPG, PNG, atau WEBP. Maksimal 5 MB.</p>
                         </div>
 
+                        <!-- Kontributor Tambahan -->
+                        <div class="space-y-2.5 pt-1">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-bold text-slate-700 uppercase">Tim / Kontributor Lain</label>
+                                <span class="text-[10px] text-slate-400">Opsional</span>
+                            </div>
+                            <p class="text-[10px] text-slate-500">Tambahkan teman yang ikut mengerjakan proyek ini. Bisa siswa TEFA atau nama bebas.</p>
+
+                            <div class="space-y-3">
+                                <template x-for="(item, idx) in contributors" :key="idx">
+                                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 relative">
+                                        <button type="button" @click="remove(idx)" class="absolute top-2 right-2.5 text-slate-400 hover:text-red-500 text-sm font-bold cursor-pointer">×</button>
+
+                                        <div x-show="item.worker_profile_id !== null || item.useDropdown">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Siswa (punya akun TEFA)</label>
+                                            <select :name="`contributors[${idx}][worker_profile_id]`" x-model="item.worker_profile_id"
+                                                    class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                <option value="">-- Pilih siswa --</option>
+                                                @foreach($unitWorkers as $uw)
+                                                    <option value="{{ $uw->id }}">{{ $uw->user->name ?? '-' }} ({{ $uw->class_name ?? 'Kelas?' }})</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" @click="item.worker_profile_id = null; item.useDropdown = false; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
+                                                Ganti ke nama manual →
+                                            </button>
+                                        </div>
+
+                                        <div x-show="item.worker_profile_id === null && !item.useDropdown">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama (tanpa akun TEFA)</label>
+                                            <input type="text" :name="`contributors[${idx}][guest_name]`" x-model="item.guest_name"
+                                                   placeholder="Nama lengkap kontributor..."
+                                                   class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                            <button type="button" @click="item.useDropdown = true; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
+                                                Pilih dari daftar siswa →
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Peran / Role (opsional)</label>
+                                            <input type="text" :name="`contributors[${idx}][role]`" x-model="item.role"
+                                                   placeholder="cth: UI Design, Backend, Ilustrasi..."
+                                                   class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <button type="button" @click="addGuest()" class="w-full py-2 border-2 border-dashed border-slate-200 hover:border-indigo-400 text-slate-400 hover:text-indigo-600 rounded-2xl text-xs font-bold transition cursor-pointer">
+                                + Tambah Kontributor
+                            </button>
+                        </div>
+
                         <div class="pt-4 flex items-center justify-end gap-2 border-t border-slate-100">
                             <button type="button" @click="addModalOpen = false" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold cursor-pointer">Batal</button>
                             <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md cursor-pointer">Kirim Pengajuan</button>
@@ -192,4 +356,31 @@
         </div>
 
     </div>
+
+    @push('scripts')
+    <script>
+        function portfolioPage() {
+            return {
+                addModalOpen: false,
+            };
+        }
+
+        function contributorForm(initial) {
+            return {
+                contributors: initial.map(c => ({
+                    worker_profile_id: c.worker_profile_id || null,
+                    guest_name: c.guest_name || '',
+                    role: c.role || '',
+                    useDropdown: !!c.worker_profile_id,
+                })),
+                addGuest() {
+                    this.contributors.push({ worker_profile_id: null, guest_name: '', role: '', useDropdown: false });
+                },
+                remove(idx) {
+                    this.contributors.splice(idx, 1);
+                },
+            };
+        }
+    </script>
+    @endpush
 </x-app-layout>

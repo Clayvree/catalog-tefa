@@ -54,21 +54,58 @@
 
             <!-- Right: Action & Teacher Review -->
             <div class="space-y-6">
-                <!-- Worker Info -->
                 <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Informasi Siswa</h3>
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-indigo-100 overflow-hidden">
-                            @if($portfolio->worker->avatar_url)
-                                <img src="{{ asset('storage/' . $portfolio->worker->avatar_url) }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-indigo-700 font-black">{{ substr($portfolio->worker->user->name ?? 'S', 0, 1) }}</div>
-                            @endif
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Tim Pengerjaan</h3>
+
+                    <div class="space-y-3">
+                        {{-- Pengaju utama --}}
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
+                                @if($portfolio->worker->avatar_url)
+                                    <img src="{{ asset('storage/' . $portfolio->worker->avatar_url) }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-indigo-700 font-black text-sm">{{ substr($portfolio->worker->user->name ?? 'S', 0, 1) }}</div>
+                                @endif
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900 text-sm">{{ $portfolio->worker->user->name ?? 'Siswa Anonim' }}</p>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">Pengaju</span>
+                                    <p class="text-xs text-slate-500">{{ $portfolio->worker->skills->pluck('name')->join(', ') ?: 'Belum diisi' }}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-bold text-slate-900">{{ $portfolio->worker->user->name ?? 'Siswa Anonim' }}</p>
-                            <p class="text-xs text-slate-500">Divisi/Keahlian: {{ $portfolio->worker->skills->pluck('name')->join(', ') ?: 'Belum diisi' }}</p>
-                        </div>
+
+                        {{-- Kontributor tambahan --}}
+                        @php $contribColors = ['bg-violet-100 text-violet-700','bg-pink-100 text-pink-700','bg-amber-100 text-amber-700','bg-teal-100 text-teal-700']; @endphp
+                        @foreach($portfolio->contributors as $ci => $contrib)
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 {{ $contribColors[$ci % 4] }} flex items-center justify-center">
+                                    @if($contrib->avatar_url)
+                                        <img src="{{ asset('storage/' . $contrib->avatar_url) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="font-black text-sm">{{ substr($contrib->display_name, 0, 1) }}</span>
+                                    @endif
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900 text-sm">{{ $contrib->display_name }}</p>
+                                    <div class="flex items-center gap-2">
+                                        @if($contrib->workerProfile)
+                                            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Akun TEFA</span>
+                                        @else
+                                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Tamu</span>
+                                        @endif
+                                        @if($contrib->role)
+                                            <p class="text-xs text-slate-500">{{ $contrib->role }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        @if($portfolio->contributors->isEmpty())
+                            <p class="text-xs text-slate-400 italic">Portofolio ini dikerjakan secara individu.</p>
+                        @endif
                     </div>
                 </div>
 
