@@ -7,19 +7,21 @@
     <style>
         :root {
             color-scheme: light;
-            --ink: #172b2b;
-            --muted: #657575;
-            --green: #126b5b;
-            --mint: #e6f2ed;
-            --coral: #e86e52;
-            --line: #dce6e1;
+            --ink: #111827;
+            --muted: #64748b;
+            --primary: #4f46e5;
+            --primary-dark: #312e81;
+            --blue: #3b82f6;
+            --cyan: #67e8f9;
+            --tint: #eef2ff;
+            --line: #e2e8f0;
         }
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            background: #e9eeeb;
+            background: #edf2ef;
             color: var(--ink);
-            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            font-family: "Segoe UI", Arial, sans-serif;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -31,7 +33,8 @@
             justify-content: center;
             gap: 10px;
             padding: 14px;
-            background: rgba(23, 43, 43, .96);
+            background: rgba(17, 24, 39, .97);
+            box-shadow: 0 4px 18px rgba(17,24,39,.18);
         }
         .toolbar a, .toolbar button {
             display: inline-flex;
@@ -40,7 +43,7 @@
             min-height: 40px;
             padding: 0 16px;
             border: 1px solid rgba(255,255,255,.28);
-            border-radius: 6px;
+            border-radius: 8px;
             background: transparent;
             color: #fff;
             font-family: inherit;
@@ -49,14 +52,14 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .toolbar button { border-color: var(--coral); background: var(--coral); }
+        .toolbar button { border-color: var(--primary); background: var(--primary); }
         .sheet {
             width: 210mm;
             min-height: 297mm;
             margin: 22px auto;
             padding: 17mm;
             background: #fff;
-            box-shadow: 0 12px 38px rgba(23,43,43,.12);
+            box-shadow: 0 12px 38px rgba(30,41,59,.12);
         }
         .cover {
             position: relative;
@@ -65,50 +68,62 @@
             justify-content: space-between;
             overflow: hidden;
             min-height: 263mm;
-            padding: 15mm 13mm;
-            border: 1px solid var(--line);
-            background: linear-gradient(145deg, #f4f8f5 0%, #fff 65%);
+            padding: 17mm 15mm;
+            border: 1px solid #c7d2fe;
+            background:
+                radial-gradient(ellipse at 88% 82%, rgba(34,211,238,.2), transparent 34%),
+                radial-gradient(ellipse at 5% 100%, rgba(99,102,241,.4), transparent 48%),
+                linear-gradient(138deg, #111827 0%, #1e1b4b 52%, #312e81 100%);
+        }
+        .cover::before {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+            background-size: 12mm 12mm;
+            content: "";
+            opacity: .45;
         }
         .cover::after {
             position: absolute;
-            right: -34mm;
-            bottom: 34mm;
-            width: 100mm;
-            height: 100mm;
-            border: 19mm solid var(--mint);
+            right: -37mm;
+            bottom: 27mm;
+            width: 112mm;
+            height: 112mm;
+            border: 1px solid rgba(103,232,249,.32);
+            box-shadow: 0 0 0 12mm rgba(99,102,241,.1), 0 0 0 26mm rgba(99,102,241,.06);
             border-radius: 50%;
             content: "";
         }
         .brandline, .cover-copy, .cover-footer { position: relative; z-index: 1; }
-        .brandline { display: flex; align-items: center; gap: 12px; color: var(--green); font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .brandmark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: var(--green); color: white; font-size: 14px; }
-        .cover-copy { max-width: 145mm; margin-top: -18mm; }
-        .eyebrow { color: var(--coral); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-        h1 { margin: 10px 0 12px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 42px; font-weight: 700; line-height: 1.04; }
-        .cover-copy p { max-width: 110mm; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
-        .cover-counts { display: flex; gap: 26px; margin-top: 25px; }
-        .cover-counts strong { display: block; color: var(--green); font-family: Georgia, "Times New Roman", serif; font-size: 27px; }
-        .cover-counts span { color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .cover-footer { display: flex; justify-content: space-between; align-items: end; border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: 10px; }
-        .unit-section { margin-top: 4mm; }
-        .unit-heading { display: flex; align-items: center; gap: 13px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid var(--green); break-after: avoid; }
-        .unit-logo { display: grid; flex: 0 0 48px; width: 48px; height: 48px; place-items: center; overflow: hidden; border-radius: 50%; background: var(--mint); color: var(--green); font-family: Georgia, "Times New Roman", serif; font-size: 18px; font-weight: 700; }
-        .unit-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .unit-kicker { margin: 0 0 3px; color: var(--coral); font-size: 9px; font-weight: 800; text-transform: uppercase; }
-        h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 22px; }
-        .unit-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
-        .product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
-        .product { overflow: hidden; border: 1px solid var(--line); border-radius: 5px; background: #fff; break-inside: avoid; page-break-inside: avoid; }
-        .product-image { display: grid; height: 45mm; place-items: center; overflow: hidden; background: #eef3f0; color: #92a49c; }
+        .brandline { display: flex; align-items: center; gap: 13px; color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .1em; line-height: 1.5; text-transform: uppercase; }
+        .school-logo { display: block; width: 20mm; height: 20mm; padding: 2mm; border: 1px solid rgba(255,255,255,.55); border-radius: 16px; background: #fff; object-fit: contain; }
+        .cover-copy { max-width: 145mm; margin-top: -12mm; }
+        .eyebrow { color: var(--cyan); font-size: 9px; font-weight: 800; letter-spacing: .19em; text-transform: uppercase; }
+        h1 { margin: 12px 0 16px; color: #fff; font-family: "Segoe UI", Arial, sans-serif; font-size: 43px; font-weight: 800; letter-spacing: -.045em; line-height: 1.04; }
+        .cover-copy p { max-width: 112mm; margin: 0; color: #cbd5e1; font-size: 13px; line-height: 1.75; }
+        .cover-counts { display: flex; gap: 34px; margin-top: 27px; }
+        .cover-counts strong { display: block; color: var(--cyan); font-family: "Segoe UI", Arial, sans-serif; font-size: 30px; font-weight: 800; }
+        .cover-counts span { color: #cbd5e1; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+        .cover-footer { display: flex; justify-content: space-between; align-items: end; gap: 12px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 14px; color: #cbd5e1; font-size: 9px; }
+        .unit-section { margin-top: 10mm; }
+        .unit-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 7mm; padding: 4mm 5mm; border: 1px solid #e0e7ff; border-left: 3px solid var(--primary); border-radius: 10px; background: linear-gradient(110deg, #f5f7ff, #fff 74%); break-after: avoid; page-break-after: avoid; }
+        .unit-logo { display: grid; flex: 0 0 56px; width: 56px; height: 56px; place-items: center; overflow: hidden; border: 1px solid #c7d2fe; border-radius: 14px; background: var(--tint); color: var(--primary); font-family: "Segoe UI", Arial, sans-serif; font-size: 20px; font-weight: 800; }
+        .unit-logo img { width: 100%; height: 100%; object-fit: contain; }
+        .unit-kicker { margin: 0 0 4px; color: var(--primary); font-size: 8px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+        h2 { margin: 0; font-family: "Segoe UI", Arial, sans-serif; font-size: 23px; font-weight: 750; letter-spacing: -.025em; line-height: 1.2; }
+        .unit-subtitle { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5mm; align-items: stretch; }
+        .product { display: flex; flex-direction: column; overflow: hidden; border: 1px solid #dfe5ee; border-radius: 10px; background: #fff; break-inside: avoid; page-break-inside: avoid; }
+        .product-image { display: grid; height: 38mm; flex: 0 0 38mm; place-items: center; overflow: hidden; background: linear-gradient(145deg, #eef2ff, #f8fafc); color: #818cf8; }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
-        .product-body { padding: 10px 11px 11px; }
-        .product-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
-        .tag { color: var(--green); font-size: 8px; font-weight: 800; text-transform: uppercase; }
-        .category { overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
-        h3 { margin: 0 0 5px; font-size: 13px; line-height: 1.25; }
-        .description { display: -webkit-box; overflow: hidden; min-height: 28px; margin: 0 0 10px; color: var(--muted); font-size: 9px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-        .price { padding-top: 7px; border-top: 1px solid var(--line); color: var(--green); font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: 700; }
-        .price small { color: var(--muted); font-family: "Trebuchet MS", "Segoe UI", sans-serif; font-size: 8px; font-weight: 600; }
+        .product-body { display: flex; flex: 1; flex-direction: column; padding: 3.5mm 4mm 4mm; }
+        .product-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2.5mm; }
+        .tag { padding: 1mm 2mm; border-radius: 20px; background: var(--tint); color: var(--primary-dark); font-size: 7px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+        .category { overflow: hidden; color: var(--muted); font-size: 7.5px; text-overflow: ellipsis; white-space: nowrap; }
+        h3 { margin: 0 0 2mm; color: var(--ink); font-size: 12px; line-height: 1.35; }
+        .description { display: -webkit-box; overflow: hidden; min-height: 26px; margin: 0 0 3mm; color: var(--muted); font-size: 8.5px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+        .price { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 2.5mm; border-top: 1px solid var(--line); color: var(--primary-dark); font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 800; }
+        .price small { color: var(--muted); font-family: "Segoe UI", Arial, sans-serif; font-size: 7px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
         .empty { padding: 35mm 10mm; color: var(--muted); text-align: center; }
         @page { size: A4 portrait; margin: 12mm; }
         @media print {
@@ -117,16 +132,18 @@
             .sheet { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
             .cover { min-height: 273mm; break-after: page; page-break-after: always; }
             .unit-section { margin-top: 0; }
-            .unit-section + .unit-section { margin-top: 12mm; }
+            .unit-section + .unit-section { margin-top: 0; break-before: page; page-break-before: always; }
             .product { box-shadow: none; }
             a { color: inherit; text-decoration: none; }
         }
         @media screen and (max-width: 760px) {
             .sheet { width: calc(100% - 24px); min-height: 0; margin: 12px; padding: 18px; }
             .cover { min-height: 680px; padding: 28px 22px; }
+            .school-logo { width: 62px; height: 62px; padding: 6px; }
+            .cover-copy { margin-top: 0; }
             h1 { font-size: 34px; }
             .product-grid { grid-template-columns: 1fr; }
-            .product-image { height: 58vw; max-height: 280px; }
+            .product-image { height: 58vw; max-height: 280px; flex-basis: auto; }
             .toolbar { position: static; }
         }
     </style>
@@ -150,11 +167,11 @@
             @php($productCount = $units->sum(fn ($unit) => $unit->catalogItems->count()))
             <section class="cover">
                 <div class="brandline">
-                    <span class="brandmark">T</span>
+                    <img class="school-logo" src="{{ asset('assets/images/school-logo.jpg') }}" alt="Logo sekolah">
                     <span>Teaching Factory<br>Produk & Karya Vokasi</span>
                 </div>
                 <div class="cover-copy">
-                    <div class="eyebrow">Katalog TEFA · {{ now()->year }}</div>
+                    <div class="eyebrow">Katalog Digital TEFA · {{ now()->year }}</div>
                     <h1>Karya vokasi,<br>siap untuk Anda.</h1>
                     <p>Temukan produk, layanan, dan karya pilihan dari unit Teaching Factory. Setiap item dibuat dengan keterampilan dan semangat inovasi siswa vokasi.</p>
                     <div class="cover-counts">
@@ -208,7 +225,7 @@
                                         @else
                                             Hubungi unit
                                         @endif
-                                        <small> / item</small>
+                                        <small>{{ $item->price ? 'HARGA' : 'INFO HARGA' }}</small>
                                     </div>
                                 </div>
                             </article>
