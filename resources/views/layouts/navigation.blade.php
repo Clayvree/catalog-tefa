@@ -6,12 +6,15 @@
             <div class="flex items-center gap-3 md:gap-6 min-w-0">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 group flex-shrink-0">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
-                        <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
                     </div>
-                    <span class="text-xl font-black tracking-tight text-white hidden sm:inline">
-                        Tefa<span class="text-indigo-400">Hub</span>
-                    </span>
+                    <div class="hidden sm:block leading-tight">
+                        <span class="text-xl font-black tracking-tight text-white flex items-center gap-1">
+                            Tefa<span class="text-indigo-400">Hub</span>
+                        </span>
+                        <span class="block text-[9px] font-bold uppercase tracking-wider text-slate-400 -mt-0.5">Teaching Factory Portal</span>
+                    </div>
                 </a>
 
                 @php
