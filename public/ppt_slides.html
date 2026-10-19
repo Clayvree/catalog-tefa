@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide Presentasi PPT - TEFA Platform (Lengkap 5 Slide)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .slide-canvas {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-width: 1100px;
+      box-shadow: 0 20px 35px -10px rgba(11, 37, 69, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-6 min-h-screen">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+    <!-- Header Controls -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 rounded-full text-amber-700 text-xs font-semibold uppercase tracking-wider mb-2">
+          ✨ Siap Masuk PowerPoint (16:9 Widescreen)
+        </div>
+        <h1 class="text-2xl font-black text-[#0b2545] tracking-tight">Slide Presentasi TEFA: ERD, Tabel DB, UML, Flowchart &amp; Wireframe</h1>
+        <p class="text-slate-500 text-sm">Desain tema selaras 100% dengan template PPT (Navy Blue, Yellow Chevron &amp; White Minimalist).</p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="downloadCurrentPng()" class="px-5 py-2.5 bg-[#0b2545] hover:bg-[#163864] text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Download PNG (High-Res)
+        </button>
+        <button onclick="downloadCurrentSvg()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Download SVG (Vector)
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs (5 SLIDES) -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 bg-slate-200/80 p-1.5 rounded-xl border border-slate-300">
+      <button onclick="switchTab('erd')" id="tab-erd" class="py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all bg-[#0b2545] text-white shadow-sm">
+        1. ERD Konseptual
+      </button>
+      <button onclick="switchTab('tables')" id="tab-tables" class="py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all text-slate-700 hover:bg-white/60">
+        2. Kumpulan Tabel DB
+      </button>
+      <button onclick="switchTab('uml')" id="tab-uml" class="py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all text-slate-700 hover:bg-white/60">
+        3. UML Class Diagram
+      </button>
+      <button onclick="switchTab('flowchart')" id="tab-flowchart" class="py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all text-slate-700 hover:bg-white/60">
+        4. Flowchart Sistem
+      </button>
+      <button onclick="switchTab('wireframe')" id="tab-wireframe" class="py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all text-slate-700 hover:bg-white/60">
+        5. Wireframe UI
+      </button>
+    </div>
+
+    <!-- Slide Canvas Display Area -->
+    <div class="flex flex-col items-center justify-center bg-slate-200/50 p-4 md:p-8 rounded-2xl border border-slate-300">
+      <!-- Container ERD -->
+      <div id="container-erd" class="slide-canvas rounded-xl overflow-hidden bg-white border border-slate-300 transition-all">
+        <img id="img-erd" src="/erd_tefa_slide.svg" alt="ERD Slide" class="w-full h-full object-contain pointer-events-none" />
+      </div>
+
+      <!-- Container Database Tables -->
+      <div id="container-tables" class="slide-canvas rounded-xl overflow-hidden bg-white border border-slate-300 transition-all hidden">
+        <img id="img-tables" src="/database_tables_tefa_slide.svg" alt="Database Tables Slide" class="w-full h-full object-contain pointer-events-none" />
+      </div>
+
+      <!-- Container UML -->
+      <div id="container-uml" class="slide-canvas rounded-xl overflow-hidden bg-white border border-slate-300 transition-all hidden">
+        <img id="img-uml" src="/uml_diagram_tefa_slide.svg" alt="UML Class Slide" class="w-full h-full object-contain pointer-events-none" />
+      </div>
+
+      <!-- Container Flowchart -->
+      <div id="container-flowchart" class="slide-canvas rounded-xl overflow-hidden bg-white border border-slate-300 transition-all hidden">
+        <img id="img-flowchart" src="/flowchart_tefa_slide.svg" alt="Flowchart Slide" class="w-full h-full object-contain pointer-events-none" />
+      </div>
+
+      <!-- Container Wireframe -->
+      <div id="container-wireframe" class="slide-canvas rounded-xl overflow-hidden bg-white border border-slate-300 transition-all hidden">
+        <img id="img-wireframe" src="/wireframe_tefa_slide.svg" alt="Wireframe Slide" class="w-full h-full object-contain pointer-events-none" />
+      </div>
+
+      <!-- Info Helper -->
+      <div class="mt-4 text-center text-xs text-slate-500 flex items-center justify-center gap-4">
+        <span>💡 <b>Tips PPT:</b> Anda bisa langsung memilih <b>Insert &gt; Pictures &gt; This Device &gt; pilih file .SVG</b> di PowerPoint agar gambar tajam tanpa pecah sama sekali.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offscreen Canvas for SVG to PNG conversion -->
+  <canvas id="exportCanvas" width="1920" height="1080" style="display:none;"></canvas>
+
+  <script>
+    let currentSlide = 'erd';
+
+    const slides = {
+      erd: {
+        svgUrl: '/erd_tefa_slide.svg',
+        filename: 'Slide_1_ERD_Konseptual_TEFA'
+      },
+      tables: {
+        svgUrl: '/database_tables_tefa_slide.svg',
+        filename: 'Slide_2_Tabel_Database_TEFA'
+      },
+      uml: {
+        svgUrl: '/uml_diagram_tefa_slide.svg',
+        filename: 'Slide_3_UML_Class_Diagram_TEFA'
+      },
+      flowchart: {
+        svgUrl: '/flowchart_tefa_slide.svg',
+        filename: 'Slide_4_Flowchart_Sistem_TEFA'
+      },
+      wireframe: {
+        svgUrl: '/wireframe_tefa_slide.svg',
+        filename: 'Slide_5_Wireframe_UI_TEFA'
+      }
+    };
+
+    function switchTab(name) {
+      currentSlide = name;
+      ['erd', 'tables', 'uml', 'flowchart', 'wireframe'].forEach(k => {
+        const tab = document.getElementById('tab-' + k);
+        const container = document.getElementById('container-' + k);
+        if (k === name) {
+          tab.className = "py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all bg-[#0b2545] text-white shadow-sm";
+          container.classList.remove('hidden');
+        } else {
+          tab.className = "py-2.5 px-3 rounded-lg font-bold text-xs text-center transition-all text-slate-700 hover:bg-white/60";
+          container.classList.add('hidden');
+        }
+      });
+    }
+
+    function downloadCurrentSvg() {
+      const active = slides[currentSlide];
+      const link = document.createElement('a');
+      link.href = active.svgUrl;
+      link.download = active.filename + '.svg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    async function downloadCurrentPng() {
+      const active = slides[currentSlide];
+      const resp = await fetch(active.svgUrl);
+      const svgText = await resp.text();
+
+      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(blob);
+
+      const image = new Image();
+      image.onload = function() {
+        const canvas = document.getElementById('exportCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 1920, 1080);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 1920, 1080);
+        ctx.drawImage(image, 0, 0, 1920, 1080);
+
+        const pngUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = active.filename + '.png';
+        link.href = pngUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobURL);
+      };
+      image.src = blobURL;
+    }
+  </script>
+</body>
+</html>
