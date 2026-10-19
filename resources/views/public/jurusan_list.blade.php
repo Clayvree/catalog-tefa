@@ -1,4 +1,4 @@
-﻿<x-public-layout>
+<x-public-layout>
     <div class="bg-slate-50 min-h-screen py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
@@ -46,8 +46,27 @@
                                     <span class="text-slate-400 font-medium">{{ $unit->portfolios_count ?? '0' }} Portofolio</span>
                                 </div>
 
+                                @php
+                                    $unitDisplayNames = [
+                                        'TEFA PPLG Software House' => 'TEFA PPLG',
+                                        'TEFA DKV Creative Agency' => 'TEFA DKV',
+                                        'TEFA TKJ Network Solutions' => 'TEFA TKJ',
+                                        'TEFA Animation & Creative Studio' => 'TEFA ANIMASI',
+                                        'TEFA Animation & Creative' => 'TEFA ANIMASI',
+                                        'TEFA PSPT Broadcasting House' => 'TEFA PSPT',
+                                        'TEFA PSPT Broadcasting' => 'TEFA PSPT',
+                                    ];
+                                    $unitTitle = $unitDisplayNames[$unit->name] ?? (
+                                        str_contains($unit->name, 'PPLG') ? 'TEFA PPLG' : (
+                                        str_contains($unit->name, 'DKV') ? 'TEFA DKV' : (
+                                        str_contains($unit->name, 'TKJ') ? 'TEFA TKJ' : (
+                                        (str_contains(strtolower($unit->name), 'animasi') || str_contains(strtolower($unit->name), 'animation')) ? 'TEFA ANIMASI' : (
+                                        str_contains($unit->name, 'PSPT') ? 'TEFA PSPT' : $unit->name
+                                    )))));
+                                @endphp
+
                                 <h3 class="font-black text-xl text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 mb-2">
-                                    {{ $unit->name }}
+                                    {{ $unitTitle }}
                                 </h3>
 
                                 <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">
@@ -58,7 +77,7 @@
                             <div class="pt-4 border-t border-slate-100 flex items-center gap-3">
                                 <a href="{{ route('tefa.storefront', $unit->slug) }}" 
                                    class="flex-1 text-center py-3 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-2">
-                                    Buka Profil Storefront &rarr;
+                                    Buka Profil &rarr;
                                 </a>
                             </div>
                         </div>

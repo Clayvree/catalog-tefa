@@ -40,7 +40,7 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold text-[10px] tracking-wide uppercase border border-indigo-500/30">
-                    Teaching Factory Portal
+                    Teaching Factory
                 </span>
                 <span class="text-slate-300 text-xs">Pesan produk & layanan industri langsung dari siswa vokasi tersertifikasi.</span>
             </div>
@@ -70,7 +70,7 @@
                             <span class="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-1">
                                 Tefa<span class="text-indigo-600">Hub</span>
                             </span>
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 -mt-1">Teaching Factory Portal</span>
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 -mt-1">Teaching Factory</span>
                         </div>
                     </a>
 
@@ -241,15 +241,41 @@
                     </ul>
                 </div>
 
-                <!-- Unit Layanan (dinamis dari data Unit TEFA aktif) -->
+                <!-- Unit Layanan (dinamis dari data Unit TEFA aktif di database) -->
                 @php
-                    $footerUnits = \App\Models\TefaUnit::where('is_active', true)->orderBy('name')->get(['name', 'slug']);
+                    $footerUnits = \App\Models\TefaUnit::where('is_active', true)
+                        ->orWhereNull('is_active')
+                        ->orderBy('name')
+                        ->get(['name', 'slug']);
+
+                    $unitDisplayNames = [
+                        'TEFA PPLG Software House' => 'TEFA PPLG',
+                        'TEFA DKV Creative Agency' => 'TEFA DKV',
+                        'TEFA TKJ Network Solutions' => 'TEFA TKJ',
+                        'TEFA Animation & Creative Studio' => 'TEFA ANIMASI',
+                        'TEFA Animation & Creative' => 'TEFA ANIMASI',
+                        'TEFA PSPT Broadcasting House' => 'TEFA PSPT',
+                        'TEFA PSPT Broadcasting' => 'TEFA PSPT',
+                    ];
                 @endphp
                 <div>
                     <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-5">Unit Produksi</h4>
                     <ul class="space-y-3 text-sm font-medium">
                         @forelse($footerUnits as $unit)
-                            <li><a href="{{ route('tefa.storefront', $unit->slug) }}" class="hover:text-indigo-400 transition-colors">{{ $unit->name }}</a></li>
+                            @php
+                                $unitTitle = $unitDisplayNames[$unit->name] ?? (
+                                    str_contains($unit->name, 'PPLG') ? 'TEFA PPLG' : (
+                                    str_contains($unit->name, 'DKV') ? 'TEFA DKV' : (
+                                    str_contains($unit->name, 'TKJ') ? 'TEFA TKJ' : (
+                                    (str_contains(strtolower($unit->name), 'animasi') || str_contains(strtolower($unit->name), 'animation')) ? 'TEFA ANIMASI' : (
+                                    str_contains($unit->name, 'PSPT') ? 'TEFA PSPT' : $unit->name
+                                )))));
+                            @endphp
+                            <li>
+                                <a href="{{ route('tefa.storefront', $unit->slug) }}" class="hover:text-indigo-400 transition-colors">
+                                    {{ $unitTitle }}
+                                </a>
+                            </li>
                         @empty
                             <li><a href="{{ route('jurusan.list') }}" class="hover:text-indigo-400 transition-colors">Lihat Semua Unit TEFA</a></li>
                         @endforelse

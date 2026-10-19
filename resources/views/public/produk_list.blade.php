@@ -182,8 +182,29 @@
                     </div>
 
                     <!-- Products Grid (2 cols on Mobile / Android, 3 cols on Desktop) -->
+                    @php
+                        $unitDisplayNames = [
+                            'TEFA PPLG Software House' => 'TEFA PPLG',
+                            'TEFA DKV Creative Agency' => 'TEFA DKV',
+                            'TEFA TKJ Network Solutions' => 'TEFA TKJ',
+                            'TEFA Animation & Creative Studio' => 'TEFA ANIMASI',
+                            'TEFA Animation & Creative' => 'TEFA ANIMASI',
+                            'TEFA PSPT Broadcasting House' => 'TEFA PSPT',
+                            'TEFA PSPT Broadcasting' => 'TEFA PSPT',
+                        ];
+                    @endphp
                     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 lg:gap-6">
                         @forelse($items as $item)
+                            @php
+                                $unitRawName = $item->tefaUnit->name ?? 'Unit TEFA';
+                                $unitLocation = $unitDisplayNames[$unitRawName] ?? (
+                                    str_contains($unitRawName, 'PPLG') ? 'TEFA PPLG' : (
+                                    str_contains($unitRawName, 'DKV') ? 'TEFA DKV' : (
+                                    str_contains($unitRawName, 'TKJ') ? 'TEFA TKJ' : (
+                                    (str_contains(strtolower($unitRawName), 'animasi') || str_contains(strtolower($unitRawName), 'animation')) ? 'TEFA ANIMASI' : (
+                                    str_contains($unitRawName, 'PSPT') ? 'TEFA PSPT' : $unitRawName
+                                )))));
+                            @endphp
                             <div class="group bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 flex flex-col">
                                 
                                 <!-- Product Photo (Square 1:1 Aspect Ratio) -->
@@ -206,10 +227,10 @@
                                 <div class="p-3 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
                                     
                                     <div class="space-y-1">
-                                        <!-- Unit / Store Name -->
+                                        <!-- Unit / Store Name (Lokasi TEFA Jurusan) -->
                                         <div class="flex items-center gap-1 text-[10px] sm:text-xs text-slate-400 truncate">
                                             <svg class="w-3 h-3 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"></path></svg>
-                                            <span class="truncate font-medium">{{ $item->tefaUnit->name }}</span>
+                                            <span class="truncate font-semibold text-slate-600">{{ $unitLocation }}</span>
                                         </div>
 
                                         <!-- Title -->
@@ -219,55 +240,34 @@
                                     </div>
 
                                     <!-- Price & CTA -->
-                                    <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-auto">
-                                        <div class="min-w-0 flex-1">
-                                            <span class="block text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase">Mulai</span>
-                                            <span class="text-xs sm:text-base font-black text-indigo-600">
+                                    <div class="pt-2.5 sm:pt-3 border-t border-slate-100 flex flex-col gap-2 mt-auto">
+                                        <div>
+                                            <span class="block text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase leading-none">Mulai</span>
+                                            <span class="text-xs sm:text-base font-black text-indigo-600 leading-tight">
                                                 Rp{{ number_format((float)$item->price, 0, ',', '.') }}
                                             </span>
-                                            @if($item->item_type->value === 'jasa')
-                                                <span class="block text-[10px] font-bold text-emerald-600">Tersedia untuk konsultasi</span>
-                                            @elseif(!$item->track_stock)
-                                                <span class="block text-[10px] font-bold text-emerald-600">Stok unlimited</span>
-                                            @else
-                                                <span class="block text-[10px] font-bold {{ $item->stock > 0 ? 'text-emerald-600' : 'text-red-600' }}">
-                                                    {{ $item->stock > 0 ? 'Stok: ' . $item->stock : 'Stok habis' }}
-                                                </span>
-                                            @endif
                                         </div>
                                         
                                         @if($item->item_type->value === 'jasa')
                                             <a href="{{ route('jasa.nego', $item->slug) }}" 
-                                               class="flex-shrink-0 p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-emerald-600/20">
-                                                <span class="hidden xl:inline-flex items-center gap-1">
-                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                                                    Nego & Konsultasi
-                                                </span>
-                                                <span class="xl:hidden">Nego</span>
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                               class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/20 text-center">
+                                                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                                <span>Nego & Konsultasi</span>
                                             </a>
                                         @elseif($item->item_type->value === 'digital' && (!$item->track_stock || $item->stock > 0))
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
-                                               class="flex-shrink-0 p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-purple-600/20">
-                                                <span class="hidden xl:inline-flex items-center gap-1">
-                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
-                                                    Beli Digital
-                                                </span>
-                                                <span class="xl:hidden">Beli</span>
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                               class="w-full py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm shadow-purple-600/20 text-center">
+                                                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                                                <span>Beli Digital</span>
                                             </a>
                                         @elseif(!$item->track_stock || $item->stock > 0)
                                             <a href="{{ route('order.checkout', $item->slug) }}" 
-                                               class="flex-shrink-0 p-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shadow-indigo-600/20">
-                                                <span class="hidden xl:inline-flex items-center gap-1">
-                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                                                    Beli Sekarang
-                                                </span>
-                                                <span class="xl:hidden">Beli</span>
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                               class="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm shadow-indigo-600/20 text-center">
+                                                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                                                <span>Pesan Sekarang</span>
                                             </a>
                                         @elseif($item->item_type->value !== 'jasa')
-                                            <span class="px-2 py-1.5 rounded-lg bg-red-50 text-red-600 text-[10px] sm:text-xs font-bold">Habis</span>
+                                            <span class="w-full py-2 px-3 rounded-xl bg-red-50 text-red-600 text-[11px] sm:text-xs font-bold text-center block">Stok Habis</span>
                                         @endif
                                     </div>
 

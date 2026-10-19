@@ -8,13 +8,25 @@ use App\Models\TefaUnit;
 use App\Models\CatalogItem;
 use App\Models\Portfolio;
 use App\Models\Category;
+use App\Enums\ItemType;
 use Illuminate\Http\Request;
 
 class PublicController extends Controller
 {
     public function home()
     {
-        $categories = Category::withCount('catalogItems')->get();
+        // Hanya ambil kategori bertipe Layanan/Jasa dari database
+        $categories = Category::where('type', ItemType::Jasa)
+            ->withCount(['catalogItems' => fn ($query) => $query->published()])
+            ->orderBy('id', 'asc')
+            ->get();
+
+        // Fallback jika belum ada kategori bertipe jasa secara spesifik
+        if ($categories->isEmpty()) {
+            $categories = Category::withCount(['catalogItems' => fn ($query) => $query->published()])
+                ->orderBy('id', 'asc')
+                ->get();
+        }
         $units = TefaUnit::withCount(['catalogItems', 'portfolios'])->where('is_active', true)->get();
         
         // Hanya 4 Top Produk Unggulan di Beranda

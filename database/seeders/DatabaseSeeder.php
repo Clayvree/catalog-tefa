@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $unitPplg = TefaUnit::updateOrCreate(['slug' => 'tefa-pplg-software-house'], [
-            'name'        => 'TEFA PPLG Software House',
+            'name'        => 'TEFA PPLG',
             'description' => 'Unit produksi Pengembangan Perangkat Lunak dan GIM (PPLG) melayani pembuatan aplikasi, website, game VR, dan sistem otomasi digital.',
             'banner_url'  => asset('assets/images/units/pplg.png'),
             'logo_url'    => asset('assets/images/units/logo_pplg.jpeg'),
@@ -220,7 +220,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $unitDkv = TefaUnit::updateOrCreate(['slug' => 'tefa-dkv-creative-agency'], [
-            'name'        => 'TEFA DKV Creative Agency',
+            'name'        => 'TEFA DKV',
             'description' => 'Unit produksi Desain Komunikasi Visual (DKV) melayani jasa desain grafis, cetak outdoor/indoor, merchandise, branding kemasan, dan media visual.',
             'banner_url' => asset('assets/images/units/dkv.png'),
             'logo_url'   => asset('assets/images/units/logo_dkv.jpg'),
@@ -261,7 +261,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $unitTkj = TefaUnit::updateOrCreate(['slug' => 'tefa-tkj-network-solutions'], [
-            'name'        => 'TEFA TKJ Network Solutions',
+            'name'        => 'TEFA TKJ',
             'description' => 'Unit layanan Teknik Komputer & Jaringan (TKJ) spesialis perancangan, instalasi jaringan LAN/Wireless, pemasangan internet, serta servis software.',
             'banner_url' => asset('assets/images/units/tkj.png'),
             'logo_url'   => asset('assets/images/units/logo_tkj.jpg'),
@@ -336,7 +336,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $unitAnimasi = TefaUnit::updateOrCreate(['slug' => 'tefa-animasi-studio'], [
-            'name'        => 'TEFA Animation & Creative Studio',
+            'name'        => 'TEFA ANIMASI',
             'description' => 'Unit produksi Animasi melayani perancangan karakter 2D/3D, ilustrasi digital, video edukasi, animasi promosi, hingga produksi video profil instansi.',
             'banner_url' => asset('assets/images/units/anm.jpeg'),
             'logo_url'   => asset('assets/images/units/logo_anm.jpg'),
@@ -372,7 +372,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $unitPspt = TefaUnit::updateOrCreate(['slug' => 'tefa-pspt-broadcasting-house'], [
-            'name'        => 'TEFA PSPT Broadcasting House',
+            'name'        => 'TEFA PSPT',
             'description' => 'Unit produksi Produksi dan Siaran Program Televisi (PSPT) melayani jasa video shooting, live streaming event, pengerjaan video klip, persewaan peralatan multicam, serta pengisian suara (Voice Over).',
             'banner_url' => asset('assets/images/units/pspt.jpeg'),
             'logo_url'   => asset('assets/images/units/logo_pspt.jpg'),

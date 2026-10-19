@@ -8,97 +8,45 @@
         <div class="absolute top-1/2 -left-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+            <div class="max-w-3xl space-y-6 sm:space-y-8 text-center lg:text-left">
                 
-                <!-- Left Hero Content -->
-                <div class="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
-                    
-                    <!-- Top Chip -->
-                    <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white border border-indigo-100 shadow-sm text-indigo-700 text-[11px] sm:text-xs font-bold">
-                        <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-                        Teaching Factory Portal
-                    </div>
-
-                    <!-- Headline -->
-                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
-                        Karya Nyata Siswa, <br class="hidden sm:inline">
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-indigo-700 to-blue-600">
-                            Standar Kualitas Industri.
-                        </span>
-                    </h1>
-
-                    <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                        Temukan ribuan produk inovatif dan layanan jasa profesional langsung dari unit Teaching Factory. Dikerjakan oleh siswa berprestasi dengan supervisi instruktur ahli.
-                    </p>
-
-                    <!-- Hero Search Box -->
-                    <div class="max-w-xl mx-auto lg:mx-0 bg-white p-1.5 sm:p-2 rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/80">
-                        <form action="{{ route('produk.list') }}" method="GET" class="flex items-center gap-1.5 sm:gap-2">
-                            <div class="pl-2.5 sm:pl-3 text-slate-400">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                            <input type="text" name="q" placeholder="Cari jasa web, desain logo, catering..." class="w-full border-0 focus:ring-0 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400">
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5 flex-shrink-0">
-                                Cari Layanan
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Quick Suggestions -->
-                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 pt-1 text-[11px] sm:text-xs text-slate-500">
-                        <span class="font-bold text-slate-700">Populer:</span>
-                        <a href="{{ route('produk.list', ['q' => 'Website']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Website</a>
-                        <a href="{{ route('produk.list', ['q' => 'Logo']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Desain Logo</a>
-                        <a href="{{ route('produk.list', ['q' => 'Video']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Reels/TikTok</a>
-                        <a href="{{ route('produk.list', ['q' => 'Bakery']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Bakery</a>
-                    </div>
+                <!-- Top Chip -->
+                <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white border border-indigo-100 shadow-sm text-indigo-700 text-[11px] sm:text-xs font-bold">
+                    <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                    Teaching Factory
                 </div>
 
-                <!-- Right Hero Feature Box -->
-                <div class="lg:col-span-5 relative">
-                    <div class="relative mx-auto max-w-md bg-white rounded-3xl p-5 sm:p-6 shadow-2xl shadow-indigo-900/10 border border-slate-100 space-y-4">
-                        
-                        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/80 to-blue-50/50 border border-indigo-100/80">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">💻</span>
-                                    <div>
-                                        <h4 class="text-xs font-bold text-slate-900">Project App POS Kasir</h4>
-                                        <p class="text-[10px] text-slate-500">TEFA RPL Software House</p>
-                                    </div>
-                                </div>
-                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-extrabold">Active</span>
-                            </div>
-                            <div class="space-y-1 text-[11px] text-slate-600">
-                                <div class="flex justify-between">
-                                    <span>Progres Kanban Siswa:</span>
-                                    <span class="font-bold text-indigo-600">85% Selesai</span>
-                                </div>
-                                <div class="w-full bg-indigo-200/50 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-indigo-600 h-full rounded-full" style="width: 85%"></div>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Headline -->
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
+                    Karya Nyata Siswa, <br class="hidden sm:inline">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-indigo-700 to-blue-600">
+                        Standar Kualitas Industri.
+                    </span>
+                </h1>
 
-                        <div class="p-4 rounded-2xl bg-white border border-slate-100 shadow-sm space-y-1.5">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="font-bold text-slate-800 flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Supervisi Pengajar Terverifikasi
-                                </span>
-                                <span class="text-[10px] text-emerald-600 font-bold">100% QA Passed</span>
-                            </div>
-                            <p class="text-[11px] text-slate-500 leading-relaxed">
-                                Seluruh pekerjaan siswa didampingi oleh instruktur profesional bersertifikasi BNSP & industri partner.
-                            </p>
-                        </div>
+                <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                    Temukan ribuan produk inovatif dan layanan jasa profesional langsung dari unit Teaching Factory. Dikerjakan oleh siswa berprestasi dengan supervisi instruktur ahli.
+                </p>
 
-                        <a href="{{ route('jurusan.list') }}" class="w-full py-3 bg-slate-900 hover:bg-indigo-600 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors">
-                            Jelajahi Semua Unit Jurusan &rarr;
-                        </a>
-                    </div>
+                <!-- Hero Search Box -->
+                <div class="max-w-xl mx-auto lg:mx-0 bg-white p-1.5 sm:p-2 rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/80">
+                    <form action="{{ route('produk.list') }}" method="GET" class="flex items-center gap-1.5 sm:gap-2">
+                        <div class="pl-2.5 sm:pl-3 text-slate-400">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input type="text" name="q" placeholder="Cari jasa web, desain logo, produksi video..." class="w-full border-0 focus:ring-0 text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-indigo-600/20 transition-all flex items-center gap-1.5 flex-shrink-0">
+                            Cari Layanan
+                        </button>
+                    </form>
                 </div>
 
+                <!-- Quick Suggestions -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 pt-1 text-[11px] sm:text-xs text-slate-500">
+                    <span class="font-bold text-slate-700">Populer:</span>
+                    <a href="{{ route('produk.list', ['q' => 'Website']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Website</a>
+                    <a href="{{ route('produk.list', ['q' => 'Logo']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Desain Logo</a>
+                </div>
             </div>
         </div>
     </section>
@@ -147,21 +95,21 @@
             </div>
 
             @php
-                // Peta ikon per kategori. Tambahkan baris baru di sini kalau ada kategori baru.
+                // Peta ikon per kategori sesuai dengan data di database
                 $categoryIcons = [
-                    'default'  => '<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.59 9.59a2 2 0 0 0 2.82 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
-                    'aplikasi' => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
-                    'website'  => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
-                    'software' => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
-                    'game'     => '<rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6 12h4M8 10v4M15.5 11.5h.01M17.5 13.5h.01"/>',
-                    'vr'       => '<rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6 12h4M8 10v4M15.5 11.5h.01M17.5 13.5h.01"/>',
-                    'otomasi'  => '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',
-                    'iot'      => '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',
-                    'logistik' => '<rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
-                    'desain'   => '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.2-.3-.4-.6-.4-1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.6-4.5-8.4-10-8.4z"/>',
-                    'grafis'   => '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.2-.3-.4-.6-.4-1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.6-4.5-8.4-10-8.4z"/>',
-                    'cetak'    => '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
-                    'percetakan' => '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+                    'default'     => '<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.59 9.59a2 2 0 0 0 2.82 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+                    'aplikasi'    => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
+                    'website'     => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
+                    'software'    => '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
+                    'game'        => '<rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6 12h4M8 10v4M15.5 11.5h.01M17.5 13.5h.01"/>',
+                    'vr'          => '<rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6 12h4M8 10v4M15.5 11.5h.01M17.5 13.5h.01"/>',
+                    'otomasi'     => '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',
+                    'iot'         => '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',
+                    'logistik'    => '<rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+                    'desain'      => '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.2-.3-.4-.6-.4-1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.6-4.5-8.4-10-8.4z"/>',
+                    'grafis'      => '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.2-.3-.4-.6-.4-1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.6-4.5-8.4-10-8.4z"/>',
+                    'cetak'       => '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+                    'percetakan'  => '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
                     'merchandise' => '<path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
                     'instalasi'   => '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
                     'jaringan'    => '<circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4m0 0-5.5 6M12 11l5.5 6"/>',
@@ -173,9 +121,7 @@
                     'video'       => '<rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/>',
                     'animasi'     => '<rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/>',
                     'produksi'    => '<rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/>',
-                    'otomotif'    => '<circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 17H3v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2M9 17h6"/>',
-                    'kuliner'     => '<path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8ZM6 1v3M10 1v3M14 1v3"/>',
-                    'bakery'      => '<path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8ZM6 1v3M10 1v3M14 1v3"/>',
+                    'penyiaran'   => '<path d="M4.93 4.93A10 10 0 0 0 2 12a10 10 0 0 0 2.93 7.07M19.07 4.93A10 10 0 0 1 22 12a10 10 0 0 1-2.93 7.07M7.76 7.76A6 6 0 0 0 6 12a6 6 0 0 0 1.76 4.24M16.24 7.76A6 6 0 0 1 18 12a6 6 0 0 1-1.76 4.24M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>',
                 ];
 
                 $pickIcon = function (string $name) use ($categoryIcons) {
@@ -190,20 +136,28 @@
             @endphp
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-                @foreach($categories as $category)
+                @forelse($categories as $category)
                     <a href="{{ route('produk.list', ['category' => $category->id]) }}" 
                        class="group bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-indigo-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center">
-                        <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 text-indigo-600 group-hover:text-white flex items-center justify-center transition-colors duration-300 mb-2 sm:mb-3">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                {!! $pickIcon($category->name) !!}
-                            </svg>
+                        <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 text-indigo-600 group-hover:text-white flex items-center justify-center transition-colors duration-300 mb-2 sm:mb-3 overflow-hidden">
+                            @if(!empty($category->image))
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover rounded-xl sm:rounded-2xl">
+                            @else
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    {!! $pickIcon($category->name) !!}
+                                </svg>
+                            @endif
                         </div>
                         <h3 class="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                             {{ $category->name }}
                         </h3>
                         <span class="text-[10px] sm:text-xs text-slate-400 mt-0.5 font-medium">{{ $category->catalog_items_count ?? '0' }} Layanan</span>
                     </a>
-                @endforeach
+                @empty
+                    <div class="col-span-full py-8 text-center text-slate-400 text-xs font-semibold bg-white rounded-2xl border border-dashed border-slate-200">
+                        Belum ada kategori layanan yang tersedia.
+                    </div>
+                @endforelse
             </div>
 
         </div>
@@ -221,13 +175,34 @@
                 </p>
             </div>
 
+            @php
+                $unitDisplayNames = [
+                    'TEFA PPLG Software House' => 'TEFA PPLG',
+                    'TEFA DKV Creative Agency' => 'TEFA DKV',
+                    'TEFA TKJ Network Solutions' => 'TEFA TKJ',
+                    'TEFA Animation & Creative Studio' => 'TEFA ANIMASI',
+                    'TEFA Animation & Creative' => 'TEFA ANIMASI',
+                    'TEFA PSPT Broadcasting House' => 'TEFA PSPT',
+                    'TEFA PSPT Broadcasting' => 'TEFA PSPT',
+                ];
+            @endphp
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 @foreach($units as $unit)
+                    @php
+                        $unitTitle = $unitDisplayNames[$unit->name] ?? (
+                            str_contains($unit->name, 'PPLG') ? 'TEFA PPLG' : (
+                            str_contains($unit->name, 'DKV') ? 'TEFA DKV' : (
+                            str_contains($unit->name, 'TKJ') ? 'TEFA TKJ' : (
+                            (str_contains(strtolower($unit->name), 'animasi') || str_contains(strtolower($unit->name), 'animation')) ? 'TEFA ANIMASI' : (
+                            str_contains($unit->name, 'PSPT') ? 'TEFA PSPT' : $unit->name
+                        )))));
+                    @endphp
                     <div class="group bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
                         
                         <div class="h-36 sm:h-44 bg-slate-900 relative overflow-hidden">
                             @if($unit->banner_url)
-                                <img src="{{ $unit->banner_url }}" alt="{{ $unit->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80">
+                                <img src="{{ $unit->banner_url }}" alt="{{ $unitTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80">
                             @else
                                 <div class="w-full h-full bg-gradient-to-tr from-indigo-900 to-slate-800"></div>
                             @endif
@@ -237,7 +212,7 @@
                                 @if($unit->logo_url)
                                     <img src="{{ $unit->logo_url }}" alt="Logo" class="w-full h-full object-cover rounded-lg sm:rounded-xl">
                                 @else
-                                    <span class="font-black text-indigo-600 text-base sm:text-lg">{{ substr($unit->name, 0, 1) }}</span>
+                                    <span class="font-black text-indigo-600 text-base sm:text-lg">{{ substr($unitTitle, 0, 1) }}</span>
                                 @endif
                             </div>
                         </div>
@@ -251,7 +226,7 @@
                                 </div>
                                 
                                 <h3 class="font-black text-sm sm:text-base text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
-                                    {{ $unit->name }}
+                                    {{ $unitTitle }}
                                 </h3>
                                 
                                 <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mt-1">
