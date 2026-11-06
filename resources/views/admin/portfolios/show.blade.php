@@ -41,7 +41,7 @@
 
                     @if($portfolio->thumbnail_url)
                         <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden mb-6">
-                            <img src="{{ asset('storage/' . $portfolio->thumbnail_url) }}" alt="Preview" class="w-full h-full object-cover">
+                            <img src="{{ $portfolio->thumbnail_url }}" alt="Preview" class="w-full h-full object-cover">
                         </div>
                     @endif
 

@@ -39,27 +39,27 @@
             @endif
 
             <!-- Quick Stats -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <a href="{{ route('admin.products.index') }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ !request('type') ? 'ring-2 ring-indigo-600' : '' }}">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
+                <a href="{{ route('admin.products.index') }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ !request('type') && !request('status') ? 'ring-2 ring-indigo-600' : '' }}">
                     <span class="text-[10px] font-bold text-slate-400 uppercase">Semua Katalog</span>
                     <p class="text-xl font-black text-slate-900">{{ $stats['total'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'produk']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'produk' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-indigo-600 uppercase"> Produk Fisik</span>
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase">Produk Fisik</span>
                     <p class="text-xl font-black text-indigo-600">{{ $stats['physical'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'jasa']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'jasa' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase"> Jasa</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase">Jasa</span>
                     <p class="text-xl font-black text-emerald-600">{{ $stats['service'] }}</p>
                 </a>
                 <a href="{{ route('admin.products.index', ['type' => 'digital']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('type') === 'digital' ? 'ring-2 ring-indigo-600' : '' }}">
-                    <span class="text-[10px] font-bold text-amber-600 uppercase"> Produk Digital</span>
+                    <span class="text-[10px] font-bold text-amber-600 uppercase">Produk Digital</span>
                     <p class="text-xl font-black text-amber-600">{{ $stats['digital'] }}</p>
                 </a>
-                <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-1">
+                <a href="{{ route('admin.products.index', ['status' => 'published']) }}" class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:border-indigo-500 transition space-y-1 {{ request('status') === 'published' ? 'ring-2 ring-indigo-600' : '' }}">
                     <span class="text-[10px] font-bold text-slate-400 uppercase">Tayang Publik</span>
                     <p class="text-xl font-black text-slate-900">{{ $stats['published'] }}</p>
-                </div>
+                </a>
             </div>
 
             <!-- Products Table Card -->

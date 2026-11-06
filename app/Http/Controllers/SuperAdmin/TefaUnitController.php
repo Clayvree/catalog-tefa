@@ -92,6 +92,15 @@ class TefaUnitController extends Controller
             }
         }
 
+        foreach ($unit->catalogItems as $item) {
+            if ($item->thumbnail_url) {
+                $itemPath = ltrim(str_replace('/storage/', '', (string) $item->thumbnail_url), '/');
+                if ($itemPath && !str_starts_with((string) $item->thumbnail_url, 'http')) {
+                    Storage::disk('public')->delete($itemPath);
+                }
+            }
+        }
+
         $unit->delete();
         return redirect()->back()->with('success', 'Unit TEFA berhasil dihapus!');
     }

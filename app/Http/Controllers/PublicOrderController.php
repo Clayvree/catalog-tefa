@@ -122,8 +122,28 @@ class PublicOrderController extends Controller
 
     public function invoice(Order $order)
     {
+        // Cegah akses tidak sah: hanya pemilik pesanan atau admin yang dapat melihat invoice
+        if ($order->user_id && auth()->check() && $order->user_id !== auth()->id() && !in_array(auth()->user()?->role?->value, ['superadmin', 'admin_jurusan'])) {
+            abort(403, 'Akses invoice tidak diizinkan.');
+        }
+
         $order->load(['items.catalogItem', 'tefaUnit']);
         return view('public.invoice', compact('order'));
+    }
+
+    public function simulatePayment(Order $order)
+    {
+        // Pastikan hanya pemilik order atau admin yang bisa bayar
+        if ($order->user_id && $order->user_id !== auth()->id() && !in_array(auth()->user()?->role?->value, ['superadmin', 'admin_jurusan'])) {
+            abort(403, 'Aksi tidak diizinkan.');
+        }
+
+        $order->update([
+            'payment_status' => 'paid',
+            'status' => ($order->status === 'pending') ? 'processed' : $order->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Pembayaran berhasil dikonfirmasi! Pesanan Anda segera diproses.');
     }
 
     

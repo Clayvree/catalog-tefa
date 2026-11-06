@@ -56,12 +56,12 @@
                     <table class="w-full text-xs text-left">
                         <thead class="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-slate-100">
                             <tr>
-                                <th class="px-6 py-3.5">Customer & Kontak</th>
-                                <th class="px-6 py-3.5">Item yang Dipesan</th>
-                                <th class="px-6 py-3.5">Metode Penerimaan (Fulfillment)</th>
-                                <th class="px-6 py-3.5">Pembayaran</th>
-                                <th class="px-6 py-3.5">Status Pesanan</th>
-                                <th class="px-6 py-3.5 text-right">Aksi</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Customer & Kontak</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Item yang Dipesan</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Metode Penerimaan</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Pembayaran</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Status Pesanan</th>
+                                <th class="px-6 py-3.5 text-right whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -109,34 +109,43 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="space-y-1">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                @if($order->payment_status === 'paid')
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-extrabold text-[10px] uppercase">
+                                                        <svg class="w-3 h-3 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                        Lunas
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 font-extrabold text-[10px] uppercase">
+                                                        Belum Bayar
+                                                    </span>
+                                                @endif
+                                                <span class="text-[10px] text-slate-400 uppercase font-mono">({{ $order->payment_method }})</span>
+                                            </div>
+
                                             @if($order->payment_status === 'paid')
-                                                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase">
-                                                    ✓ Lunas
-                                                </span>
-                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1" onsubmit="return confirm('Anda yakin ingin membatalkan status lunas?')">
+                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin membatalkan status lunas?')">
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="payment_status" value="unpaid">
-                                                    <button type="submit" class="text-[10px] text-slate-500 font-bold hover:underline cursor-pointer">
-                                                        [Batalkan Lunas]
+                                                    <button type="submit" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10px] transition cursor-pointer flex items-center gap-1">
+                                                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                        <span>Batalkan Lunas</span>
                                                     </button>
                                                 </form>
                                             @else
-                                                <span class="px-2.5 py-1 rounded-full bg-red-50 text-red-700 font-extrabold text-[10px] uppercase">
-                                                    Belum Bayar
-                                                </span>
-                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" class="inline block pt-1" onsubmit="return confirm('Anda yakin pesanan ini sudah dibayar lunas?')">
+                                                <form action="{{ route('admin.orders.payment.confirm', $order->id) }}" method="POST" onsubmit="return confirm('Anda yakin pesanan ini sudah dibayar lunas?')">
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="payment_status" value="paid">
-                                                    <button type="submit" class="text-[10px] text-indigo-600 font-bold hover:underline cursor-pointer">
-                                                        [Tandai Lunas]
+                                                    <button type="submit" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] shadow-sm transition cursor-pointer flex items-center gap-1">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                        <span>Tandai Lunas</span>
                                                     </button>
                                                 </form>
                                             @endif
-                                            <p class="text-[10px] text-slate-400 uppercase font-mono">{{ $order->payment_method }}</p>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">

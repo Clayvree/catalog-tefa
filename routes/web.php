@@ -23,9 +23,14 @@ use App\Http\Controllers\Worker\PortfolioController as WorkerPortfolioController
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MailerController;
 
-// --- EMAIL COMPOSER ---
+// --- EMAIL COMPOSER (Dibatasi Throttle Anti-Spam) ---
 Route::get("email", [MailerController::class, "email"])->name("email");
-Route::post("send-email", [MailerController::class, "composeEmail"])->name("send-email");
+Route::post("send-email", [MailerController::class, "composeEmail"])
+    ->middleware('throttle:5,1')
+    ->name("send-email");
+
+// --- SITEMAP XML (SEO DYNAMIC) ---
+Route::get('/sitemap.xml', [PublicController::class, 'sitemap'])->name('sitemap');
 
 // --- PUBLIC PORTAL ---
 Route::get('/', [PublicController::class, 'home'])->name('home');
@@ -35,8 +40,10 @@ Route::get('/contact', function () {
     return view('public.contact');
 })->name('contact');
 
-// PROSES KIRIM EMAIL FORM CONTACT (TAMBAHKAN INI)
-Route::post('/contact', [MailerController::class, 'composeEmail'])->name('contact.send');
+// PROSES KIRIM EMAIL FORM CONTACT (Anti-Spam Throttled)
+Route::post('/contact', [MailerController::class, 'composeEmail'])
+    ->middleware('throttle:5,1')
+    ->name('contact.send');
 
 Route::get('/jurusan', [PublicController::class, 'jurusanList'])->name('jurusan.list');
 Route::get('/produk', [PublicController::class, 'produkList'])->name('produk.list');
@@ -48,18 +55,26 @@ Route::get('/tefa/{slug}/portofolio', [PublicController::class, 'portfolio'])->n
 // --- AUTHENTICATED CHECKOUT, PAYMENT & ORDER FLOW ---
 Route::middleware('auth')->group(function () {
     Route::get('/pesan/{slug}', [PublicOrderController::class, 'checkout'])->name('order.checkout');
-    Route::post('/pesan/{slug}', [PublicOrderController::class, 'store'])->name('order.store');
+    Route::post('/pesan/{slug}', [PublicOrderController::class, 'store'])
+        ->middleware('throttle:15,1')
+        ->name('order.store');
     Route::get('/pesanan/invoice/{order}', [PublicOrderController::class, 'invoice'])->name('order.invoice');
-    Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])->name('order.pay.simulate');
+    Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])
+        ->middleware('throttle:10,1')
+        ->name('order.pay.simulate');
     Route::get('/pesanan-saya', [PublicOrderController::class, 'myOrders'])->name('order.my_orders');
 
     // --- KONSULTASI & NEGO HARGA JASA TEFA ---
     Route::get('/jasa/{slug}/nego', [PublicOrderController::class, 'nego'])->name('jasa.nego');
-    Route::post('/jasa/{slug}/nego', [PublicOrderController::class, 'submitNego'])->name('jasa.nego.submit');
+    Route::post('/jasa/{slug}/nego', [PublicOrderController::class, 'submitNego'])
+        ->middleware('throttle:15,1')
+        ->name('jasa.nego.submit');
 });
 
-// --- AI CHAT WIDGET ---
-Route::post('/api/ai/chat', [AiChatController::class, 'message'])->name('api.ai.chat');
+// --- AI CHAT WIDGET (Throttled: 30 request/menit untuk hemat token & cegah DoS) ---
+Route::post('/api/ai/chat', [AiChatController::class, 'message'])
+    ->middleware('throttle:30,1')
+    ->name('api.ai.chat');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -79,6 +94,7 @@ Route::middleware('auth')->group(function () {
     // --- SUPERADMIN MODULE ---
     Route::middleware('role:superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', [SuperAdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/stats-report', [SuperAdminDashboardController::class, 'statsReport'])->name('stats-report');
         Route::get('/catalog-brochure', [SuperAdminDashboardController::class, 'catalogBrochure'])->name('catalog-brochure');
         Route::get('/projects', [SuperAdminProjectController::class, 'index'])->name('projects.index');
         Route::resource('units', TefaUnitController::class)->except(['show', 'create', 'edit']);

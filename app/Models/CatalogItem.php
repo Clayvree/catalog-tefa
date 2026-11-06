@@ -48,6 +48,48 @@ class CatalogItem extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::updating(function (CatalogItem $item) {
+            if ($item->isDirty('thumbnail_url')) {
+                $old = $item->getRawOriginal('thumbnail_url');
+                if ($old && !str_starts_with((string) $old, 'http')) {
+                    $oldPath = ltrim(str_replace('/storage/', '', (string) $old), '/');
+                    if ($oldPath) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                    }
+                }
+            }
+        });
+
+        static::deleting(function (CatalogItem $item) {
+            $raw = $item->getRawOriginal('thumbnail_url');
+            if ($raw && !str_starts_with((string) $raw, 'http')) {
+                $path = ltrim(str_replace('/storage/', '', (string) $raw), '/');
+                if ($path) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+                }
+            }
+        });
+    }
+
+    public function getThumbnailUrlAttribute(?string $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        if (str_starts_with($value, '/storage/') || str_starts_with($value, 'storage/')) {
+            return asset(ltrim($value, '/'));
+        }
+        if (str_starts_with($value, 'assets/') || str_starts_with($value, 'images/')) {
+            return asset($value);
+        }
+        return asset('storage/' . ltrim($value, '/'));
+    }
+
     public function scopePublished($query)
     {
         return $query->where('status', ItemStatus::Published);

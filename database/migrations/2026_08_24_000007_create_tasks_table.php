@@ -16,7 +16,10 @@ return new class extends Migration
             $table->uuid('tefa_unit_id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->uuid('assigned_worker_id')->nullable();
+            $table->text('goals')->nullable();
+            $table->text('team_notes')->nullable();
+            $table->integer('progress_percentage')->default(0);
+            $table->uuid('leader_id')->nullable();
             $table->unsignedBigInteger('skill_id')->nullable();
             $table->text('ai_recommendation_notes')->nullable();
             $table->enum('status', ['todo', 'in_progress', 'review', 'done'])->default('todo');
@@ -30,11 +33,11 @@ return new class extends Migration
 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreign('tefa_unit_id')->references('id')->on('tefa_units')->onDelete('cascade');
-            $table->foreign('assigned_worker_id')->references('id')->on('worker_profiles')->nullOnDelete();
+            $table->foreign('leader_id')->references('id')->on('worker_profiles')->nullOnDelete();
             $table->foreign('skill_id')->references('id')->on('skills')->nullOnDelete();
 
             $table->index(['project_id', 'status']);
-            $table->index(['assigned_worker_id', 'status']);
+            $table->index(['leader_id', 'status']);
             $table->index('tefa_unit_id');
         });
     }

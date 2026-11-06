@@ -14,7 +14,7 @@
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition duration-300">
                         <div class="aspect-[4/3] bg-gray-200 relative group">
                             @if($portfolio->thumbnail_url)
-                                <img src="{{ asset('storage/' . $portfolio->thumbnail_url) }}" class="w-full h-full object-cover">
+                                <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
                             @endif

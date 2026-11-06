@@ -29,8 +29,8 @@ class PublicController extends Controller
         }
         $units = TefaUnit::withCount(['catalogItems', 'portfolios'])->where('is_active', true)->get();
         
-        // Hanya 4 Top Produk Unggulan di Beranda
-        $featuredItems = CatalogItem::with(['category', 'tefaUnit'])->published()->latest()->take(4)->get();
+        // Hanya 3 Layanan Terlaris di Beranda (bisa di-slide)
+        $featuredItems = CatalogItem::with(['category', 'tefaUnit'])->published()->latest()->take(3)->get();
         $featuredPortfolios = Portfolio::with(['worker.user', 'tefaUnit'])->where('status', 'approved')->latest()->take(2)->get();
         
         $stats = [
@@ -141,5 +141,19 @@ class PublicController extends Controller
         $unit = TefaUnit::where('slug', $slug)->where('is_active', true)->firstOrFail();
         $portfolios = Portfolio::with(['worker.user', 'contributors.workerProfile.user'])->where('tefa_unit_id', $unit->id)->where('status', 'approved')->latest()->paginate(12);
         return view('public.portfolio', compact('unit', 'portfolios'));
+    }
+
+    /**
+     * Generate dynamic XML Sitemap untuk search engine crawler (Google, Bing, dll).
+     */
+    public function sitemap()
+    {
+        $units = TefaUnit::where('is_active', true)->get();
+        $catalogItems = CatalogItem::published()->get();
+
+        $content = view('public.sitemap', compact('units', 'catalogItems'));
+
+        return response($content, 200)
+            ->header('Content-Type', 'text/xml');
     }
 }

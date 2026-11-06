@@ -42,22 +42,25 @@
 
             <!-- Project List Table Card -->
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="font-black text-base text-slate-900">Daftar Seluruh Proyek Teaching Factory</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Filter berdasarkan unit jurusan atau status pengerjaan.</p>
+                <div class="p-6 border-b border-slate-100 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="font-black text-base text-slate-900">Daftar Seluruh Proyek Teaching Factory</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Filter berdasarkan unit jurusan atau status pengerjaan.</p>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400 shrink-0">{{ $projects->total() }} Proyek Tercatat</span>
                     </div>
 
                     <!-- Filter Bar -->
-                    <form action="{{ route('superadmin.projects.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
-                        <select name="unit" class="rounded-xl border-slate-200 text-xs font-bold py-2 pl-3 pr-8 text-slate-700">
+                    <form action="{{ route('superadmin.projects.index') }}" method="GET" class="flex flex-wrap items-center gap-3 pt-1">
+                        <select name="unit" class="rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 text-xs font-bold py-2.5 pl-3.5 pr-8 text-slate-700 shadow-sm transition cursor-pointer">
                             <option value="">-- Semua Unit TEFA --</option>
                             @foreach($units as $unit)
                                 <option value="{{ $unit->id }}" {{ request('unit') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
                             @endforeach
                         </select>
 
-                        <select name="status" class="rounded-xl border-slate-200 text-xs font-bold py-2 pl-3 pr-8 text-slate-700">
+                        <select name="status" class="rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 text-xs font-bold py-2.5 pl-3.5 pr-8 text-slate-700 shadow-sm transition cursor-pointer">
                             <option value="">-- Semua Status --</option>
                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
@@ -65,8 +68,16 @@
                             <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                         </select>
 
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari judul/klien..." class="rounded-xl border-slate-200 text-xs py-2 px-3">
-                        <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold">Filter</button>
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari judul / klien..." class="w-48 sm:w-64 rounded-xl border border-slate-200 text-xs py-2.5 px-3.5 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 text-slate-800 placeholder:text-slate-400 shadow-sm transition">
+
+                        <button type="submit" class="whitespace-nowrap px-4 py-2.5 bg-slate-900 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5 shrink-0">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <span>Filter</span>
+                        </button>
+
+                        @if(request()->hasAny(['unit', 'status', 'q']))
+                            <a href="{{ route('superadmin.projects.index') }}" class="whitespace-nowrap px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition">Reset</a>
+                        @endif
                     </form>
                 </div>
 
@@ -74,12 +85,12 @@
                     <table class="w-full text-xs text-left">
                         <thead class="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-slate-100">
                             <tr>
-                                <th class="px-6 py-3.5">Judul Proyek & Klien</th>
-                                <th class="px-6 py-3.5">Unit TEFA</th>
-                                <th class="px-6 py-3.5">Nilai Transaksi</th>
-                                <th class="px-6 py-3.5 text-center">Sub-Tugas</th>
-                                <th class="px-6 py-3.5">Status</th>
-                                <th class="px-6 py-3.5 text-right">Tanggal</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Judul Proyek & Klien</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Unit TEFA</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Nilai Transaksi</th>
+                                <th class="px-6 py-3.5 text-center whitespace-nowrap">Sub-Tugas</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Status</th>
+                                <th class="px-6 py-3.5 text-right whitespace-nowrap">Tanggal</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">

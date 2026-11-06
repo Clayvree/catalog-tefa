@@ -49,18 +49,29 @@
                             <tr>
                                 <th class="px-6 py-3.5">Nama Admin</th>
                                 <th class="px-6 py-3.5">Email Login</th>
-                                <th class="px-6 py-3.5">Unit Jurusan yang Dikelola</th>
-                                <th class="px-6 py-3.5">Tanggal Terdaftar</th>
-                                <th class="px-6 py-3.5 text-right">Aksi</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Unit Jurusan yang Dikelola</th>
+                                <th class="px-6 py-3.5 whitespace-nowrap">Tanggal Terdaftar</th>
+                                <th class="px-6 py-3.5 text-right whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
                             @forelse($admins as $adminUser)
                                 <tr class="hover:bg-slate-50/80 transition">
                                     <td class="px-6 py-4">
+                                        @php
+                                            $nameParts = array_values(array_filter(explode(' ', trim($adminUser->name))));
+                                            if (count($nameParts) >= 2) {
+                                                $initials = mb_substr($nameParts[0], 0, 1) . mb_substr($nameParts[1], 0, 1);
+                                            } elseif (!empty($nameParts)) {
+                                                $initials = mb_substr($nameParts[0], 0, min(2, mb_strlen($nameParts[0])));
+                                            } else {
+                                                $initials = 'A';
+                                            }
+                                            $initials = mb_strtoupper($initials);
+                                        @endphp
                                         <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
-                                                {{ substr($adminUser->name, 0, 1) }}
+                                            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0 tracking-wider">
+                                                {{ $initials }}
                                             </div>
                                             <div>
                                                 <p class="font-bold text-slate-900 text-sm">{{ $adminUser->name }}</p>
@@ -71,13 +82,13 @@
                                     <td class="px-6 py-4 font-mono text-slate-600">
                                         {{ $adminUser->email }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-4 whitespace-nowrap">
                                         @if($adminUser->managedUnits->isNotEmpty())
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold text-xs">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold text-xs whitespace-nowrap">
                                                  {{ $adminUser->managedUnits->first()->name }}
                                             </span>
                                         @else
-                                            <span class="text-amber-500 font-bold italic">Belum dihubungkan ke unit</span>
+                                            <span class="text-amber-500 font-bold italic whitespace-nowrap">Belum dihubungkan ke unit</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-slate-400">

@@ -1,2 +1,19 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /worker/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /api/
+Disallow: /pesan/
+Disallow: /pesanan/
+Disallow: /pesanan-saya
+
+Allow: /
+Allow: /tentang-kami
+Allow: /contact
+Allow: /jurusan
+Allow: /produk
+Allow: /tefa/
+
+Sitemap: /sitemap.xml

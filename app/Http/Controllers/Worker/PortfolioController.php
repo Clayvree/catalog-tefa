@@ -10,6 +10,7 @@ use App\Models\PortfolioContributor;
 use App\Models\WorkerProfile;
 use App\Enums\PortfolioStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PortfolioController extends Controller
@@ -107,6 +108,13 @@ class PortfolioController extends Controller
     {
         if ($portfolio->worker_profile_id !== auth()->user()->workerProfile?->id) {
             abort(403, 'Aksi tidak diizinkan.');
+        }
+
+        if ($portfolio->thumbnail_url) {
+            $path = ltrim(str_replace('/storage/', '', (string) $portfolio->thumbnail_url), '/');
+            if ($path && !str_starts_with((string) $portfolio->thumbnail_url, 'http')) {
+                Storage::disk('public')->delete($path);
+            }
         }
 
         $portfolio->delete();

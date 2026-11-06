@@ -92,7 +92,7 @@
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('tefa.storefront', $unit->slug) }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition">
-                                                Storefront
+                                                Etalase
                                             </a>
                                             <button @click="activeEditUnit = {
                                                 id: '{{ $unit->id }}',

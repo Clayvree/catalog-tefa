@@ -30,6 +30,15 @@ class WaImportDraft extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (WaImportDraft $draft) {
+            if ($draft->chat_file_path && \Illuminate\Support\Facades\Storage::disk('local')->exists($draft->chat_file_path)) {
+                \Illuminate\Support\Facades\Storage::disk('local')->delete($draft->chat_file_path);
+            }
+        });
+    }
+
     public function tefaUnit(): BelongsTo
     {
         return $this->belongsTo(TefaUnit::class);

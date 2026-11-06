@@ -14,7 +14,10 @@ return new class extends Migration
             $table->id();
             $table->uuid('order_id');
             $table->uuid('catalog_item_id');
+            $table->string('item_title');
+            $table->decimal('unit_price', 15, 2);
             $table->integer('quantity');
+            $table->decimal('subtotal', 15, 2);
             $table->decimal('price_at_purchase', 15, 2);
             $table->timestamps();
 

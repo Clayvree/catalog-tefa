@@ -106,9 +106,9 @@ class OrderController extends Controller
 
         $updates = [
             'fulfillment_status' => $validated['fulfillment_status'],
-            'estimated_ready_at' => $validated['estimated_ready_at'],
-            'tracking_number'    => $validated['tracking_number'],
-            'fulfillment_notes'  => $validated['fulfillment_notes'],
+            'estimated_ready_at' => $validated['estimated_ready_at'] ?? null,
+            'tracking_number'    => $validated['tracking_number'] ?? null,
+            'fulfillment_notes'  => $validated['fulfillment_notes'] ?? null,
         ];
 
         // Jika status fulfillment = selesai/diterima/diambil, set order status ke completed

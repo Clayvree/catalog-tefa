@@ -97,9 +97,7 @@ class DigitalProductSeeder extends Seeder
         foreach ($items as $itemData) {
             CatalogItem::updateOrCreate(
                 ['slug' => $itemData['slug']],
-                array_merge($itemData, [
-                    'id' => (string) Str::uuid(),
-                ])
+                $itemData
             );
         }
     }

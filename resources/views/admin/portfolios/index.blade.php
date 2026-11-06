@@ -61,7 +61,7 @@
                             <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col bg-slate-50 transition hover:shadow-md">
                                 <div class="h-48 bg-slate-200 relative">
                                     @if($portfolio->thumbnail_url)
-                                        <img src="{{ asset('storage/' . $portfolio->thumbnail_url) }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
+                                        <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-400">
                                             Tidak ada gambar
@@ -87,8 +87,8 @@
                                         <div class="flex items-center">
                                             @php $avatarColors2 = ['bg-indigo-100 text-indigo-700','bg-violet-100 text-violet-700','bg-pink-100 text-pink-700','bg-amber-100 text-amber-700']; @endphp
                                             <div class="w-8 h-8 rounded-full ring-2 ring-white bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs uppercase overflow-hidden flex-shrink-0">
-                                                @if($portfolio->worker->avatar_url)
-                                                    <img src="{{ asset('storage/' . $portfolio->worker->avatar_url) }}" class="w-full h-full object-cover">
+                                                @if($portfolio->worker?->avatar_url)
+                                                    <img src="{{ $portfolio->worker->avatar_url }}" class="w-full h-full object-cover">
                                                 @else
                                                     {{ substr($portfolio->worker->user->name ?? 'U', 0, 1) }}
                                                 @endif
@@ -96,7 +96,7 @@
                                             @foreach($portfolio->contributors->take(3) as $ci => $contrib)
                                                 <div class="w-8 h-8 rounded-full ring-2 ring-white {{ $avatarColors2[$ci % 4] }} flex items-center justify-center font-bold text-xs overflow-hidden flex-shrink-0 -ml-2" title="{{ $contrib->display_name }}">
                                                     @if($contrib->avatar_url)
-                                                        <img src="{{ asset('storage/' . $contrib->avatar_url) }}" class="w-full h-full object-cover">
+                                                        <img src="{{ $contrib->avatar_url }}" class="w-full h-full object-cover">
                                                     @else
                                                         {{ substr($contrib->display_name, 0, 1) }}
                                                     @endif

@@ -7,13 +7,16 @@
                     Kelola Kategori Katalog
                 </h2>
             </div>
-            <span class="text-xs font-bold text-slate-500">
-                Kategori ini tampil di sidebar & filter publik.
+            <span class="text-xs font-bold text-red-600">
+                * Kategori ini tampil di sidebar & filter publik.
             </span>
         </div>
     </x-slot>
 
-    <div class="py-8 bg-slate-50 min-h-screen">
+    <div class="py-8 bg-slate-50 min-h-screen" x-data="{
+        editModalOpen: false,
+        activeEditCategory: { id: '', name: '', type: 'jasa' }
+    }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             
             <!-- Flash Message -->
@@ -31,7 +34,7 @@
                 <!-- Left Column: Add Category Form -->
                 <div class="lg:col-span-4 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
                     <div class="pb-3 border-b border-slate-100">
-                        <h3 class="font-black text-base text-slate-900">+ Tambah Kategori Baru</h3>
+                        <h3 class="font-black text-base text-slate-900">Tambah Kategori Baru</h3>
                         <p class="text-xs text-slate-500 mt-0.5">Buat kategori bidang untuk mengelompokkan produk & jasa.</p>
                     </div>
 
@@ -39,7 +42,7 @@
                         @csrf
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Kategori</label>
-                            <input type="text" name="name" value="{{ old('name') }}" required placeholder="Contoh: Robotika & IoT" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <input type="text" name="name" value="{{ old('name') }}" required placeholder="Contoh: Robotika & IoT" class="w-full rounded-xl border border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium py-2.5 px-3.5">
                             @error('name')
                                 <p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>
                             @enderror
@@ -47,7 +50,7 @@
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Standar</label>
-                            <select name="type" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
+                            <select name="type" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 text-xs font-bold text-slate-700 py-2.5 px-3.5 shadow-sm transition cursor-pointer">
                                 <option value="jasa" @selected(old('type', 'jasa') === 'jasa')>Layanan Jasa</option>
                                 <option value="produk" @selected(old('type') === 'produk')>Produk Fisik</option>
                                 <option value="kegiatan" @selected(old('type') === 'kegiatan')>Event & Kegiatan</option>
@@ -115,42 +118,23 @@
                                         <td class="px-6 py-4 text-center font-bold text-slate-800">
                                             {{ $category->catalog_items_count }} Item
                                         </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <details class="inline-block text-left align-middle mr-2" @if($errors->any() && old('editing_category_id') == $category->id) open @endif>
-                                                <summary class="cursor-pointer px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-[11px] transition list-none">Edit</summary>
-                                                <div class="mt-3 w-72 max-w-[calc(100vw-3rem)] p-4 bg-white rounded-2xl border border-slate-200 shadow-xl">
-                                                    <form action="{{ route('superadmin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="editing_category_id" value="{{ $category->id }}">
-                                                        <input type="text" name="name" value="{{ old('editing_category_id') == $category->id ? old('name', $category->name) : $category->name }}" required class="w-full rounded-xl border-slate-200 text-xs">
-                                                        @if($errors->any() && old('editing_category_id') == $category->id)
-                                                            @error('name')
-                                                                <p class="text-[10px] text-red-600">{{ $message }}</p>
-                                                            @enderror
-                                                        @endif
-                                                        <select name="type" class="w-full rounded-xl border-slate-200 text-xs font-bold">
-                                                            <option value="jasa" @selected((old('editing_category_id') == $category->id ? old('type') : $category->type?->value) === 'jasa')>Layanan Jasa</option>
-                                                            <option value="produk" @selected((old('editing_category_id') == $category->id ? old('type') : $category->type?->value) === 'produk')>Produk Fisik</option>
-                                                            <option value="kegiatan" @selected((old('editing_category_id') == $category->id ? old('type') : $category->type?->value) === 'kegiatan')>Event & Kegiatan</option>
-                                                        </select>
-                                                        @if($errors->any() && old('editing_category_id') == $category->id)
-                                                            @error('type')
-                                                                <p class="text-[10px] text-red-600">{{ $message }}</p>
-                                                            @enderror
-                                                        @endif
-                                                        <input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="w-full text-[10px]">
-                                                        <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs">Simpan Perubahan</button>
-                                                    </form>
-                                                </div>
-                                            </details>
-                                            <form action="{{ route('superadmin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px] transition">
-                                                    Hapus
+                                        <td class="px-6 py-4 text-right whitespace-nowrap">
+                                            <div class="flex items-center justify-end gap-2">
+                                                <button type="button" @click="activeEditCategory = {
+                                                    id: '{{ $category->id }}',
+                                                    name: '{{ addslashes($category->name) }}',
+                                                    type: '{{ $category->type?->value ?? 'jasa' }}'
+                                                }; editModalOpen = true;" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
+                                                    Edit
                                                 </button>
-                                            </form>
+                                                <form action="{{ route('superadmin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')" class="inline m-0">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[11px] transition">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -165,6 +149,50 @@
 
             </div>
 
+        </div>
+
+        <!-- Edit Category Modal -->
+        <div x-show="editModalOpen" style="display:none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" @click="editModalOpen = false"></div>
+
+                <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full p-6 sm:p-8 space-y-6">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <h3 class="font-black text-base text-slate-900">Edit Kategori Katalog</h3>
+                        <button type="button" @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 font-bold text-xl leading-none">&times;</button>
+                    </div>
+
+                    <form :action="'{{ url('superadmin/categories') }}/' + activeEditCategory.id" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        @csrf
+                        @method('PUT')
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Kategori</label>
+                            <input type="text" name="name" x-model="activeEditCategory.name" required class="w-full rounded-xl border border-slate-200 text-xs py-2.5 px-3.5 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 font-medium">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Default</label>
+                            <select name="type" x-model="activeEditCategory.type" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white text-xs font-bold py-2.5 px-3.5 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 cursor-pointer transition">
+                                <option value="jasa">Layanan Jasa</option>
+                                <option value="produk">Produk Fisik</option>
+                                <option value="kegiatan">Event & Kegiatan</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ganti Gambar (Opsional)</label>
+                            <input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="w-full text-xs file:mr-3 file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:rounded-xl file:font-bold">
+                            <p class="text-[10px] text-slate-400 mt-1">Biarkan kosong jika tidak ingin mengganti gambar.</p>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-end gap-2 border-t border-slate-100">
+                            <button type="button" @click="editModalOpen = false" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">Batal</button>
+                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

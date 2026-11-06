@@ -11,6 +11,7 @@ use App\Models\TefaUnit;
 use App\Enums\ItemStatus;
 use App\Enums\ItemType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
@@ -128,6 +129,13 @@ class ProductController extends Controller
         $thumbnailUrl = $product->thumbnail_url;
 
         if ($request->hasFile('thumbnail_file')) {
+            if ($product->thumbnail_url) {
+                $oldPath = ltrim(str_replace('/storage/', '', (string) $product->thumbnail_url), '/');
+                if ($oldPath && !str_starts_with((string) $product->thumbnail_url, 'http')) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('thumbnail_file')->store('products', 'public');
             $thumbnailUrl = '/storage/' . $path;
         }
@@ -153,6 +161,13 @@ class ProductController extends Controller
 
     public function destroy(CatalogItem $product)
     {
+        if ($product->thumbnail_url) {
+            $path = ltrim(str_replace('/storage/', '', (string) $product->thumbnail_url), '/');
+            if ($path && !str_starts_with((string) $product->thumbnail_url, 'http')) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $product->delete();
         return redirect()->back()->with('success', 'Item produk berhasil dihapus dari katalog.');
     }

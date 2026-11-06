@@ -97,7 +97,6 @@ class DatabaseSeeder extends Seeder
         $workerProfilePPLG = \App\Models\WorkerProfile::updateOrCreate(
             ['user_id' => $workerPPLG->id],
             [
-                'id'           => (string) Str::uuid(),
                 'tefa_unit_id' => $unitPplg->id,
                 'class_name'   => 'XII PPLG 1',
                 'bio'          => 'Passionate web developer & designer.',
@@ -138,7 +137,7 @@ class DatabaseSeeder extends Seeder
         foreach ($portfoliosPplg as $pf) {
             Portfolio::updateOrCreate(
                 ['title' => $pf['title']], 
-                array_merge($pf, ['id' => (string) Str::uuid()]) 
+                $pf 
             );
         }
 
@@ -179,13 +178,12 @@ class DatabaseSeeder extends Seeder
 ];
 
         foreach ($itemsPplg as $item) {
-            CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
+            CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
         CatalogItem::updateOrCreate(
             ['slug' => 'e-book-panduan-digital'],
             [
-                'id' => (string) Str::uuid(),
                 'tefa_unit_id' => $unitPplg->id,
                 'category_id' => $catApp->id,
                 'title' => 'E‑Book Panduan Digital',
@@ -242,7 +240,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($itemsDkv as $item) {
-            CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
+            CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
         // ==========================================
@@ -277,13 +275,12 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($itemsTkj as $item) {
-            CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
+            CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
         $workerTkj = \App\Models\WorkerProfile::updateOrCreate(
             ['user_id' => $adminTkj->id],
             [
-                'id'           => (string) Str::uuid(),
                 'tefa_unit_id' => $unitTkj->id,
                 'bio'          => 'Instruktur & Praktisi Teknik Komputer Jaringan SMKN 4 Tanjungpinang',
             ]
@@ -319,7 +316,7 @@ class DatabaseSeeder extends Seeder
         foreach ($portfoliosTkj as $pf) {
             Portfolio::updateOrCreate(
                 ['title' => $pf['title']], 
-                array_merge($pf, ['id' => (string) Str::uuid()]) 
+                $pf 
             );
         }
 
@@ -356,7 +353,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($itemsAnimasi as $item) {
-            CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
+            CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
         $adminPspt = User::updateOrCreate(
@@ -483,7 +480,7 @@ class DatabaseSeeder extends Seeder
 ];
 
         foreach ($itemsPspt as $item) {
-            CatalogItem::updateOrCreate(['slug' => $item['slug']], array_merge($item, ['id' => (string) Str::uuid()]));
+            CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
          // Register WorkerSeeder at the very end

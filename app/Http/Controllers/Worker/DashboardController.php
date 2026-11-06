@@ -61,7 +61,7 @@ class DashboardController extends Controller
         $urgentTasks = Task::with(['project', 'skill'])
             ->forWorker($workerId)
             ->where('status', '!=', TaskStatus::Done->value)
-            ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")
+            ->orderByRaw("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END")
             ->take(5)
             ->get();
 

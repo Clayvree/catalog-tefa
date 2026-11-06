@@ -77,8 +77,11 @@ class PortfolioController extends Controller
         $tefaUnitId = $request->user()->managedUnits()->first()->id;
         abort_if($portfolio->tefa_unit_id !== $tefaUnitId, 403, 'Akses ditolak.');
 
-        if ($portfolio->thumbnail_url && Storage::disk('public')->exists($portfolio->thumbnail_url)) {
-            Storage::disk('public')->delete($portfolio->thumbnail_url);
+        if ($portfolio->thumbnail_url) {
+            $path = ltrim(str_replace('/storage/', '', (string) $portfolio->thumbnail_url), '/');
+            if ($path && !str_starts_with((string) $portfolio->thumbnail_url, 'http')) {
+                Storage::disk('public')->delete($path);
+            }
         }
 
         $portfolio->delete();

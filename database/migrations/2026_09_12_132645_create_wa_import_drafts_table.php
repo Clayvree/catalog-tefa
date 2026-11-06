@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('wa_import_drafts', function (Blueprint $table) {
             $table->id();
             $table->uuid('tefa_unit_id');
+            $table->uuid('project_id')->nullable();
             $table->uuid('uploaded_by');
             $table->string('chat_file_path');
             $table->enum('status', ['processing', 'ready', 'confirmed', 'failed'])->default('processing');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->uuid('catalog_item_id')->nullable();
             
             $table->foreign('tefa_unit_id')->references('id')->on('tefa_units')->onDelete('cascade');
+            $table->foreign('project_id')->references('id')->on('projects')->nullOnDelete();
             $table->foreign('uploaded_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('catalog_item_id')->references('id')->on('catalog_items')->onDelete('set null');
         });

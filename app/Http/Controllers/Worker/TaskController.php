@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Enums\TaskStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Enum;
 
 class TaskController extends Controller
@@ -84,6 +85,10 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
+        if ($task->leader_id && $task->leader_id !== auth()->user()->workerProfile?->id && auth()->user()->role !== \App\Enums\UserRole::AdminJurusan) {
+            abort(403, 'Hanya Ketua Tim yang diizinkan memperbarui catatan dan instruksi kolaborasi tim.');
+        }
+
         $validated = $request->validate([
             'team_notes' => 'nullable|string',
             'progress_percentage' => 'required|integer|min:0|max:100',
@@ -113,6 +118,10 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
+        if ($task->leader_id && $task->leader_id !== auth()->user()->workerProfile?->id && auth()->user()->role !== \App\Enums\UserRole::AdminJurusan) {
+            abort(403, 'Hanya Ketua Tim yang diizinkan mengunggah bukti pengerjaan akhir.');
+        }
+
         $request->validate([
             'proof_file' => 'nullable|file|mimes:pdf,jpg,png,jpeg,zip,webp|max:20480',
             'proof_url' => 'nullable|url|max:255',
@@ -122,6 +131,13 @@ class TaskController extends Controller
         $proofUrl = $request->input('proof_url');
 
         if ($request->hasFile('proof_file')) {
+            if ($task->proof_file_url) {
+                $oldPath = ltrim(str_replace('/storage/', '', (string) $task->proof_file_url), '/');
+                if ($oldPath && !str_starts_with((string) $task->proof_file_url, 'http')) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('proof_file')->store('task_proofs', 'public');
             $proofUrl = '/storage/' . $path;
         }

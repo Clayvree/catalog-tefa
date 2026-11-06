@@ -51,7 +51,10 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                $oldPath = ltrim(str_replace('/storage/', '', (string) $category->image), '/');
+                if ($oldPath && !str_starts_with((string) $category->image, 'http')) {
+                    Storage::disk('public')->delete($oldPath);
+                }
             }
 
             $category->image = $request->file('image')->store('categories', 'public');
@@ -65,7 +68,10 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         if ($category->image) {
-            Storage::disk('public')->delete($category->image);
+            $oldPath = ltrim(str_replace('/storage/', '', (string) $category->image), '/');
+            if ($oldPath && !str_starts_with((string) $category->image, 'http')) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         $category->delete();

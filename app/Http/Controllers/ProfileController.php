@@ -28,11 +28,11 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
 
-        $inputTelephone = $request->input('phone');
-        $formattedTelephone = $inputTelephone ? preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $inputTelephone)) : null;
-        
-
-        $request->user()->phone = $formattedTelephone;
+        if ($request->has('phone') && filled($request->input('phone'))) {
+            $inputTelephone = (string) $request->input('phone');
+            $formattedTelephone = preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $inputTelephone));
+            $request->user()->phone = $formattedTelephone ?: $request->user()->phone;
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

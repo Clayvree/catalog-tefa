@@ -32,7 +32,6 @@ class WorkerSeeder extends Seeder
         $profile1 = WorkerProfile::updateOrCreate(
             ['user_id' => $user1->id],
             [
-                'id' => (string) Str::uuid(),
                 'tefa_unit_id' => $unitId, // Assign to first unit
                 'nisn' => '1234567890',
                 'class_name' => 'XII RPL 1',
@@ -63,7 +62,6 @@ class WorkerSeeder extends Seeder
         $profile2 = WorkerProfile::updateOrCreate(
             ['user_id' => $user2->id],
             [
-                'id' => (string) Str::uuid(),
                 'tefa_unit_id' => $unitId,
                 'nisn' => '0987654321',
                 'class_name' => 'XI TKJ 2',

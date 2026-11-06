@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('task_id');
             $table->uuid('worker_profile_id');
+            $table->text('member_task_note')->nullable();
             $table->timestamps();
 
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();

@@ -53,6 +53,18 @@ class WorkerProfile extends Model
         return $this->belongsToMany(Task::class, 'task_worker');
     }
 
+    public function getAvatarUrlAttribute(?string $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        $cleaned = ltrim(str_replace('/storage/', '', $value), '/');
+        return asset('storage/' . $cleaned);
+    }
+
     public function getTasksAttribute()
     {
         return $this->ledTasks->merge($this->memberTasks);

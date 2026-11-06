@@ -54,17 +54,26 @@
                         Semua Kategori
                     </a>
                     @foreach($categories as $category)
-                        <a href="{{ route('produk.list', array_merge(request()->all(), ['category' => $category->id])) }}" 
-                           class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 {{ request('category') == $category->id ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                            {{ $category->name }}
-                        </a>
+                        @if(request('category') == $category->id)
+                            <a href="{{ route('produk.list', array_merge(request()->except('category'))) }}" 
+                               class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 group"
+                               title="Klik untuk membatalkan filter kategori ini">
+                                <span>{{ $category->name }}</span>
+                                <span class="w-4 h-4 rounded-full bg-white/20 group-hover:bg-white/40 flex items-center justify-center text-xs font-black leading-none ml-0.5">&times;</span>
+                            </a>
+                        @else
+                            <a href="{{ route('produk.list', array_merge(request()->all(), ['category' => $category->id])) }}" 
+                               class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 bg-slate-100 text-slate-600 hover:bg-slate-200">
+                                {{ $category->name }}
+                            </a>
+                        @endif
                     @endforeach
                 </div>
 
-                <!-- Active Filter Tags Display (if any) -->
-                @if(request('q') || request('category') || request('type'))
+                <!-- Active Filter Tags Display (Khusus pencarian dan tipe penawaran) -->
+                @if(request('q') || request('type'))
                     <div class="flex flex-wrap items-center gap-1.5 pt-3 mt-3 border-t border-slate-100 text-xs">
-                        <span class="font-bold text-slate-400 text-[11px]">Aktif:</span>
+                        <span class="font-bold text-slate-400 text-[11px]">Filter Aktif:</span>
                         
                         @if(request('q'))
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 font-medium text-[11px]">
@@ -80,7 +89,7 @@
                             </span>
                         @endif
 
-                        <a href="{{ route('produk.list') }}" class="text-[11px] text-red-500 font-bold hover:underline ml-1">
+                        <a href="{{ route('produk.list', request()->only('category')) }}" class="text-[11px] text-red-500 font-bold hover:underline ml-1">
                             Reset
                         </a>
                     </div>
@@ -97,8 +106,8 @@
                         
                         <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                             <h3 class="font-black text-xs text-slate-900 uppercase tracking-wider">Filter Lanjutan</h3>
-                            @if(request()->hasAny(['category', 'type', 'q']))
-                                <a href="{{ route('produk.list') }}" class="text-xs font-bold text-indigo-600 hover:underline">Reset</a>
+                            @if(request()->hasAny(['type', 'q']))
+                                <a href="{{ route('produk.list', request()->only('category')) }}" class="text-xs font-bold text-indigo-600 hover:underline">Reset</a>
                             @endif
                         </div>
 
@@ -139,13 +148,27 @@
                             <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Kategori Lengkap</h4>
                             <div class="space-y-1">
                                 @foreach($categories as $category)
-                                    <a href="{{ route('produk.list', array_merge(request()->all(), ['category' => $category->id])) }}" 
-                                       class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold transition {{ request('category') == $category->id ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:bg-slate-50' }}">
-                                        <span class="truncate">{{ $category->name }}</span>
-                                        <span class="text-[10px] px-1.5 py-0.5 rounded-full {{ request('category') == $category->id ? 'bg-indigo-200/60 text-indigo-800' : 'bg-slate-100 text-slate-400' }}">
-                                            {{ $category->catalog_items_count }}
-                                        </span>
-                                    </a>
+                                    @if(request('category') == $category->id)
+                                        <a href="{{ route('produk.list', array_merge(request()->except('category'))) }}" 
+                                           class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold transition text-indigo-700 bg-indigo-50 border border-indigo-200 group"
+                                           title="Klik untuk membatalkan kategori ini">
+                                            <span class="truncate">{{ $category->name }}</span>
+                                            <span class="inline-flex items-center gap-1.5">
+                                                <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-200/70 text-indigo-800">
+                                                    {{ $category->catalog_items_count }}
+                                                </span>
+                                                <span class="w-4 h-4 rounded-full bg-indigo-200 group-hover:bg-red-100 group-hover:text-red-600 flex items-center justify-center text-xs font-black leading-none">&times;</span>
+                                            </span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('produk.list', array_merge(request()->all(), ['category' => $category->id])) }}" 
+                                           class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-50">
+                                            <span class="truncate">{{ $category->name }}</span>
+                                            <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-400">
+                                                {{ $category->catalog_items_count }}
+                                            </span>
+                                        </a>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -335,9 +358,16 @@
                             <h4 class="text-xs font-bold text-slate-400 uppercase">Kategori</h4>
                             <div class="space-y-1 max-h-60 overflow-y-auto">
                                 @foreach($categories as $category)
-                                    <a href="{{ route('produk.list', array_merge(request()->all(), ['category' => $category->id])) }}" class="block px-3 py-1.5 rounded-xl text-xs font-bold {{ request('category') == $category->id ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600' }}">
-                                        {{ $category->name }}
-                                    </a>
+                                    @if(request('category') == $category->id)
+                                        <a href="{{ route('produk.list', array_merge(request()->except('category'))) }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                            <span>{{ $category->name }}</span>
+                                            <span class="w-4 h-4 rounded-full bg-indigo-200 flex items-center justify-center text-xs font-black leading-none">&times;</span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('produk.list', array_merge(request()->all(), ['category' => $category->id])) }}" class="block px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50">
+                                            {{ $category->name }}
+                                        </a>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>

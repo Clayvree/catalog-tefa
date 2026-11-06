@@ -38,12 +38,12 @@
                         <!-- Info -->
                         <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
                             <div>
-                                <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 mb-1.5">
-                                    <span>Official TEFA</span>
-                                    <span>•</span>
-                                    <span class="text-slate-400 font-medium">{{ $unit->catalog_items_count ?? '0' }} Layanan</span>
-                                    <span>•</span>
-                                    <span class="text-slate-400 font-medium">{{ $unit->portfolios_count ?? '0' }} Portofolio</span>
+                                <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-indigo-600 mb-1.5 whitespace-nowrap overflow-hidden">
+                                    <span class="shrink-0">Official TEFA</span>
+                                    <span class="text-slate-300 shrink-0">•</span>
+                                    <span class="text-slate-400 font-medium shrink-0">{{ $unit->catalog_items_count ?? '0' }} Layanan</span>
+                                    <span class="text-slate-300 shrink-0">•</span>
+                                    <span class="text-slate-400 font-medium shrink-0">{{ $unit->portfolios_count ?? '0' }} Portofolio</span>
                                 </div>
 
                                 @php

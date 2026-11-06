@@ -8,7 +8,7 @@
         <div class="absolute top-1/2 -left-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="max-w-3xl space-y-6 sm:space-y-8 text-center lg:text-left">
+            <div class="max-w-4xl mx-auto space-y-6 sm:space-y-8 text-center flex flex-col items-center">
                 
                 <!-- Top Chip -->
                 <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white border border-indigo-100 shadow-sm text-indigo-700 text-[11px] sm:text-xs font-bold">
@@ -24,12 +24,12 @@
                     </span>
                 </h1>
 
-                <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
                     Temukan ribuan produk inovatif dan layanan jasa profesional langsung dari unit Teaching Factory. Dikerjakan oleh siswa berprestasi dengan supervisi instruktur ahli.
                 </p>
 
                 <!-- Hero Search Box -->
-                <div class="max-w-xl mx-auto lg:mx-0 bg-white p-1.5 sm:p-2 rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/80">
+                <div class="max-w-xl w-full mx-auto bg-white p-1.5 sm:p-2 rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/80">
                     <form action="{{ route('produk.list') }}" method="GET" class="flex items-center gap-1.5 sm:gap-2">
                         <div class="pl-2.5 sm:pl-3 text-slate-400">
                             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -42,7 +42,7 @@
                 </div>
 
                 <!-- Quick Suggestions -->
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 pt-1 text-[11px] sm:text-xs text-slate-500">
+                <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1 text-[11px] sm:text-xs text-slate-500">
                     <span class="font-bold text-slate-700">Populer:</span>
                     <a href="{{ route('produk.list', ['q' => 'Website']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Website</a>
                     <a href="{{ route('produk.list', ['q' => 'Logo']) }}" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 transition">Desain Logo</a>
@@ -89,9 +89,6 @@
                     <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Bidang Keahlian</span>
                     <h2 class="text-xl sm:text-3xl font-black text-slate-900 tracking-tight mt-0.5">Kategori Layanan</h2>
                 </div>
-                <a href="{{ route('produk.list') }}" class="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-800 transition">
-                    Lihat Semua &rarr;
-                </a>
             </div>
 
             @php
@@ -158,6 +155,22 @@
                         Belum ada kategori layanan yang tersedia.
                     </div>
                 @endforelse
+
+                <!-- Card Lihat Semua Kategori (di samping card terakhir) -->
+                <a href="{{ route('produk.list') }}" 
+                   class="group bg-gradient-to-br from-indigo-50/70 via-white to-slate-50 p-3.5 sm:p-5 rounded-2xl border border-dashed border-indigo-200 hover:border-indigo-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/20 group-hover:scale-105 transition-transform duration-300 mb-2 sm:mb-3">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-indigo-600 transition-colors">
+                        Lihat Semua
+                    </h3>
+                    <span class="text-[10px] sm:text-xs text-indigo-600 mt-0.5 font-bold flex items-center justify-center gap-0.5">
+                        Semua Kategori &rarr;
+                    </span>
+                </a>
             </div>
 
         </div>
@@ -235,7 +248,7 @@
                             </div>
 
                             <a href="{{ route('tefa.storefront', $unit->slug) }}" 
-                               class="w-full text-center py-2 px-3 rounded-xl bg-slate-100 hover:bg-indigo-600 text-slate-800 hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-1 mt-auto">
+                               class="w-full text-center py-2 px-3 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs shadow-sm transition-colors flex items-center justify-center gap-1 mt-auto">
                                 Buka Profil &rarr;
                             </a>
                         </div>
@@ -246,8 +259,16 @@
         </div>
     </section>
 
-    <!-- 5. TOP PRODUK & JASA PILIHAN (HANYA 4 PRODUK UNGGULAN) -->
-    <section class="py-12 sm:py-20 bg-slate-50 border-t border-slate-200/80">
+    <!-- 5. TOP PRODUK & JASA PILIHAN (SLIDER 3 TERLARIS + 1 CARD LIHAT SEMUA) -->
+    <section class="py-12 sm:py-20 bg-slate-50 border-t border-slate-200/80" x-data="{
+        scrollSlider(direction) {
+            const el = this.$refs.slider;
+            if (!el) return;
+            const card = el.querySelector('.slider-card');
+            const step = card ? card.offsetWidth + 24 : 320;
+            el.scrollBy({ left: direction * step, behavior: 'smooth' });
+        }
+    }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="flex items-center justify-between gap-4 mb-8 sm:mb-12">
@@ -255,15 +276,22 @@
                     <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Top Rekomendasi</span>
                     <h2 class="text-xl sm:text-3xl font-black text-slate-900 tracking-tight mt-0.5">Produk & Layanan Terlaris</h2>
                 </div>
-                <a href="{{ route('produk.list') }}" class="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-800 transition">
-                    Buka Semua Katalog &rarr;
-                </a>
+                
+                <!-- Slide Controls -->
+                <div class="flex items-center gap-2">
+                    <button type="button" @click="scrollSlider(-1)" aria-label="Geser ke kiri" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 text-slate-700 hover:text-indigo-600 shadow-sm flex items-center justify-center transition active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button type="button" @click="scrollSlider(1)" aria-label="Geser ke kanan" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 text-slate-700 hover:text-indigo-600 shadow-sm flex items-center justify-center transition active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
             </div>
 
-            <!-- 4 Top Products Grid (2 cols Mobile / 4 cols Desktop) -->
-            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-                @foreach($featuredItems as $item)
-                    <div class="group bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <!-- Slideable Cards Container (3 Top Products + 1 'Lihat Semua Layanan' Card) -->
+            <div x-ref="slider" class="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-4 pt-1 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                @foreach($featuredItems->take(3) as $item)
+                    <div class="slider-card flex-none w-[78vw] sm:w-[320px] lg:w-[calc(33.333%-16px)] snap-start group bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 flex flex-col">
                         
                         <!-- Thumbnail -->
                         <div class="aspect-square bg-slate-100 relative overflow-hidden">
@@ -281,7 +309,7 @@
                         </div>
 
                         <!-- Info -->
-                        <div class="p-3 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
+                        <div class="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
                             
                             <div class="space-y-1">
                                 <div class="flex items-center justify-between text-[10px] sm:text-xs text-slate-500">
@@ -335,6 +363,32 @@
 
                     </div>
                 @endforeach
+
+                <!-- Card 4: Lihat Semua Layanan -->
+                <div class="slider-card flex-none w-[78vw] sm:w-[320px] lg:w-[calc(33.333%-16px)] snap-start group bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-12 -top-12 w-40 h-40 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-12 -bottom-12 w-40 h-40 bg-blue-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-indigo-300 mb-6 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-bold tracking-widest text-indigo-400 uppercase">Jelajahi Katalog</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-white mt-1 leading-snug">
+                            Lihat Semua Layanan & Produk
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                            Temukan berbagai macam pilihan layanan jasa dan karya unggulan siswa TEFA lainnya di katalog lengkap.
+                        </p>
+                    </div>
+
+                    <div class="pt-6 mt-auto relative z-10">
+                        <a href="{{ route('produk.list') }}" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-slate-900 group-hover:bg-indigo-600 group-hover:text-white font-bold text-xs sm:text-sm transition-all duration-300 shadow-md">
+                            <span>Buka Semua Layanan</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                    </div>
+                </div>
             </div>
 
         </div>

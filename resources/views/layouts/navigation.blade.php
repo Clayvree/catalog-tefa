@@ -3,7 +3,7 @@
         <div class="flex justify-between h-16 sm:h-20 items-center">
 
             <!-- Left Brand & Links -->
-            <div class="flex items-center gap-3 md:gap-6 min-w-0">
+            <div class="flex items-center gap-3 lg:gap-6 min-w-0">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 group flex-shrink-0">
                     <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
@@ -13,7 +13,7 @@
                         <span class="text-xl font-black tracking-tight text-white flex items-center gap-1">
                             Tefa<span class="text-indigo-400">Hub</span>
                         </span>
-                        <span class="block text-[9px] font-bold uppercase tracking-wider text-slate-400 -mt-0.5">Teaching Factory Portal</span>
+                        <span class="block text-[9px] font-bold uppercase tracking-wider text-slate-400 -mt-0.5">Teaching Factory</span>
                     </div>
                 </a>
 
@@ -21,95 +21,93 @@
                     $role = Auth::user()?->role?->value ?? null;
                 @endphp
 
-                <!-- Navigation Links based on Role (tablet & up) -->
-                <div class="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar min-w-0 flex-1">
+                <!-- Navigation Links based on Role (desktop & up) -->
+                <div class="hidden lg:flex items-center gap-1 py-1">
                     @if($role === 'superadmin')
                         <a href="{{ route('superadmin.dashboard') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.dashboard') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Statistik
                         </a>
                         <a href="{{ route('superadmin.projects.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.projects.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Riwayat Proyek
                         </a>
                         <a href="{{ route('superadmin.units.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.units.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.units.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Unit TEFA
                         </a>
                         <a href="{{ route('superadmin.admins.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.admins.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.admins.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Admin Jurusan
                         </a>
                         <a href="{{ route('superadmin.categories.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.categories.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.categories.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Kategori
                         </a>
                         <a href="{{ route('superadmin.knowledge.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('superadmin.knowledge.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Konteks AI
                         </a>
                     @elseif($role === 'admin_jurusan')
                         <a href="{{ route('admin.dashboard') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Dashboard
                         </a>
                         <a href="{{ route('admin.products.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.products.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            Kelola Produk
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.products.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            Produk
                         </a>
                         <a href="{{ route('admin.orders.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.orders.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            Pesanan Masuk
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.orders.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            Pesanan
                         </a>
                         <a href="{{ route('admin.projects.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.projects.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Proyek
                         </a>
                         <a href="{{ route('admin.workers.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.workers.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.workers.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Siswa
                         </a>
                         <a href="{{ route('admin.portfolios.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.portfolios.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                            Review Portofolio
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.portfolios.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            Portofolio
                         </a>
                         <a href="{{ route('admin.knowledge.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.knowledge.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('admin.knowledge.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Konteks AI
                         </a>
                     @elseif($role === 'worker')
                         <a href="{{ route('worker.dashboard') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.dashboard') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Statistik & Ringkasan
                         </a>
                         <a href="{{ route('worker.tasks.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.tasks.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.tasks.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Daftar Tugas
                         </a>
                         <a href="{{ route('worker.portfolios.index') }}"
-                           class="whitespace-nowrap px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.portfolios.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                           class="whitespace-nowrap shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('worker.portfolios.*') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
                             Ajukan Portofolio
                         </a>
                     @endif
 
-                    @if(in_array($role, ['superadmin', 'admin_jurusan', 'worker']))
-                        <div class="w-px h-6 bg-slate-700 mx-2 flex-shrink-0"></div>
+                    @if(!in_array($role, ['superadmin', 'admin_jurusan', 'worker']))
+                        <a href="{{ route('order.my_orders') }}"
+                            class="whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition {{ request()->routeIs('order.my_orders') ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
+                            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                            Pesanan Saya
+                        </a>
                     @endif
-
-                    <a href="{{ route('order.my_orders') }}"
-                        class="whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('order.my_orders') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800' }}">
-                        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                        Pesanan Saya
-                    </a>
                 </div>
             </div>
 
             <!-- Right Actions: Web Publik Link & User Dropdown -->
-            <div class="flex items-center gap-3 flex-shrink-0">
+            <div class="flex items-center gap-2.5 sm:gap-3 shrink-0 ml-4 pl-4 sm:ml-6 sm:pl-6 border-l border-slate-800">
 
-                <a href="{{ route('home') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    Web Publik
+                <a href="{{ route('home') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold border border-slate-700 transition shadow-xs" title="Buka Halaman Web Publik">
+                    <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <span>Web Publik</span>
                 </a>
 
                 <x-dropdown align="right" width="48">
@@ -130,6 +128,9 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Pengaturan Profil') }}
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('order.my_orders')">
+                            {{ __('Pesanan Saya') }}
+                        </x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="text-red-600 font-bold">
@@ -139,7 +140,7 @@
                     </x-slot>
                 </x-dropdown>
 
-                <button @click="open = !open" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 md:hidden focus:outline-none" aria-label="Buka menu navigasi">
+                <button @click="open = !open" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden focus:outline-none" aria-label="Buka menu navigasi">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': !open }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': !open, 'inline-flex': open }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -150,8 +151,8 @@
         </div>
     </div>
 
-    <!-- Mobile Drawer Menu (phones only, below md) -->
-    <div :class="{'block': open, 'hidden': !open}" class="hidden md:hidden border-t border-slate-800 bg-slate-900 px-4 pt-3 pb-6 space-y-1">
+    <!-- Mobile Drawer Menu (below lg) -->
+    <div :class="{'block': open, 'hidden': !open}" class="hidden lg:hidden border-t border-slate-800 bg-slate-900 px-4 pt-3 pb-6 space-y-1">
         @php
             $navIcon = function (string $name) {
                 return match ($name) {

@@ -14,7 +14,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('tefa_unit_id')->nullable(); // null = kategori global
             $table->string('name');
-            $table->enum('type', ['produk', 'jasa', 'kegiatan']);
+            $table->string('type', 50)->default('jasa');
+            $table->string('image')->nullable();
             $table->timestamps();
 
             $table->foreign('tefa_unit_id')->references('id')->on('tefa_units')->nullOnDelete();

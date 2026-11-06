@@ -47,7 +47,7 @@ class TaskPolicy
 
         if ($user->role === UserRole::Worker) {
             return $task->leader_id === $user->workerProfile?->id
-                || $task->tefa_unit_id === $user->workerProfile?->tefa_unit_id;
+                || $task->members()->where('worker_profiles.id', $user->workerProfile?->id)->exists();
         }
 
         return false;
