@@ -29,5 +29,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(TefaUnit::class, TefaUnitPolicy::class);
         Gate::policy(Project::class, ProjectPolicy::class);
         Gate::policy(Task::class, TaskPolicy::class);
+
+        // Server hosting tanpa ekstensi PHP fileinfo: pakai pendeteksi MIME cadangan
+        // agar upload gambar/.txt (validasi "image"/"mimes" & store()) tidak error 500.
+        if (! extension_loaded('fileinfo')) {
+            \Symfony\Component\Mime\MimeTypes::getDefault()
+                ->registerGuesser(new \App\Support\FallbackMimeTypeGuesser());
+        }
     }
 }

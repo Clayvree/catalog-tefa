@@ -131,18 +131,6 @@
                                                     💬 Chat
                                                 </a>
                                             @endif
-                                            <button @click="activeProject = {
-                                                id: '{{ $project->id }}',
-                                                title: '{{ addslashes($project->title) }}',
-                                                client_name: '{{ addslashes($project->client_name) }}',
-                                                client_contact: '{{ addslashes($project->client_contact ?? '') }}',
-                                                description: '{{ addslashes($project->description ?? '') }}',
-                                                final_price: '{{ (int)$project->final_price }}',
-                                                deadline: '{{ $project->deadline?->format('Y-m-d') ?? '' }}',
-                                                status: '{{ $project->status->value }}'
-                                            }; editModalOpen = true;" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
-                                                Edit
-                                            </button>
                                             <a href="{{ route('admin.projects.show', $project->id) }}" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition">
                                                 Detail
                                             </a>
