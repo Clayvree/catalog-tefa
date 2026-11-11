@@ -33,6 +33,10 @@ class DashboardController extends Controller
             'total_tasks' => $unitId ? Task::where('tefa_unit_id', $unitId)->count() : 0,
             'total_workers' => $unitId ? WorkerProfile::where('tefa_unit_id', $unitId)->count() : 0,
             'pending_portfolios' => $unitId ? Portfolio::where('tefa_unit_id', $unitId)->where('status', 'pending')->count() : 0,
+            // Hal yang perlu ditindaklanjuti admin
+            'pending_orders' => $unitId ? \App\Models\Order::where('tefa_unit_id', $unitId)->where('status', 'pending')->count() : 0,
+            'unpaid_orders' => $unitId ? \App\Models\Order::where('tefa_unit_id', $unitId)->whereIn('payment_status', ['unpaid', 'dp_paid'])->whereNotIn('status', ['cancelled'])->count() : 0,
+            'new_service_requests' => $unitId ? Project::forUnit($unitId)->where('status', 'draft')->count() : 0,
         ];
 
         $projects = $unitId ? Project::with(['tasks.leader.user', 'tasks.members.user', 'creator'])->forUnit($unitId)->latest()->take(6)->get() : collect();

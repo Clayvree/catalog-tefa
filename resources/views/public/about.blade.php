@@ -32,7 +32,7 @@
                     </div>
                     <h3 class="font-black text-lg text-slate-900">Delegasi Tugas Dibantu AI</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Riwayat chat WhatsApp dengan klien bisa diunggah dan dirangkum AI (Google Gemini) menjadi draf tugas terstruktur, yang kemudian ditinjau admin sebelum dibagikan ke siswa.
+                        Riwayat chat WhatsApp dengan klien bisa diunggah dan dirangkum AI (Groq) menjadi draf tugas terstruktur, yang kemudian ditinjau admin sebelum dibagikan ke siswa.
                     </p>
                 </div>
 

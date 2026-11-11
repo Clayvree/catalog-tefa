@@ -5,7 +5,7 @@
                 &larr; Kembali
             </a>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Detail Pesanan #{{ substr($order->id, 0, 8) }}
+                Detail Pesanan {{ $order->order_number }}
             </h2>
         </div>
     </x-slot>
@@ -46,7 +46,7 @@
                                         @php
                                             $phone = preg_replace('/[^0-9]/', '', $order->customer_contact);
                                             if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
-                                            $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
+                                            $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu nomor " . $order->order_number . ".");
                                         @endphp
                                         <a href="{{ $waUrl }}" target="_blank" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold text-[10px] hover:bg-emerald-200 transition inline-flex items-center gap-1">
                                             <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -129,7 +129,10 @@
                             @csrf @method('PATCH')
                             <select name="payment_status" class="w-full rounded-lg border-gray-300 text-sm mb-3">
                                 <option value="unpaid" {{ $order->payment_status === 'unpaid' ? 'selected' : '' }}>Belum Dibayar</option>
-                                <option value="paid" {{ $order->payment_status === 'paid' ? 'selected' : '' }}>Sudah Dibayar</option>
+                                @if($order->isService() || $order->payment_status === 'dp_paid')
+                                <option value="dp_paid" {{ $order->payment_status === 'dp_paid' ? 'selected' : '' }}>DP 50% Diterima</option>
+                                @endif
+                                <option value="paid" {{ $order->payment_status === 'paid' ? 'selected' : '' }}>Sudah Dibayar (Lunas)</option>
                                 <option value="expired" {{ $order->payment_status === 'expired' ? 'selected' : '' }}>Kadaluarsa</option>
                                 <option value="refunded" {{ $order->payment_status === 'refunded' ? 'selected' : '' }}>Refund</option>
                             </select>
@@ -142,7 +145,7 @@
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <h3 class="text-lg font-bold mb-4">Pengiriman / Progress</h3>
                         
-                        <form action="{{ route('admin.orders.fulfillment.update', $order->id) }}" method="POST">
+                        <form action="{{ route('admin.orders.fulfillment.update', $order->id) }}" method="POST" onsubmit="return confirm('Simpan perubahan progres / pengiriman pesanan ini?')">
                             @csrf @method('PATCH')
                             
                             <div class="mb-3">

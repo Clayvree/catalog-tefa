@@ -130,14 +130,10 @@
                                     {{ $task->description ?? 'Instruksi pengerjaan dari instruktur/AI.' }}
                                 </p>
 
-                                @if($task->ai_recommendation_notes)
-                                    <div class="p-2.5 rounded-xl bg-indigo-50/70 border border-indigo-100 text-[11px] text-indigo-900">
-                                        <span class="font-bold text-indigo-700"> AI Match:</span> {{ $task->ai_recommendation_notes }}
-                                    </div>
-                                @endif
+                                @include('worker.tasks.partials.task-meta', ['task' => $task])
 
                                 <div class="pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
-                                    <span class="text-[11px] text-slate-400 font-mono">Skill: <strong>{{ $task->skill->name ?? 'Umum' }}</strong></span>
+                                    <span class="text-[11px] text-slate-400 font-mono">@if($task->skill)Skill: <strong>{{ $task->skill->name }}</strong>@endif</span>
                                     
                                     <a href="{{ route('worker.tasks.show', $task->id) }}" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1">
                                         <span>Buka Detail & Update Progres &rarr;</span>

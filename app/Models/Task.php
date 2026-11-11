@@ -35,6 +35,40 @@ class Task extends Model
         'completed_at',
     ];
 
+    /**
+     * Tenggat efektif: due_date tugas, atau deadline proyek jika tugas belum punya tenggat sendiri.
+     */
+    public function effectiveDeadline(): ?\Illuminate\Support\Carbon
+    {
+        if ($this->due_date) {
+            return $this->due_date;
+        }
+
+        $projectDeadline = $this->project?->deadline;
+
+        return $projectDeadline ? \Illuminate\Support\Carbon::parse($projectDeadline) : null;
+    }
+
+    /**
+     * Peran seorang siswa pada tugas ini: 'leader', 'member', atau null.
+     */
+    public function roleFor(?string $workerProfileId): ?string
+    {
+        if (! $workerProfileId) {
+            return null;
+        }
+
+        if ($this->leader_id === $workerProfileId) {
+            return 'leader';
+        }
+
+        $members = $this->relationLoaded('members')
+            ? $this->members
+            : $this->members()->get();
+
+        return $members->contains('id', $workerProfileId) ? 'member' : null;
+    }
+
     protected function casts(): array
     {
         return [

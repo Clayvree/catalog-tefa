@@ -102,7 +102,7 @@
                         <div class="flex flex-wrap gap-2">
                             @foreach($project->orders as $order)
                                 <a href="{{ route('admin.orders.show', $order->id) }}" class="px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold text-xs transition">
-                                    #{{ substr($order->id, 0, 8) }} · {{ ucfirst($order->status) }}
+                                    {{ $order->order_number }} · {{ ucfirst($order->status) }}
                                 </a>
                             @endforeach
                         </div>

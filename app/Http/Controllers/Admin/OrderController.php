@@ -27,7 +27,27 @@ class OrderController extends Controller
         }
 
         if ($request->filled('payment_status')) {
-            $query->where('payment_status', $request->payment_status);
+            if ($request->payment_status === 'outstanding') {
+                // Belum lunas = belum bayar atau baru DP (pesanan batal tidak dihitung)
+                $query->whereIn('payment_status', ['unpaid', 'dp_paid'])->where('status', '!=', 'cancelled');
+            } else {
+                $query->where('payment_status', $request->payment_status);
+            }
+        }
+
+        if ($request->filled('q')) {
+            $term = trim((string) $request->q);
+            // Nomor pesanan "TF-YYMMDD-XXXXX" -> cocokkan 5 karakter terakhir UUID
+            $suffix = preg_match('/^TF-\d{6}-([0-9A-F]{5})$/i', $term, $m) ? strtolower($m[1]) : null;
+
+            $query->where(function ($q) use ($term, $suffix) {
+                $q->where('customer_name', 'like', "%{$term}%")
+                  ->orWhere('customer_contact', 'like', "%{$term}%");
+
+                if ($suffix) {
+                    $q->orWhere('id', 'like', "%{$suffix}");
+                }
+            });
         }
 
         $orders = $query->latest()->paginate(10)->withQueryString();
@@ -43,14 +63,16 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders', 'managedUnit', 'stats'));
     }
 
-    public function show(Order $order)
+    public function show(Request $request, Order $order)
     {
+        $this->authorizeUnit($request, $order);
         $order->load(['items.catalogItem', 'user', 'tefaUnit']);
         return view('admin.orders.show', compact('order'));
     }
 
     public function updateStatus(Request $request, Order $order)
     {
+        $this->authorizeUnit($request, $order);
         $validated = $request->validate([
             'status' => 'required|in:pending,processed,completed,cancelled',
         ]);
@@ -60,8 +82,9 @@ class OrderController extends Controller
         return redirect()->back()->with('success', "Status pesanan #{$order->id} berhasil diubah ke {$validated['status']}!");
     }
 
-        public function updateShipping(Request $request, Order $order)
+    public function updateShipping(Request $request, Order $order)
     {
+        $this->authorizeUnit($request, $order);
         $validated = $request->validate([
             'shipping_cost' => 'required|numeric|min:0',
         ]);
@@ -71,13 +94,19 @@ class OrderController extends Controller
 
     public function confirmPayment(Request $request, Order $order)
     {
+        $this->authorizeUnit($request, $order);
         $validated = $request->validate([
-            'payment_status' => 'required|in:unpaid,paid,expired,refunded',
+            'payment_status' => 'required|in:unpaid,dp_paid,paid,expired,refunded',
         ]);
 
         $updates = ['payment_status' => $validated['payment_status']];
 
-        if ($validated['payment_status'] === 'paid' && !$order->fulfillment_status) {
+        if ($validated['payment_status'] === 'dp_paid') {
+            $updates['status'] = 'processed';
+            if (!$order->fulfillment_status) {
+                $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::InProgressService;
+            }
+        } elseif ($validated['payment_status'] === 'paid' && (!$order->fulfillment_status || $order->fulfillment_status === \App\Enums\FulfillmentStatus::InProgressService)) {
             if ($order->isDigital()) {
                 $updates['status'] = 'completed';
                 $updates['fulfillment_status'] = \App\Enums\FulfillmentStatus::DownloadReady;
@@ -95,8 +124,9 @@ class OrderController extends Controller
         return redirect()->back()->with('success', "Status pembayaran pesanan #{$order->id} berhasil diperbarui!");
     }
 
-        public function updateFulfillment(Request $request, Order $order)
+    public function updateFulfillment(Request $request, Order $order)
     {
+        $this->authorizeUnit($request, $order);
         $validated = $request->validate([
             'fulfillment_status' => 'required|string',
             'estimated_ready_at' => 'nullable|date',
@@ -119,5 +149,18 @@ class OrderController extends Controller
         $order->update($updates);
 
         return redirect()->back()->with('success', "Status pengiriman/progress pesanan #{$order->id} berhasil diperbarui!");
+    }
+
+    private function authorizeUnit(Request $request, Order $order): void
+    {
+        $user = $request->user();
+        if ($user->role?->value === 'superadmin') {
+            return;
+        }
+
+        $managedUnitIds = $user->managedUnits()->pluck('tefa_units.id')->toArray();
+        if (!in_array($order->tefa_unit_id, $managedUnitIds, true)) {
+            abort(403, 'Akses ditolak: Anda tidak memiliki wewenang untuk pesanan unit jurusan ini.');
+        }
     }
 }

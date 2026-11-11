@@ -113,12 +113,7 @@
                             </div>
                         </div>
 
-                        @if($task->ai_recommendation_notes)
-                            <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-1">
-                                <span class="flex items-center gap-1.5 text-[10px] font-extrabold text-indigo-800 uppercase">?? Alasan Pemilihan Tim oleh AI:</span>
-                                <p class="text-xs text-indigo-900 leading-relaxed italic">"{{ $task->ai_recommendation_notes }}"</p>
-                            </div>
-                        @endif
+                        @include('worker.tasks.partials.task-meta', ['task' => $task])
                     </div>
 
                     <!-- Team Notes / Collaboration Room -->

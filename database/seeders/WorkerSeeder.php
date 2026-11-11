@@ -64,7 +64,7 @@ class WorkerSeeder extends Seeder
             [
                 'tefa_unit_id' => $unitId,
                 'nisn' => '0987654321',
-                'class_name' => 'XI TKJ 2',
+                'class_name' => 'XI PPLG 2',
                 'bio' => 'Passionate about web development and UI/UX.',
             ]
         );
@@ -76,6 +76,90 @@ class WorkerSeeder extends Seeder
             $skillLaravel->id => ['proficiency_level' => 'intermediate'],
             $skillVue->id => ['proficiency_level' => 'intermediate'],
         ]);
+
+        // Student for DKV
+        $unitDkv = \App\Models\TefaUnit::where('slug', 'tefa-dkv-creative-agency')->first();
+        if ($unitDkv) {
+            $userDkv = User::updateOrCreate(
+                ['email' => 'worker.dkv@tefa.id'],
+                [
+                    'name' => 'Rian (Siswa DKV)',
+                    'password' => Hash::make('password'),
+                    'phone' => '6281234567023',
+                    'role' => UserRole::Worker,
+                    'email_verified_at' => now(),
+                ]
+            );
+            $profileDkv = WorkerProfile::updateOrCreate(
+                ['user_id' => $userDkv->id],
+                [
+                    'tefa_unit_id' => $unitDkv->id,
+                    'nisn' => '1122334455',
+                    'class_name' => 'XI DKV 1',
+                    'bio' => 'Spesialis desain grafis, ilustrasi vektor, dan branding kemasan.',
+                ]
+            );
+            $skillDesign = Skill::firstOrCreate(['slug' => 'graphic-design'], ['name' => 'Graphic Design', 'color_hex' => '#8b5cf6']);
+            $profileDkv->skills()->syncWithoutDetaching([
+                $skillDesign->id => ['proficiency_level' => 'advanced'],
+            ]);
+        }
+
+        // Student for Animasi
+        $unitAnimasi = \App\Models\TefaUnit::where('slug', 'tefa-animasi-studio')->first();
+        if ($unitAnimasi) {
+            $userAnimasi = User::updateOrCreate(
+                ['email' => 'worker.animasi@tefa.id'],
+                [
+                    'name' => 'Doni (Siswa Animasi)',
+                    'password' => Hash::make('password'),
+                    'phone' => '6281234567024',
+                    'role' => UserRole::Worker,
+                    'email_verified_at' => now(),
+                ]
+            );
+            $profileAnimasi = WorkerProfile::updateOrCreate(
+                ['user_id' => $userAnimasi->id],
+                [
+                    'tefa_unit_id' => $unitAnimasi->id,
+                    'nisn' => '2233445566',
+                    'class_name' => 'XI Animasi 1',
+                    'bio' => 'Spesialis pemodelan 3D, rigging, dan animasi karakter di Blender.',
+                ]
+            );
+            $skill3D = Skill::firstOrCreate(['slug' => '3d-modeling'], ['name' => '3D Modeling', 'color_hex' => '#f59e0b']);
+            $profileAnimasi->skills()->syncWithoutDetaching([
+                $skill3D->id => ['proficiency_level' => 'intermediate'],
+            ]);
+        }
+
+        // Student for PSPT
+        $unitPspt = \App\Models\TefaUnit::where('slug', 'tefa-pspt-broadcasting-production')->first();
+        if ($unitPspt) {
+            $userPspt = User::updateOrCreate(
+                ['email' => 'worker.pspt@tefa.id'],
+                [
+                    'name' => 'Maya (Siswa PSPT)',
+                    'password' => Hash::make('password'),
+                    'phone' => '6281234567025',
+                    'role' => UserRole::Worker,
+                    'email_verified_at' => now(),
+                ]
+            );
+            $profilePspt = WorkerProfile::updateOrCreate(
+                ['user_id' => $userPspt->id],
+                [
+                    'tefa_unit_id' => $unitPspt->id,
+                    'nisn' => '3344556677',
+                    'class_name' => 'XI PSPT 1',
+                    'bio' => 'Spesialis video shooting, audio mixing podcast, dan live broadcast.',
+                ]
+            );
+            $skillVideo = Skill::firstOrCreate(['slug' => 'video-editing'], ['name' => 'Video Editing', 'color_hex' => '#ec4899']);
+            $profilePspt->skills()->syncWithoutDetaching([
+                $skillVideo->id => ['proficiency_level' => 'intermediate'],
+            ]);
+        }
 
         // Create a Dummy Project to demonstrate the Collaboration Room & Team Notes
         $admin = User::where('role', UserRole::AdminJurusan)->first();

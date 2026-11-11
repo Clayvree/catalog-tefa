@@ -30,6 +30,11 @@ class WorkerController extends Controller
         return view('admin.workers.index', compact('workers', 'managedUnit', 'availableSkills'));
     }
 
+    public function create()
+    {
+        return redirect()->route('admin.workers.index');
+    }
+
     public function store(Request $request)
     {
         $managedUnit = $request->user()->managedUnits()->first() ?? TefaUnit::first();
@@ -91,6 +96,7 @@ class WorkerController extends Controller
 
     public function update(Request $request, WorkerProfile $worker)
     {
+        $this->authorizeUnit($request, $worker);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $worker->user_id,
@@ -140,13 +146,27 @@ class WorkerController extends Controller
         return redirect()->back()->with('success', "Data siswa {$user->name} berhasil diperbarui!");
     }
 
-    public function destroy(WorkerProfile $worker)
+    public function destroy(Request $request, WorkerProfile $worker)
     {
+        $this->authorizeUnit($request, $worker);
         $user = $worker->user;
         $worker->skills()->detach();
         $worker->delete();
         $user?->delete();
 
         return redirect()->back()->with('success', 'Data siswa berhasil dihapus.');
+    }
+
+    private function authorizeUnit(Request $request, WorkerProfile $worker): void
+    {
+        $user = $request->user();
+        if ($user->role?->value === 'superadmin') {
+            return;
+        }
+
+        $managedUnitIds = $user->managedUnits()->pluck('tefa_units.id')->toArray();
+        if (!in_array($worker->tefa_unit_id, $managedUnitIds, true)) {
+            abort(403, 'Akses ditolak: Anda tidak memiliki wewenang untuk data siswa unit jurusan ini.');
+        }
     }
 }

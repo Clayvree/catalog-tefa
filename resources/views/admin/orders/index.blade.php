@@ -52,6 +52,51 @@
                     </div>
                 </div>
 
+                <!-- Filter & Pencarian -->
+                <form method="GET" action="{{ route('admin.orders.index') }}" class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+                    <div class="lg:col-span-2">
+                        <label for="filter-q" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Cari</label>
+                        <input id="filter-q" type="search" name="q" value="{{ request('q') }}" placeholder="Nama, nomor WA, atau nomor pesanan (TF-...)" class="w-full rounded-xl border-slate-200 text-xs focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="filter-type" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Jenis</label>
+                        <select id="filter-type" name="type" class="w-full rounded-xl border-slate-200 text-xs focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Semua jenis</option>
+                            <option value="physical" @selected(request('type') === 'physical')>Produk Fisik</option>
+                            <option value="digital" @selected(request('type') === 'digital')>Produk Digital</option>
+                            <option value="service" @selected(request('type') === 'service')>Layanan Jasa</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-payment" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Pembayaran</label>
+                        <select id="filter-payment" name="payment_status" class="w-full rounded-xl border-slate-200 text-xs focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Semua</option>
+                            <option value="outstanding" @selected(request('payment_status') === 'outstanding')>Belum Lunas (semua)</option>
+                            <option value="unpaid" @selected(request('payment_status') === 'unpaid')>Belum Bayar</option>
+                            <option value="dp_paid" @selected(request('payment_status') === 'dp_paid')>DP 50%</option>
+                            <option value="paid" @selected(request('payment_status') === 'paid')>Lunas</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="flex-1">
+                            <label for="filter-status" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                            <select id="filter-status" name="status" class="w-full rounded-xl border-slate-200 text-xs focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">Semua</option>
+                                <option value="pending" @selected(request('status') === 'pending')>Menunggu</option>
+                                <option value="processed" @selected(request('status') === 'processed')>Diproses</option>
+                                <option value="completed" @selected(request('status') === 'completed')>Selesai</option>
+                                <option value="cancelled" @selected(request('status') === 'cancelled')>Dibatalkan</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="self-end px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Terapkan</button>
+                    </div>
+                    @if(request()->hasAny(['q', 'type', 'payment_status', 'status']) && collect(request()->only(['q', 'type', 'payment_status', 'status']))->filter()->isNotEmpty())
+                        <div class="sm:col-span-2 lg:col-span-5 text-[11px] text-slate-500">
+                            Menampilkan {{ $orders->total() }} pesanan sesuai filter. <a href="{{ route('admin.orders.index') }}" class="font-bold text-indigo-600 hover:underline">Reset filter</a>
+                        </div>
+                    @endif
+                </form>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs text-left">
                         <thead class="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-slate-100">
@@ -71,7 +116,7 @@
                                         <div>
                                             <p class="font-bold text-slate-900 text-sm">{{ $order->customer_name }}</p>
                                             <p class="text-[11px] text-slate-500 font-mono">{{ $order->customer_contact }}</p>
-                                            <span class="text-[10px] text-slate-400">#{{ substr($order->id, 0, 8) }} • {{ $order->created_at?->format('d M Y, H:i') }}</span>
+                                            <span class="text-[10px] text-slate-400">{{ $order->order_number }} • {{ $order->created_at?->format('d M Y, H:i') }}</span>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
@@ -117,6 +162,10 @@
                                                         <svg class="w-3 h-3 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                         Lunas
                                                     </span>
+                                                @elseif($order->payment_status === 'dp_paid')
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 font-extrabold text-[10px] uppercase">
+                                                        DP 50%
+                                                    </span>
                                                 @else
                                                     <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 font-extrabold text-[10px] uppercase">
                                                         Belum Bayar
@@ -152,11 +201,20 @@
                                         <form action="{{ route('admin.orders.status.update', $order->id) }}" method="POST" class="inline-flex items-center">
                                             @csrf
                                             @method('PATCH')
-                                            <select name="status" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-[10px] py-1 pl-2 pr-6 font-bold text-slate-700 focus:ring-indigo-500 focus:border-indigo-500">
-                                                <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                                <option value="processed" {{ $order->status === 'processed' ? 'selected' : '' }}>Diproses / Disiapkan</option>
-                                                <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Selesai (Diantar/Diambil)</option>
-                                                <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
+                                            @php
+                                                $statusLabels = [
+                                                    'pending'   => 'Menunggu',
+                                                    'processed' => $order->isService() ? 'Sedang Dikerjakan' : ($order->isDigital() ? 'Diproses' : 'Diproses / Disiapkan'),
+                                                    'completed' => $order->isService() ? 'Selesai (Diserahkan)' : ($order->isDigital() ? 'Selesai (Terkirim)' : 'Selesai (Diantar/Diambil)'),
+                                                    'cancelled' => 'Dibatalkan',
+                                                ];
+                                            @endphp
+                                            <select name="status" aria-label="Ubah status pesanan {{ $order->order_number }}" data-current="{{ $order->status }}"
+                                                    onchange="const l=this.options[this.selectedIndex].text; if (confirm('Ubah status pesanan {{ $order->order_number }} menjadi &quot;' + l + '&quot;?' + (this.value === 'cancelled' ? '\n\nPesanan yang dibatalkan tidak akan diproses lagi.' : ''))) { this.form.submit(); } else { this.value = this.dataset.current; }"
+                                                    class="rounded-lg border-slate-200 text-[10px] py-1 pl-2 pr-6 font-bold text-slate-700 focus:ring-indigo-500 focus:border-indigo-500">
+                                                @foreach($statusLabels as $value => $label)
+                                                    <option value="{{ $value }}" {{ $order->status === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                                @endforeach
                                             </select>
                                         </form>
                                     </td>
@@ -172,7 +230,7 @@
                                                 @php
                                                     $phone = preg_replace('/[^0-9]/', '', $order->customer_contact);
                                                     if (substr($phone, 0, 1) === '0') $phone = '62' . substr($phone, 1);
-                                                    $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu dengan ID #" . substr($order->id, 0, 8) . "...");
+                                                    $waUrl = "https://wa.me/{$phone}?text=" . urlencode("Halo {$order->customer_name}, ini Admin TEFA. Saya ingin menginformasikan terkait pesanan kamu nomor " . $order->order_number . ".");
                                                 @endphp
                                                 <a href="{{ $waUrl }}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition flex items-center gap-1 min-w-20 justify-center">
                                                      Chat

@@ -24,7 +24,7 @@ class WhatsAppImportController extends Controller
         $projectId = $request->query('project_id');
         $project = null;
 
-        $draftsQuery = WaImportDraft::where('tefa_unit_id', $tefaUnitId)->latest()->take(10);
+        $draftsQuery = WaImportDraft::with(['project', 'uploader'])->where('tefa_unit_id', $tefaUnitId)->latest()->take(10);
         
         if ($projectId) {
             $draftsQuery->where('project_id', $projectId);
@@ -76,6 +76,8 @@ class WhatsAppImportController extends Controller
             return redirect()->route('admin.projects.import-wa.create')
                 ->with('error', 'Draft ini tidak dalam status siap direview.');
         }
+
+        $draft->load('project');
 
         $workers = \App\Models\WorkerProfile::with(['user', 'skills'])
             ->where('tefa_unit_id', $tefaUnitId)

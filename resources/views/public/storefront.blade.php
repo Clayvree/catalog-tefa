@@ -88,7 +88,12 @@
                         <div class="group bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col">
                             <div class="aspect-[4/3] bg-slate-100 relative overflow-hidden">
                                 @if($item->thumbnail_url)
-                                    <img src="{{ $item->thumbnail_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    <img src="{{ $item->thumbnail_url }}" 
+                                         alt="{{ $item->title }}" 
+                                         loading="lazy"
+                                         decoding="async"
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 opacity-0 blur-xs"
+                                         onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-slate-300">No Image</div>
                                 @endif
@@ -100,9 +105,11 @@
                                 <div class="space-y-2">
                                     <span class="text-[10px] font-bold text-indigo-600 uppercase">{{ $item->category->name ?? 'Kategori' }}</span>
                                     <h3 class="font-black text-base text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
-                                        {{ $item->title }}
+                                        <a href="{{ $item->item_type->value === 'jasa' ? route('jasa.nego', $item->slug) : route('order.checkout', $item->slug) }}">
+                                            {{ $item->title }}
+                                        </a>
                                     </h3>
-                                    <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                                    <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                                         {{ $item->description }}
                                     </p>
                                     @if($item->item_type->value === 'jasa')
@@ -162,22 +169,47 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @forelse($featuredPortfolios as $portfolio)
-                        <div class="group bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                            <div class="aspect-[4/3] bg-slate-900 relative overflow-hidden">
+                        <div class="group bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+                            {{-- Thumbnail (clickable) --}}
+                            <a href="{{ route('portfolio.detail', $portfolio->id) }}" class="block aspect-[4/3] bg-slate-900 relative overflow-hidden">
                                 @if($portfolio->thumbnail_url)
-                                    <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    <img src="{{ $portfolio->thumbnail_url }}" 
+                                         alt="{{ $portfolio->title }}" 
+                                         loading="lazy"
+                                         decoding="async"
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 opacity-0 blur-xs"
+                                         onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center text-slate-500">No Image</div>
+                                    <div class="w-full h-full flex items-center justify-center text-slate-500">
+                                        <svg class="w-12 h-12 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
                                 @endif
-                            </div>
-                            <div class="p-6 flex-1 flex flex-col justify-between space-y-3">
-                                <div>
-                                    <h3 class="font-black text-base text-slate-900 mb-1.5">{{ $portfolio->title }}</h3>
-                                    <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed">{{ $portfolio->description }}</p>
+                                {{-- Hover overlay --}}
+                                <div class="absolute inset-0 bg-indigo-900/0 group-hover:bg-indigo-900/40 transition-all duration-300 flex items-center justify-center">
+                                    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white font-bold text-xs bg-white/20 backdrop-blur-sm border border-white/30 px-4 py-2 rounded-xl flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        Lihat Detail
+                                    </span>
                                 </div>
-                                <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-                                    <span class="text-emerald-600 font-bold">✓ Terverifikasi</span>
-                                    <span>{{ $portfolio->client_name ?? 'Mitra Industri' }}</span>
+                            </a>
+                            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                                <div>
+                                    <h3 class="font-black text-sm text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors line-clamp-2">{{ $portfolio->title }}</h3>
+                                    <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">{{ $portfolio->description }}</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                                        <span class="text-emerald-600 font-bold flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                            Terverifikasi
+                                        </span>
+                                        <span>{{ $portfolio->client_name ?? 'Mitra Industri' }}</span>
+                                    </div>
+                                    <a href="{{ route('portfolio.detail', $portfolio->id) }}"
+                                       class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs transition-colors duration-200 shadow-sm">
+                                        Detail Proyek &amp; Tim Siswa
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                    </a>
                                 </div>
                             </div>
                         </div>

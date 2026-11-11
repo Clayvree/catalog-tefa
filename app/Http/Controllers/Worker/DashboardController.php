@@ -58,9 +58,12 @@ class DashboardController extends Controller
             'portfolios_pending' => Portfolio::where('worker_profile_id', $workerId)->where('status', PortfolioStatus::Pending->value)->count(),
         ];
 
-        $urgentTasks = Task::with(['project', 'skill'])
+        $urgentTasks = Task::with(['project', 'skill', 'members'])
             ->forWorker($workerId)
             ->where('status', '!=', TaskStatus::Done->value)
+            // Urutkan berdasarkan tenggat terdekat (tugas tanpa tenggat di akhir), lalu prioritas
+            ->orderByRaw("COALESCE(tasks.due_date, (SELECT deadline FROM projects WHERE projects.id = tasks.project_id)) IS NULL")
+            ->orderByRaw("COALESCE(tasks.due_date, (SELECT deadline FROM projects WHERE projects.id = tasks.project_id))")
             ->orderByRaw("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END")
             ->take(5)
             ->get();

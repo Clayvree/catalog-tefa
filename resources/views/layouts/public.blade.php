@@ -40,6 +40,10 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #fafafa;
         }
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+        }
         .glass-nav {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(16px);
@@ -71,7 +75,7 @@
                 <a href="{{ route('about') }}" class="hover:text-white transition">Panduan Kemitraan</a>
                 <span>•</span>
                 <span class="text-slate-400 flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <svg class="w-3.5 h-3.5 text-emerald-400" width="14" height="14" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
                     Bimbingan Guru Ahli
                 </span>
             </div>
@@ -319,7 +323,7 @@
     </main>
 
     <!-- Modern Rich Footer -->
-    <footer class="bg-slate-950 text-slate-400 pt-20 pb-12 border-t border-slate-800/80">
+    <footer class="bg-slate-950 text-slate-400 pt-20 pb-24 sm:pb-12 border-t border-slate-800/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 pb-16 border-b border-slate-800">
                 

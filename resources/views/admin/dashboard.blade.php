@@ -26,7 +26,7 @@
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div class="space-y-2 max-w-xl">
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-extrabold uppercase tracking-widest border border-indigo-500/30">
-                            ✦ AI Integration • Gemini Flash
+                            ✦ Integrasi AI • Groq
                         </div>
                         <h3 class="text-xl sm:text-2xl font-black tracking-tight">Otomasi Delegasi Tugas dari Chat WhatsApp</h3>
                         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -39,6 +39,31 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
                 </div>
+            </div>
+
+            <!-- Perlu Tindakan -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <a href="{{ route('admin.projects.index', ['status' => 'draft']) }}" class="group flex items-center justify-between gap-3 p-4 rounded-2xl border {{ $stats['new_service_requests'] > 0 ? 'bg-amber-50 border-amber-200' : 'bg-white border-slate-200/80' }} hover:shadow-md transition">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase {{ $stats['new_service_requests'] > 0 ? 'text-amber-700' : 'text-slate-400' }}">Pengajuan Jasa Baru</p>
+                        <p class="text-xs text-slate-600 mt-0.5">Menunggu nego & import chat WA</p>
+                    </div>
+                    <span class="text-2xl font-black {{ $stats['new_service_requests'] > 0 ? 'text-amber-600' : 'text-slate-300' }}">{{ $stats['new_service_requests'] }}</span>
+                </a>
+                <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="group flex items-center justify-between gap-3 p-4 rounded-2xl border {{ $stats['pending_orders'] > 0 ? 'bg-rose-50 border-rose-200' : 'bg-white border-slate-200/80' }} hover:shadow-md transition">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase {{ $stats['pending_orders'] > 0 ? 'text-rose-700' : 'text-slate-400' }}">Pesanan Menunggu Diproses</p>
+                        <p class="text-xs text-slate-600 mt-0.5">Status masih "Menunggu"</p>
+                    </div>
+                    <span class="text-2xl font-black {{ $stats['pending_orders'] > 0 ? 'text-rose-600' : 'text-slate-300' }}">{{ $stats['pending_orders'] }}</span>
+                </a>
+                <a href="{{ route('admin.orders.index', ['payment_status' => 'outstanding']) }}" class="group flex items-center justify-between gap-3 p-4 rounded-2xl border bg-white border-slate-200/80 hover:shadow-md transition">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase text-slate-400">Belum Lunas</p>
+                        <p class="text-xs text-slate-600 mt-0.5">Belum bayar atau baru DP</p>
+                    </div>
+                    <span class="text-2xl font-black text-slate-700">{{ $stats['unpaid_orders'] }}</span>
+                </a>
             </div>
 
             <!-- Stats Overview -->

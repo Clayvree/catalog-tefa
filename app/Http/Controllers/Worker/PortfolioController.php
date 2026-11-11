@@ -49,19 +49,25 @@ class PortfolioController extends Controller
         $workerProfile = $request->user()->workerProfile;
 
         $validated = $request->validate([
-            'title'          => 'required|string|max:255',
-            'description'    => 'required|string|max:2000',
-            'external_link'  => 'nullable|url|max:255',
-            'thumbnail_file' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'title'               => 'required|string|max:255',
+            'description'         => 'required|string|max:2000',
+            'external_link'       => 'nullable|url|max:255',
+            'thumbnail_file'      => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'submitter_role'      => 'nullable|string|max:100',
+            'submitter_linkedin'  => 'nullable|url|max:255',
+            'submitter_social'    => 'nullable|url|max:255',
 
             // Kontributor tambahan (opsional, bisa lebih dari satu)
             'contributors'                      => 'nullable|array|max:10',
             'contributors.*.worker_profile_id'  => 'nullable|uuid|exists:worker_profiles,id',
             'contributors.*.guest_name'         => 'nullable|string|max:100',
+            'contributors.*.class_name'         => 'nullable|string|max:100',
             'contributors.*.role'               => 'nullable|string|max:100',
+            'contributors.*.linkedin'           => 'nullable|url|max:255',
+            'contributors.*.social'             => 'nullable|url|max:255',
         ]);
 
-        $path = $request->file('thumbnail_file')->store('portfolios', 'public');
+        $path = \App\Services\ImageOptimizerService::optimizeAndStore($request->file('thumbnail_file'), 'portfolios', 1280, 1280, 82);
         $thumbnailUrl = '/storage/' . $path;
 
         $portfolio = Portfolio::create([
@@ -73,6 +79,19 @@ class PortfolioController extends Controller
             'external_link'    => $validated['external_link'] ?? null,
             'thumbnail_url'    => $thumbnailUrl,
             'status'           => PortfolioStatus::Pending,
+        ]);
+
+        // Simpan peran & kontak pengaju utama ke kontributor
+        PortfolioContributor::create([
+            'id'                => (string) Str::uuid(),
+            'portfolio_id'      => $portfolio->id,
+            'worker_profile_id' => $workerProfile->id,
+            'guest_name'        => null,
+            'role'              => PortfolioContributor::formatRolePayload(
+                $validated['submitter_role'] ?? 'Pengaju Utama / Tim Pengembang',
+                $validated['submitter_linkedin'] ?? null,
+                $validated['submitter_social'] ?? null
+            ),
         ]);
 
         // Simpan kontributor tambahan
@@ -91,17 +110,36 @@ class PortfolioController extends Controller
         }
 
         $validated = $request->validate([
+            'submitter_role'                    => 'nullable|string|max:100',
+            'submitter_linkedin'                => 'nullable|url|max:255',
+            'submitter_social'                  => 'nullable|url|max:255',
             'contributors'                      => 'nullable|array|max:10',
             'contributors.*.worker_profile_id'  => 'nullable|uuid|exists:worker_profiles,id',
             'contributors.*.guest_name'         => 'nullable|string|max:100',
+            'contributors.*.class_name'         => 'nullable|string|max:100',
             'contributors.*.role'               => 'nullable|string|max:100',
+            'contributors.*.linkedin'           => 'nullable|url|max:255',
+            'contributors.*.social'             => 'nullable|url|max:255',
         ]);
 
-        // Hapus semua kontributor lama, ganti dengan yang baru
+        // Hapus semua kontributor lama, lalu simpan ulang (termasuk pengaju)
         $portfolio->contributors()->delete();
+
+        PortfolioContributor::create([
+            'id'                => (string) Str::uuid(),
+            'portfolio_id'      => $portfolio->id,
+            'worker_profile_id' => $portfolio->worker_profile_id,
+            'guest_name'        => null,
+            'role'              => PortfolioContributor::formatRolePayload(
+                $validated['submitter_role'] ?? 'Pengaju Utama',
+                $validated['submitter_linkedin'] ?? null,
+                $validated['submitter_social'] ?? null
+            ),
+        ]);
+
         $this->syncContributors($portfolio, $validated['contributors'] ?? []);
 
-        return redirect()->back()->with('success', 'Daftar kontributor berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Daftar kontributor tim berhasil diperbarui.');
     }
 
     public function destroy(Portfolio $portfolio)
@@ -128,6 +166,11 @@ class PortfolioController extends Controller
             $workerProfileId = $item['worker_profile_id'] ?? null;
             $guestName       = $item['guest_name'] ?? null;
 
+            // Jangan duplikasi pengaju utama yang sudah dibuat di awal
+            if ($workerProfileId && $workerProfileId === $portfolio->worker_profile_id) {
+                continue;
+            }
+
             // Harus ada salah satu: akun atau nama tamu
             if (!$workerProfileId && !$guestName) {
                 continue;
@@ -138,7 +181,12 @@ class PortfolioController extends Controller
                 'portfolio_id'      => $portfolio->id,
                 'worker_profile_id' => $workerProfileId ?: null,
                 'guest_name'        => $workerProfileId ? null : $guestName,
-                'role'              => $item['role'] ?? null,
+                'role'              => PortfolioContributor::formatRolePayload(
+                    $item['role'] ?? 'Kontributor Tim',
+                    $item['linkedin'] ?? null,
+                    $item['social'] ?? null,
+                    $item['class_name'] ?? null
+                ),
             ]);
         }
     }

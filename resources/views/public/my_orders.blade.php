@@ -1,12 +1,15 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Pesanan Saya') }}
-        </h2>
-    </x-slot>
 
-    <div class="py-12">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+<x-public-layout>
+    <x-slot name="title">Pesanan Saya — TefaHub</x-slot>
+
+    <div class="py-10 bg-slate-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div>
+                <p class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-600">Akun Saya</p>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">Pesanan Saya</h1>
+                <p class="text-sm text-slate-500 mt-1">Pantau status pembayaran, pengiriman, dan progres layanan yang Anda pesan.</p>
+            </div>
+
             <!-- Filter Navigasi -->
             <div class="flex gap-2 overflow-x-auto pb-2">
                 <a href="{{ route('order.my_orders') }}" class="px-4 py-2 rounded-full text-xs font-bold {{ !request('type') ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50' }}">Semua</a>
@@ -18,7 +21,7 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4 pb-4 border-b border-gray-50">
                         <div>
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">#{{ substr($order->id, 0, 8) }}</span>
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">{{ $order->order_number }}</span>
                             <h3 class="font-bold text-lg text-gray-900 mt-1">{{ $order->tefaUnit->name }}</h3>
                             <p class="text-sm text-gray-500">{{ $order->order_date->format('d M Y, H:i') }}</p>
                         </div>
@@ -29,13 +32,7 @@
                             @if($order->isDigital() || $order->fulfillment_method === 'digital_download')
                                 {{-- Digital: tidak tampilkan status barang, cukup tombol download jika sudah bayar --}}
                                 @if($order->payment_status === 'paid')
-                                    @php
-                                        $dlItem = $order->items->first()?->catalogItem;
-                                        $dlUrl = $dlItem?->digital_file_url ?? '#';
-                                    @endphp
-                                    <a href="{{ $dlUrl }}" target="_blank" class="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition">
-                                        ⬇️ Download
-                                    </a>
+                                    <span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">✓ Siap Diunduh</span>
                                 @else
                                     <span class="px-3 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-800">⏳ Menunggu Pembayaran</span>
                                 @endif
@@ -87,10 +84,9 @@
                                 <p class="mt-2 text-gray-600 italic">"{{ $order->fulfillment_notes }}"</p>
                             @endif
                             
-                            @if($order->isDigital() && $order->fulfillment_status?->value === 'download_ready')
+                            @if($order->isDigital() && $order->payment_status === 'paid' && $order->digital_access_token)
                                 <div class="mt-4">
-                                    <!-- In real app, this should link to a secure download route using the digital_access_token -->
-                                    <a href="#" class="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-sm text-xs transition">
+                                    <a href="{{ route('order.download', $order->digital_access_token) }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-sm text-xs transition">
                                         &darr; Download File
                                     </a>
                                 </div>
@@ -120,4 +116,4 @@
             {{ $orders->links() }}
         </div>
     </div>
-</x-app-layout>
+</x-public-layout>

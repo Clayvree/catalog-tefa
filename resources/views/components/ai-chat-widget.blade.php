@@ -3,8 +3,9 @@
     <button 
         @click="toggleChat()" 
         class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-3.5 sm:p-4 shadow-xl shadow-indigo-600/30 transition-all duration-300 hover:scale-105 flex items-center justify-center focus:outline-none"
-        :class="isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'"
+        :class="isOpen ? 'scale-0 opacity-0 pointer-events-none' : (isScrolling ? 'scale-90 opacity-30 sm:scale-100 sm:opacity-100' : 'scale-100 opacity-100')"
         title="Tanya Konsultan AI"
+        aria-label="Tanya Konsultan AI"
     >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
         <span class="absolute -top-1 -right-1 flex h-3 w-3">
@@ -110,7 +111,18 @@ document.addEventListener('alpine:init', () => {
         newMessage: '',
         sessionToken: localStorage.getItem('tefa_ai_session') || '',
         messages: [],
-        
+        isScrolling: false,
+        scrollTimer: null,
+
+        init() {
+            // Di layar HP, tombol dibuat transparan saat halaman di-scroll agar tidak menutupi konten
+            window.addEventListener('scroll', () => {
+                this.isScrolling = true;
+                clearTimeout(this.scrollTimer);
+                this.scrollTimer = setTimeout(() => { this.isScrolling = false; }, 700);
+            }, { passive: true });
+        },
+
         toggleChat() {
             this.isOpen = !this.isOpen;
             if(this.isOpen) {

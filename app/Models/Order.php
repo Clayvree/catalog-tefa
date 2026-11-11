@@ -53,6 +53,17 @@ class Order extends Model
         ];
     }
 
+    /**
+     * Nomor pesanan yang mudah dibaca & disebutkan via WA, contoh: TF-261111-8C42B.
+     * Memakai 5 karakter terakhir UUID (bagian acak) agar antar pesanan tidak mirip.
+     */
+    public function getOrderNumberAttribute(): string
+    {
+        $date = ($this->order_date ?? $this->created_at ?? now())->format('ymd');
+
+        return 'TF-' . $date . '-' . strtoupper(substr(str_replace('-', '', (string) $this->id), -5));
+    }
+
     public function tefaUnit(): BelongsTo
     {
         return $this->belongsTo(TefaUnit::class);

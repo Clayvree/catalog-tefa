@@ -23,7 +23,7 @@ class TaskController extends Controller
 
         $workerId = $workerProfile->id;
         
-        $query = Task::with(['project', 'skill'])->forWorker($workerId);
+        $query = Task::with(['project', 'skill', 'members'])->forWorker($workerId);
 
         if ($request->filled('priority')) {
             $query->where('priority', $request->priority);

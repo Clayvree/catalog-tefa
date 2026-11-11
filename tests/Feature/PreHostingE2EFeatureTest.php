@@ -171,9 +171,9 @@ class PreHostingE2EFeatureTest extends TestCase
             ->assertStatus(200)
             ->assertSee($this->customer->name);
 
-        // 4. Customer simulasi bayar
-        $this->actingAs($this->customer)
-            ->post('/pesanan/invoice/' . $order->id . '/pay')
+        // 4. Admin konfirmasi pembayaran
+        $this->actingAs($this->adminJurusan)
+            ->patch('/admin/orders/' . $order->id . '/payment', ['payment_status' => 'paid'])
             ->assertRedirect();
 
         $this->assertEquals('paid', $order->fresh()->payment_status);
@@ -211,9 +211,9 @@ class PreHostingE2EFeatureTest extends TestCase
         $targetUrl = $response->headers->get('Location');
         $this->assertStringContainsString('wa.me', $targetUrl);
 
-        // Pipeline Proyek harus otomatis tercatat di database
+        // Pipeline Proyek harus otomatis tercatat di database dengan nama instansi/klien yang diinputkan
         $this->assertDatabaseHas('projects', [
-            'client_name' => $this->customer->name,
+            'client_name' => 'PT Maju Bersama',
             'tefa_unit_id' => $this->unit->id,
         ]);
     }
@@ -275,6 +275,7 @@ class PreHostingE2EFeatureTest extends TestCase
                 'item_type' => 'produk',
                 'fulfillment_type' => 'shipping_only',
                 'thumbnail_file' => $file,
+                'ai_context' => 'Mouse gaming presisi tinggi karya siswa TEFA.',
                 'status' => 'published',
             ])->assertRedirect('/admin/products');
 

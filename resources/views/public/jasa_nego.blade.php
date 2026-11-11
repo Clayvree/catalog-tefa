@@ -39,31 +39,47 @@
                 <form action="{{ route('jasa.nego.submit', $item->slug) }}" method="POST" class="space-y-5">
                     @csrf
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    @if ($errors->any())
+                        <div role="alert" class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs text-rose-700">
+                            <p class="font-bold mb-1">Pengajuan belum terkirim. Mohon periksa kembali:</p>
+                            <ul class="list-disc pl-4 space-y-0.5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <span class="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">Nama Anda / Instansi</span>
-                            <p class="font-bold text-slate-900 text-sm">{{ auth()->user()->name }}</p>
+                            <label for="client_name" class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Pemesan / Instansi</label>
+                            <input id="client_name" type="text" name="client_name" value="{{ old('client_name', auth()->user()?->name) }}" required maxlength="255" placeholder="Contoh: Toko Kue Sari / Bu Sari" class="w-full rounded-xl focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium {{ $errors->has('client_name') ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200' }}">
+                            @error('client_name')<p class="mt-1 text-[11px] font-semibold text-rose-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <span class="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">Nomor WhatsApp Aktif</span>
-                            <p class="font-bold text-slate-900 text-sm">{{ auth()->user()->whatsapp_number ?? auth()->user()->phone ?? '-' }}</p>
+                            <label for="client_contact" class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp Aktif</label>
+                            <input id="client_contact" type="tel" inputmode="tel" name="client_contact" value="{{ old('client_contact', auth()->user()?->whatsapp_number ?? auth()->user()?->phone) }}" required maxlength="50" placeholder="Contoh: 081234567890" class="w-full rounded-xl focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium {{ $errors->has('client_contact') ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200' }}">
+                            @error('client_contact')<p class="mt-1 text-[11px] font-semibold text-rose-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rincian / Brief Kebutuhan Proyek</label>
-                        <textarea name="project_brief" rows="4" required placeholder="Jelaskan apa yang ingin Anda buat, fitur yang dibutuhkan, bahan/materi yang sudah disiapkan, atau referensi desain..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
+                        <label for="project_brief" class="block text-xs font-bold text-slate-700 uppercase mb-1">Rincian / Brief Kebutuhan Proyek</label>
+                        <textarea id="project_brief" name="project_brief" rows="4" required maxlength="2000" placeholder="Jelaskan apa yang ingin Anda buat, fitur yang dibutuhkan, bahan/materi yang sudah disiapkan, atau referensi desain..." class="w-full rounded-xl focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed {{ $errors->has('project_brief') ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200' }}">{{ old('project_brief') }}</textarea>
+                        @error('project_brief')<p class="mt-1 text-[11px] font-semibold text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ekspektasi Budget Anda (Rp) (Opsional)</label>
-                            <input type="number" name="budget_expectation" placeholder="Contoh: {{ (int)$item->price }}" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                            <span class="text-[10px] text-slate-400">Harga acuan standar mulai dari: <strong>Rp{{ number_format((float)$item->price, 0, ',', '.') }}</strong></span>
+                            <label for="budget_expectation" class="block text-xs font-bold text-slate-700 uppercase mb-1">Ekspektasi Budget Anda (Rp) (Opsional)</label>
+                            <input id="budget_expectation" type="number" name="budget_expectation" value="{{ old('budget_expectation') }}" min="10000" max="100000000" step="1000" placeholder="Contoh: {{ (int)$item->price }}" class="w-full rounded-xl focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium {{ $errors->has('budget_expectation') ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200' }}">
+                            @error('budget_expectation')<p class="mt-1 text-[11px] font-semibold text-rose-600">{{ $message }}</p>@enderror
+                            <span class="text-[10px] text-slate-400">Harga acuan mulai dari <strong>Rp{{ number_format((float)$item->price, 0, ',', '.') }}</strong> &bull; rentang Rp10.000 &ndash; Rp100.000.000</span>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Target Tanggal Selesai (Deadline)</label>
-                            <input type="date" name="target_deadline" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            <label for="target_deadline" class="block text-xs font-bold text-slate-700 uppercase mb-1">Target Tanggal Selesai (Opsional)</label>
+                            <input id="target_deadline" type="date" name="target_deadline" value="{{ old('target_deadline') }}" min="{{ now()->toDateString() }}" class="w-full rounded-xl focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium {{ $errors->has('target_deadline') ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200' }}">
+                            @error('target_deadline')<p class="mt-1 text-[11px] font-semibold text-rose-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
 

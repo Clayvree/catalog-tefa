@@ -25,7 +25,7 @@
                 </h1>
 
                 <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
-                    Temukan ribuan produk inovatif dan layanan jasa profesional langsung dari unit Teaching Factory. Dikerjakan oleh siswa berprestasi dengan supervisi instruktur ahli.
+                    Temukan beragam produk inovatif dan layanan jasa profesional langsung dari unit Teaching Factory. Dikerjakan oleh siswa berprestasi dengan supervisi instruktur ahli.
                 </p>
 
                 <!-- Hero Search Box -->
@@ -67,13 +67,13 @@
                 </div>
 
                 <div class="pt-2 md:pt-0">
-                    <p class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">100%</p>
-                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Didampingi Guru Ahli</p>
+                    <p class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">{{ $stats['total_portfolios'] ?? 0 }}</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Karya Siswa Tervalidasi</p>
                 </div>
 
                 <div class="pt-2 md:pt-0">
-                    <p class="text-2xl sm:text-4xl font-black text-emerald-600 tracking-tight">99.8%</p>
-                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Kepuasan Mitra</p>
+                    <p class="text-2xl sm:text-4xl font-black text-emerald-600 tracking-tight">{{ $stats['total_workers'] ?? 0 }}</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Siswa Talenta Aktif</p>
                 </div>
 
             </div>
@@ -296,7 +296,12 @@
                         <!-- Thumbnail -->
                         <div class="aspect-square bg-slate-100 relative overflow-hidden">
                             @if($item->thumbnail_url)
-                                <img src="{{ $item->thumbnail_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ $item->thumbnail_url }}" 
+                                     alt="{{ $item->title }}" 
+                                     loading="lazy"
+                                     decoding="async"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 opacity-0 blur-xs"
+                                     onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-300 text-xs">No Photo</div>
                             @endif
@@ -412,13 +417,18 @@
                 @foreach($featuredPortfolios as $portfolio)
                     <div class="group bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-700/80 overflow-hidden hover:border-indigo-500 transition-all duration-300 flex flex-col sm:flex-row">
                         
-                        <div class="sm:w-1/2 aspect-video sm:aspect-auto bg-slate-950 relative overflow-hidden">
+                        <a href="{{ route('portfolio.detail', $portfolio->id) }}" class="sm:w-1/2 aspect-video sm:aspect-auto bg-slate-950 relative overflow-hidden block flex-shrink-0">
                             @if($portfolio->thumbnail_url)
-                                <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <img src="{{ $portfolio->thumbnail_url }}" 
+                                     alt="{{ $portfolio->title }}" 
+                                     loading="lazy"
+                                     decoding="async"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 opacity-0 blur-xs"
+                                     onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-600">No Image</div>
                             @endif
-                        </div>
+                        </a>
 
                         <div class="p-4 sm:p-6 sm:w-1/2 flex flex-col justify-between space-y-3">
                             <div>
@@ -433,11 +443,18 @@
                                 </p>
                             </div>
 
-                            <div class="pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-300">
-                                <span class="flex items-center gap-1 font-medium text-[11px] text-emerald-400">
-                                    ✓ Terverifikasi
-                                </span>
-                                <span class="text-slate-400 text-[10px]">{{ $portfolio->client_name ?? 'Mitra Industri' }}</span>
+                            <div class="space-y-3">
+                                <div class="pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-300">
+                                    <span class="flex items-center gap-1 font-medium text-[11px] text-emerald-400">
+                                        ✓ Terverifikasi
+                                    </span>
+                                    <span class="text-slate-400 text-[10px]">{{ $portfolio->client_name ?? 'Mitra Industri' }}</span>
+                                </div>
+                                <a href="{{ route('portfolio.detail', $portfolio->id) }}"
+                                   class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/10 hover:bg-indigo-600 text-white font-bold text-xs border border-white/10 hover:border-indigo-500 transition-all duration-200">
+                                    Detail Proyek &amp; Tim Siswa
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                </a>
                             </div>
                         </div>
 

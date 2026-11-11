@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Tagihan Pesanan #' . substr($order->id, 0, 8))
+@section('title', 'Tagihan Pesanan ' . $order->order_number)
 
 @section('content')
 <div class="py-12 bg-slate-50 min-h-screen">
@@ -23,7 +23,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
                 <div>
                     <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-600">INVOICE PEMBAYARAN</span>
-                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">Pesanan #{{ substr($order->id, 0, 8) }}</h2>
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">Pesanan {{ $order->order_number }}</h2>
                     <p class="text-xs text-slate-400 mt-1">{{ $order->order_date?->format('d F Y, H:i') }} WIB</p>
                 </div>
 
@@ -31,6 +31,10 @@
                     @if($order->payment_status === 'paid')
                         <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-emerald-50 text-emerald-700 font-black text-xs border border-emerald-200">
                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span> PEMBAYARAN LUNAS
+                        </span>
+                    @elseif($order->payment_status === 'dp_paid')
+                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-50 text-blue-700 font-black text-xs border border-blue-200">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span> DP 50% DITERIMA (PROYEK AKTIF)
                         </span>
                     @else
                         <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-amber-50 text-amber-700 font-black text-xs border border-amber-200 animate-pulse">
@@ -70,7 +74,7 @@
                         @if($order->payment_status === 'paid')
                             @php
                                 $firstItem = $order->items->first()?->catalogItem;
-                                $downloadUrl = $firstItem?->digital_file_url ?? '#';
+                                $downloadUrl = $order->digital_access_token ? route('order.download', $order->digital_access_token) : ($firstItem?->digital_file_url ?? '#');
                             @endphp
                             <div>
                                 <a href="{{ $downloadUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/20 transition">
@@ -142,17 +146,27 @@
             </div>
 
                         <!-- Payment Action (Via WA) -->
-            @if($order->payment_status !== 'paid')
+            @if($order->payment_status === 'dp_paid')
+                <div class="p-6 sm:p-8 rounded-3xl bg-blue-50 border border-blue-200 text-center space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-md">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="text-lg font-black text-blue-900">Uang Muka (DP 50%) Telah Diterima!</h3>
+                        <p class="text-xs text-blue-700 max-w-lg mx-auto">Pesanan/proyek Anda saat ini dalam pengerjaan tim siswa TEFA dengan supervisi instruktur ahli. Pelunasan sisa 50% dilakukan setelah hasil proyek selesai dan disetujui.</p>
+                    </div>
+                </div>
+            @elseif($order->payment_status !== 'paid')
                 <div class="p-6 rounded-3xl bg-slate-900 text-white space-y-6 text-center">
                     <div class="space-y-1">
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">Instruksi Pembayaran</span>
                         <h3 class="text-lg font-black">Selesaikan Pembayaran via WhatsApp Admin</h3>
-                        <p class="text-xs text-slate-400">Silakan hubungi Admin melalui tombol di bawah ini untuk mengonfirmasi ongkos kirim (jika ada) dan melakukan pembayaran.</p>
+                        <p class="text-xs text-slate-400">Silakan hubungi Admin melalui tombol di bawah ini untuk mengonfirmasi pembayaran (DP 50% atau Lunas) serta ongkos kirim (jika ada).</p>
                     </div>
 
                     @php
                         $adminWa = $order->tefaUnit->admins->first()?->whatsapp_number ?? '6281234567890';
-                        $waMsg = urlencode("Halo Admin TEFA, saya ingin mengonfirmasi pesanan saya dengan ID: {$order->id}. Mohon info total bayar dan nomor rekening/QRIS.");
+                        $waMsg = urlencode("Halo Admin TEFA, saya ingin mengonfirmasi pesanan saya dengan nomor {$order->order_number}. Mohon info nomor rekening resmi sekolah untuk pembayaran.");
                     @endphp
 
                     <a href="https://wa.me/{{ $adminWa }}?text={{ $waMsg }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer">
@@ -174,7 +188,7 @@
                     @if($order->isDigital() || $order->fulfillment_method === 'digital_download')
                         @php
                             $firstItem = $order->items->first()?->catalogItem;
-                            $downloadUrl = $firstItem?->digital_file_url ?? '#';
+                            $downloadUrl = $order->digital_access_token ? route('order.download', $order->digital_access_token) : ($firstItem?->digital_file_url ?? '#');
                         @endphp
                         <div class="pt-3">
                             <a href="{{ $downloadUrl }}" target="_blank" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-lg shadow-indigo-600/30 transition">

@@ -52,6 +52,11 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'categories', 'managedUnit', 'stats'));
     }
 
+    public function create()
+    {
+        return redirect()->route('admin.products.index');
+    }
+
     public function store(Request $request)
     {
         $managedUnit = $request->user()->managedUnits()->first() ?? TefaUnit::first();
@@ -69,6 +74,7 @@ class ProductController extends Controller
             'digital_file_url' => 'nullable|required_if:fulfillment_type,digital_download|string|max:500',
             'thumbnail_file' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'description' => 'nullable|string',
+            'ai_context' => 'required|string|max:3000',
             'status' => ['required', new Enum(ItemStatus::class)],
         ]);
 
@@ -77,7 +83,7 @@ class ProductController extends Controller
         $trackStock = ($type === ItemType::Jasa->value || $type === ItemType::Digital->value) ? false : $request->boolean('track_stock');
         $stock = $trackStock ? (int) $validated['stock'] : 0;
         $weight = $type === ItemType::Produk->value ? ($validated['weight_gram'] ?? null) : null;
-        $path = $request->file('thumbnail_file')->store('products', 'public');
+        $path = \App\Services\ImageOptimizerService::optimizeAndStore($request->file('thumbnail_file'), 'products', 1000, 1000, 82);
         $thumbnailUrl = '/storage/' . $path;
 
         $slug = Str::slug($validated['title']) . '-' . Str::random(5);
@@ -89,6 +95,7 @@ class ProductController extends Controller
             'title' => $validated['title'],
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
+            'ai_context' => $validated['ai_context'],
             'price' => $validated['price'],
             'stock' => $stock,
             'track_stock' => $trackStock,
@@ -105,6 +112,7 @@ class ProductController extends Controller
 
     public function update(Request $request, CatalogItem $product)
     {
+        $this->authorizeUnit($request, $product);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_ids' => 'nullable|array',
@@ -118,6 +126,7 @@ class ProductController extends Controller
             'digital_file_url' => 'nullable|required_if:fulfillment_type,digital_download|string|max:500',
             'thumbnail_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'description' => 'nullable|string',
+            'ai_context' => 'required|string|max:3000',
             'status' => ['required', new Enum(ItemStatus::class)],
         ]);
 
@@ -136,7 +145,7 @@ class ProductController extends Controller
                 }
             }
 
-            $path = $request->file('thumbnail_file')->store('products', 'public');
+            $path = \App\Services\ImageOptimizerService::optimizeAndStore($request->file('thumbnail_file'), 'products', 1000, 1000, 82);
             $thumbnailUrl = '/storage/' . $path;
         }
 
@@ -144,6 +153,7 @@ class ProductController extends Controller
             'title' => $validated['title'],
             'category_id' => $validated['category_ids'][0] ?? null,
             'description' => $validated['description'] ?? $product->description,
+            'ai_context' => $validated['ai_context'],
             'price' => $validated['price'],
             'stock' => $stock,
             'track_stock' => $trackStock,
@@ -159,8 +169,9 @@ class ProductController extends Controller
         return redirect()->back()->with('success', "Item katalog '{$product->title}' berhasil diperbarui!");
     }
 
-    public function destroy(CatalogItem $product)
+    public function destroy(Request $request, CatalogItem $product)
     {
+        $this->authorizeUnit($request, $product);
         if ($product->thumbnail_url) {
             $path = ltrim(str_replace('/storage/', '', (string) $product->thumbnail_url), '/');
             if ($path && !str_starts_with((string) $product->thumbnail_url, 'http')) {
@@ -170,6 +181,19 @@ class ProductController extends Controller
 
         $product->delete();
         return redirect()->back()->with('success', 'Item produk berhasil dihapus dari katalog.');
+    }
+
+    private function authorizeUnit(Request $request, CatalogItem $product): void
+    {
+        $user = $request->user();
+        if ($user->role?->value === 'superadmin') {
+            return;
+        }
+
+        $managedUnitIds = $user->managedUnits()->pluck('tefa_units.id')->toArray();
+        if (!in_array($product->tefa_unit_id, $managedUnitIds, true)) {
+            abort(403, 'Akses ditolak: Anda tidak memiliki wewenang untuk produk unit jurusan ini.');
+        }
     }
 
     private function normalizeFulfillment(string $type, ?string $fulfillment): string

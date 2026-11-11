@@ -44,14 +44,24 @@
                             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
                                 <div class="aspect-square bg-gray-100 relative">
                                     @if($item->thumbnail_url)
-                                        <img src="{{ $item->thumbnail_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover">
+                                        <img src="{{ $item->thumbnail_url }}" 
+                                             alt="{{ $item->title }}" 
+                                             loading="lazy"
+                                             decoding="async"
+                                             class="w-full h-full object-cover opacity-0 blur-xs transition-all duration-500"
+                                             onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
                                     @endif
                                 </div>
                                 <div class="p-4 flex-1 flex flex-col">
                                     <h3 class="font-bold text-gray-900 line-clamp-1" title="{{ $item->title }}">{{ $item->title }}</h3>
-                                    <p class="text-xs text-gray-500 mt-1 mb-3">{{ $item->category->name ?? 'Uncategorized' }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5 mb-2">{{ $item->category->name ?? 'Uncategorized' }}</p>
+                                    
+                                    <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-3">
+                                        {{ $item->description }}
+                                    </p>
+
                                     @if($item->item_type->value === 'jasa')
                                         <p class="text-xs font-bold text-emerald-600 mb-3">Tersedia untuk konsultasi</p>
                                     @elseif(!$item->track_stock)
@@ -61,10 +71,14 @@
                                             {{ $item->stock > 0 ? 'Stok tersedia: ' . $item->stock : 'Stok habis' }}
                                         </p>
                                     @endif
-                                    <div class="flex items-center justify-between mt-auto">
-                                        <span class="font-bold text-blue-600">Rp {{ number_format((float)$item->price, 0, ',', '.') }}</span>
+                                    <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                        <span class="font-bold text-indigo-600 text-sm">Rp {{ number_format((float)$item->price, 0, ',', '.') }}</span>
                                         @auth
-                                            <button class="bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-sm font-medium transition">Detail</button>
+                                            @if($item->item_type->value === 'jasa')
+                                                <a href="{{ route('jasa.nego', $item->slug) }}" class="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-xs font-bold transition">Konsultasi</a>
+                                            @else
+                                                <a href="{{ route('order.checkout', $item->slug) }}" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg text-xs font-bold transition">Detail & Pesan</a>
+                                            @endif
                                         @else
                                             <a href="{{ route('login') }}" class="bg-gray-100 text-gray-500 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition">Login</a>
                                         @endauth

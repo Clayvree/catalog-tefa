@@ -165,7 +165,14 @@
                             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                                 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm" @click="editContribOpen = false"></div>
                                 <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full p-6 sm:p-8 space-y-5"
-                                     x-data="contributorForm({{ json_encode($portfolio->contributors->map(fn($c) => ['worker_profile_id' => $c->worker_profile_id, 'guest_name' => $c->guest_name, 'role' => $c->role, 'display_name' => $c->display_name])->values()) }})">
+                                     x-data="contributorForm({{ json_encode($portfolio->contributors->map(fn($c) => [
+                                         'worker_profile_id' => $c->worker_profile_id,
+                                         'guest_name'        => $c->guest_name,
+                                         'role'              => $c->role_title,
+                                         'linkedin'          => $c->linkedin_url,
+                                         'social'            => $c->social_url,
+                                         'display_name'      => $c->display_name,
+                                     ])->values()) }})">
 
                                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                                         <div>
@@ -183,12 +190,41 @@
                                         <!-- Daftar Kontributor Dinamis -->
                                         <div class="space-y-3">
                                             <template x-for="(item, idx) in contributors" :key="idx">
-                                                <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 relative">
-                                                    <button type="button" @click="remove(idx)" class="absolute top-2 right-2.5 text-slate-400 hover:text-red-500 text-sm font-bold cursor-pointer">×</button>
+                                                <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 relative">
+                                                    <button type="button" @click="remove(idx)" class="absolute top-2.5 right-3 text-slate-400 hover:text-red-500 text-base font-bold cursor-pointer">×</button>
 
-                                                    <!-- Pilih siswa (dengan akun) atau nama bebas -->
-                                                    <div x-show="item.worker_profile_id !== null || item.useDropdown">
-                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Siswa (punya akun TEFA)</label>
+                                                    <!-- Input Siswa: Default Manual (tidak wajib punya akun TEFA) -->
+                                                    <div x-show="!item.useDropdown" class="space-y-2">
+                                                        <div class="flex items-center justify-between pr-6">
+                                                            <span class="text-[10px] font-bold text-slate-500 uppercase">Data Teman / Kontributor</span>
+                                                            <button type="button" @click="item.useDropdown = true; item.guest_name = ''" class="text-[10px] text-indigo-600 hover:underline cursor-pointer">
+                                                                Pilih dari akun TEFA →
+                                                            </button>
+                                                        </div>
+                                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                                            <div class="sm:col-span-2">
+                                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama Rekan Siswa</label>
+                                                                <input type="text" :name="`contributors[${idx}][guest_name]`" x-model="item.guest_name"
+                                                                       placeholder="Nama lengkap..."
+                                                                       class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kelas</label>
+                                                                <input type="text" :name="`contributors[${idx}][class_name]`" x-model="item.class_name"
+                                                                       placeholder="cth: XII PPLG 2"
+                                                                       class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Dropdown Siswa Berakun (Alternatif) -->
+                                                    <div x-show="item.useDropdown" class="space-y-1">
+                                                        <div class="flex items-center justify-between pr-6">
+                                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Pilih Akun Siswa TEFA</label>
+                                                            <button type="button" @click="item.worker_profile_id = null; item.useDropdown = false; item.guest_name = ''" class="text-[10px] text-indigo-600 hover:underline cursor-pointer">
+                                                                Ketik nama manual →
+                                                            </button>
+                                                        </div>
                                                         <select :name="`contributors[${idx}][worker_profile_id]`" x-model="item.worker_profile_id"
                                                                 class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
                                                             <option value="">-- Pilih siswa --</option>
@@ -196,26 +232,28 @@
                                                                 <option value="{{ $uw->id }}">{{ $uw->user->name ?? '-' }} ({{ $uw->class_name ?? 'Kelas?' }})</option>
                                                             @endforeach
                                                         </select>
-                                                        <button type="button" @click="item.worker_profile_id = null; item.useDropdown = false; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
-                                                            Ganti ke nama manual →
-                                                        </button>
-                                                    </div>
-
-                                                    <div x-show="item.worker_profile_id === null && !item.useDropdown">
-                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama (tanpa akun TEFA)</label>
-                                                        <input type="text" :name="`contributors[${idx}][guest_name]`" x-model="item.guest_name"
-                                                               placeholder="Nama lengkap kontributor..."
-                                                               class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                                                        <button type="button" @click="item.useDropdown = true; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
-                                                            Pilih dari daftar siswa →
-                                                        </button>
                                                     </div>
 
                                                     <div>
-                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Peran / Role (opsional)</label>
+                                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Peran di Proyek</label>
                                                         <input type="text" :name="`contributors[${idx}][role]`" x-model="item.role"
                                                                placeholder="cth: UI Design, Backend, Ilustrasi..."
                                                                class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                    </div>
+
+                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                        <div>
+                                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">LinkedIn (Opsional)</label>
+                                                            <input type="url" :name="`contributors[${idx}][linkedin]`" x-model="item.linkedin"
+                                                                   placeholder="https://linkedin.com/in/..."
+                                                                   class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Medsos / GitHub (Opsional)</label>
+                                                            <input type="url" :name="`contributors[${idx}][social]`" x-model="item.social"
+                                                                   placeholder="https://instagram.com/..."
+                                                                   class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </template>
@@ -279,8 +317,27 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi Karya & Peran Anda</label>
-                            <textarea name="description" rows="3" required placeholder="Jelaskan konsep karya, tools yang digunakan (Laravel, Figma, Illustrator), serta kontribusi Anda..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi Karya</label>
+                            <textarea name="description" rows="3" required placeholder="Jelaskan konsep karya, tools yang digunakan (Laravel, Figma, Illustrator), serta latar belakang proyek..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
+                        </div>
+
+                        <!-- Peran & Profil Pengaju Sendiri -->
+                        <div class="p-3.5 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-3">
+                            <span class="block text-[11px] font-black uppercase text-indigo-700 tracking-wider">Peran & Profil Anda (Pengaju)</span>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Peran Anda di Proyek ini</label>
+                                <input type="text" name="submitter_role" placeholder="cth: Fullstack Developer / UI Designer / Lead 3D" class="w-full rounded-xl border-slate-200 bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">LinkedIn Anda (Opsional)</label>
+                                    <input type="url" name="submitter_linkedin" placeholder="https://linkedin.com/in/..." class="w-full rounded-xl border-slate-200 bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Medsos / GitHub (Opsional)</label>
+                                    <input type="url" name="submitter_social" placeholder="https://instagram.com/... atau github" class="w-full rounded-xl border-slate-200 bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                </div>
+                            </div>
                         </div>
 
                         <div>
@@ -297,18 +354,48 @@
                         <!-- Kontributor Tambahan -->
                         <div class="space-y-2.5 pt-1">
                             <div class="flex items-center justify-between">
-                                <label class="block text-xs font-bold text-slate-700 uppercase">Tim / Kontributor Lain</label>
+                                <label class="block text-xs font-bold text-slate-700 uppercase">Rekan Tim / Kontributor Lain</label>
                                 <span class="text-[10px] text-slate-400">Opsional</span>
                             </div>
-                            <p class="text-[10px] text-slate-500">Tambahkan teman yang ikut mengerjakan proyek ini. Bisa siswa TEFA atau nama bebas.</p>
+                            <p class="text-[10px] text-slate-500">Tambahkan teman yang ikut mengerjakan proyek ini. Bisa siswa TEFA atau ketik nama langsung.</p>
 
                             <div class="space-y-3">
                                 <template x-for="(item, idx) in contributors" :key="idx">
-                                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 relative">
-                                        <button type="button" @click="remove(idx)" class="absolute top-2 right-2.5 text-slate-400 hover:text-red-500 text-sm font-bold cursor-pointer">×</button>
+                                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 relative">
+                                        <button type="button" @click="remove(idx)" class="absolute top-2.5 right-3 text-slate-400 hover:text-red-500 text-base font-bold cursor-pointer">×</button>
 
-                                        <div x-show="item.worker_profile_id !== null || item.useDropdown">
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Siswa (punya akun TEFA)</label>
+                                        <!-- Input Siswa: Default Manual (tidak wajib punya akun TEFA) -->
+                                        <div x-show="!item.useDropdown" class="space-y-2">
+                                            <div class="flex items-center justify-between pr-6">
+                                                <span class="text-[10px] font-bold text-slate-500 uppercase">Data Teman / Rekan Tim</span>
+                                                <button type="button" @click="item.useDropdown = true; item.guest_name = ''" class="text-[10px] text-indigo-600 hover:underline cursor-pointer">
+                                                    Pilih dari akun TEFA →
+                                                </button>
+                                            </div>
+                                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                                <div class="sm:col-span-2">
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama Rekan Siswa</label>
+                                                    <input type="text" :name="`contributors[${idx}][guest_name]`" x-model="item.guest_name"
+                                                           placeholder="Nama lengkap..."
+                                                           class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kelas</label>
+                                                    <input type="text" :name="`contributors[${idx}][class_name]`" x-model="item.class_name"
+                                                           placeholder="cth: XII PPLG 2"
+                                                           class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dropdown Siswa Berakun (Alternatif) -->
+                                        <div x-show="item.useDropdown" class="space-y-1">
+                                            <div class="flex items-center justify-between pr-6">
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Pilih Akun Siswa TEFA</label>
+                                                <button type="button" @click="item.worker_profile_id = null; item.useDropdown = false; item.guest_name = ''" class="text-[10px] text-indigo-600 hover:underline cursor-pointer">
+                                                    Ketik nama manual →
+                                                </button>
+                                            </div>
                                             <select :name="`contributors[${idx}][worker_profile_id]`" x-model="item.worker_profile_id"
                                                     class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
                                                 <option value="">-- Pilih siswa --</option>
@@ -316,33 +403,35 @@
                                                     <option value="{{ $uw->id }}">{{ $uw->user->name ?? '-' }} ({{ $uw->class_name ?? 'Kelas?' }})</option>
                                                 @endforeach
                                             </select>
-                                            <button type="button" @click="item.worker_profile_id = null; item.useDropdown = false; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
-                                                Ganti ke nama manual →
-                                            </button>
-                                        </div>
-
-                                        <div x-show="item.worker_profile_id === null && !item.useDropdown">
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nama (tanpa akun TEFA)</label>
-                                            <input type="text" :name="`contributors[${idx}][guest_name]`" x-model="item.guest_name"
-                                                   placeholder="Nama lengkap kontributor..."
-                                                   class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
-                                            <button type="button" @click="item.useDropdown = true; item.guest_name = ''" class="text-[10px] text-slate-400 hover:text-indigo-600 mt-1 cursor-pointer">
-                                                Pilih dari daftar siswa →
-                                            </button>
                                         </div>
 
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Peran / Role (opsional)</label>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Peran di Proyek</label>
                                             <input type="text" :name="`contributors[${idx}][role]`" x-model="item.role"
                                                    placeholder="cth: UI Design, Backend, Ilustrasi..."
                                                    class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">LinkedIn (Opsional)</label>
+                                                <input type="url" :name="`contributors[${idx}][linkedin]`" x-model="item.linkedin"
+                                                       placeholder="https://linkedin.com/in/..."
+                                                       class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Medsos / GitHub (Opsional)</label>
+                                                <input type="url" :name="`contributors[${idx}][social]`" x-model="item.social"
+                                                       placeholder="https://instagram.com/..."
+                                                       class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium">
+                                            </div>
                                         </div>
                                     </div>
                                 </template>
                             </div>
 
-                            <button type="button" @click="addGuest()" class="w-full py-2 border-2 border-dashed border-slate-200 hover:border-indigo-400 text-slate-400 hover:text-indigo-600 rounded-2xl text-xs font-bold transition cursor-pointer">
-                                + Tambah Kontributor
+                            <button type="button" @click="addGuest()" class="w-full py-2 border-2 border-dashed border-slate-200 hover:border-indigo-400 text-slate-500 hover:text-indigo-600 rounded-2xl text-xs font-bold transition cursor-pointer">
+                                + Tambah Rekan Tim
                             </button>
                         </div>
 
@@ -370,11 +459,14 @@
                 contributors: initial.map(c => ({
                     worker_profile_id: c.worker_profile_id || null,
                     guest_name: c.guest_name || '',
-                    role: c.role || '',
+                    class_name: c.class_name || '',
+                    role: c.role_title || c.role || '',
+                    linkedin: c.linkedin_url || c.linkedin || '',
+                    social: c.social_url || c.social || '',
                     useDropdown: !!c.worker_profile_id,
                 })),
                 addGuest() {
-                    this.contributors.push({ worker_profile_id: null, guest_name: '', role: '', useDropdown: false });
+                    this.contributors.push({ worker_profile_id: null, guest_name: '', class_name: '', role: '', linkedin: '', social: '', useDropdown: false });
                 },
                 remove(idx) {
                     this.contributors.splice(idx, 1);

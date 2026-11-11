@@ -31,7 +31,7 @@
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 relative">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Upload Chat Ekspor (.txt)</h3>
-                        <p class="text-sm text-gray-500 mb-4">Sistem AI (Gemini) akan membaca percakapan Anda dengan klien, merangkum proyek, harga, dan memecahnya menjadi tugas spesifik untuk siswa.</p>
+                        <p class="text-sm text-gray-500 mb-4">Sistem AI (Groq) akan membaca percakapan Anda dengan klien, merangkum proyek, harga, dan memecahnya menjadi tugas spesifik untuk siswa.</p>
                         
                         @if($project ?? false)
                             <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6">
@@ -40,6 +40,17 @@
                                 <p class="text-xs text-indigo-700 mt-1">Klien: {{ $project->client_name }}</p>
                             </div>
                         @endif
+
+                        <details class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 text-xs text-emerald-900 group" {{ $drafts->isEmpty() ? 'open' : '' }}>
+                            <summary class="cursor-pointer font-bold text-emerald-800 select-none">Cara ekspor chat WhatsApp ke file .txt</summary>
+                            <ol class="mt-3 list-decimal pl-4 space-y-1.5 leading-relaxed">
+                                <li>Buka percakapan dengan klien di aplikasi WhatsApp (HP).</li>
+                                <li>Ketuk <strong>⋮ (titik tiga)</strong> &rarr; <strong>Lainnya</strong> &rarr; <strong>Ekspor chat</strong>. Di iPhone: ketuk nama kontak &rarr; <strong>Ekspor Chat</strong>.</li>
+                                <li>Pilih <strong>Tanpa Media</strong> agar file kecil dan hanya berisi teks.</li>
+                                <li>Kirim file ke laptop (mis. lewat email / WhatsApp Web), lalu unggah file <strong>.txt</strong> di bawah ini.</li>
+                            </ol>
+                            <p class="mt-2 text-[11px] text-emerald-700">Pastikan chat memuat kesepakatan harga, deadline, dan rincian fitur agar hasil AI akurat. Maksimal 5 MB.</p>
+                        </details>
 
                         <form action="{{ route('admin.projects.import-wa.store') }}" method="POST" enctype="multipart/form-data" @submit="isUploading = true">
                             @csrf
@@ -88,9 +99,16 @@
                             <div class="border rounded-xl p-4 flex items-center justify-between {{ $d->status === 'ready' ? 'border-indigo-300 bg-indigo-50' : 'border-gray-200 bg-white' }}">
                                 <div>
                                     <h4 class="font-bold text-gray-800 text-sm">
-                                        {{ Str::limit(basename($d->chat_file_path), 30) }}
+                                        {{ $d->project?->title ?? ($d->ai_result['project_title'] ?? 'Chat WhatsApp (belum diproses)') }}
                                     </h4>
-                                    <p class="text-xs text-gray-500 mt-1">Diunggah: {{ $d->created_at->format('d M Y H:i') }}</p>
+                                    <p class="text-xs text-gray-600 mt-0.5">
+                                        Klien: {{ $d->project?->client_name ?? ($d->ai_result['client_name'] ?? '-') }}
+                                        @if($d->uploader) &bull; oleh {{ $d->uploader->name }} @endif
+                                    </p>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">Diunggah {{ $d->created_at->translatedFormat('d M Y H:i') }}</p>
+                                    @if($d->status === 'failed' && $d->error_message)
+                                        <p class="text-[11px] text-rose-600 mt-1">Penyebab: {{ Str::limit($d->error_message, 140) }}. Coba unggah ulang.</p>
+                                    @endif
                                 </div>
                                 <div>
                                     @if($d->status === 'ready')

@@ -143,6 +143,23 @@ class PublicController extends Controller
         return view('public.portfolio', compact('unit', 'portfolios'));
     }
 
+    public function portfolioDetail(Portfolio $portfolio)
+    {
+        // Hanya tampilkan portofolio yang sudah disetujui
+        abort_if($portfolio->status->value !== 'approved', 404);
+
+        // Eager load semua relasi yang dibutuhkan halaman detail — antisipasi N+1
+        $portfolio->load([
+            'tefaUnit',
+            'worker.user',
+            'worker.skills',
+            'contributors.workerProfile.user',
+            'contributors.workerProfile.skills',
+        ]);
+
+        return view('public.portfolio_detail', compact('portfolio'));
+    }
+
     /**
      * Generate dynamic XML Sitemap untuk search engine crawler (Google, Bing, dll).
      */

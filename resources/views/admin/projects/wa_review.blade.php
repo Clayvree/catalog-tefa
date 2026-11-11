@@ -15,7 +15,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 p-6 sm:p-8">
                 <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
                     <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                        ?? Konfirmasi & Edit Hasil AI
+                        <svg class="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Konfirmasi & Edit Hasil AI
                     </h3>
                 </div>
                 
@@ -26,12 +27,12 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Klien</label>
-                            <input type="text" name="client_name" value="{{ old('client_name', $draft->ai_result['client_name'] ?? '') }}" required class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Klien / Bisnis</label>
+                            <input type="text" name="client_name" value="{{ old('client_name', $draft->ai_result['client_name'] ?? ($draft->project?->client_name ?? '')) }}" required class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Kontak Klien</label>
-                            <input type="text" name="client_contact" value="{{ old('client_contact', $draft->ai_result['client_contact'] ?? '') }}" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Kontak Klien (WhatsApp)</label>
+                            <input type="text" name="client_contact" value="{{ old('client_contact', $draft->project?->client_contact ?: ($draft->ai_result['client_contact'] ?? '')) }}" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
                     </div>
                     

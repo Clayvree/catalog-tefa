@@ -233,7 +233,12 @@
                                 <!-- Product Photo (Square 1:1 Aspect Ratio) -->
                                 <div class="aspect-square bg-slate-100 relative overflow-hidden">
                                     @if($item->thumbnail_url)
-                                        <img src="{{ $item->thumbnail_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                        <img src="{{ $item->thumbnail_url }}" 
+                                             alt="{{ $item->title }}" 
+                                             loading="lazy"
+                                             decoding="async"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 opacity-0 blur-xs"
+                                             onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-300 text-xs">No Image</div>
                                     @endif
@@ -260,6 +265,11 @@
                                         <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-snug" title="{{ $item->title }}">
                                             {{ $item->title }}
                                         </h3>
+                                        
+                                        <!-- Deskripsi Ringkas Produk -->
+                                        <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed pt-0.5">
+                                            {{ $item->description }}
+                                        </p>
                                     </div>
 
                                     <!-- Price & CTA -->

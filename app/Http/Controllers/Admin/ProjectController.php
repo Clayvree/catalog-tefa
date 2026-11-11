@@ -48,8 +48,14 @@ class ProjectController extends Controller
         return view('admin.projects.index', compact('projects', 'managedUnit', 'stats'));
     }
 
-    public function show(Project $project)
+    public function create()
     {
+        return redirect()->route('admin.projects.index');
+    }
+
+    public function show(Request $request, Project $project)
+    {
+        $this->authorizeUnit($request, $project);
         $project->load(['tasks.leader.user', 'tasks.members.user', 'tasks.skill', 'tefaUnit', 'creator', 'orders']);
         $workers = WorkerProfile::with('user')
             ->where('tefa_unit_id', $project->tefa_unit_id)
@@ -61,6 +67,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
+        $this->authorizeUnit($request, $project);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'client_name' => 'required|string|max:255',
@@ -99,6 +106,7 @@ class ProjectController extends Controller
 
     public function updateStatus(Request $request, Project $project)
     {
+        $this->authorizeUnit($request, $project);
         $validated = $request->validate([
             'status' => ['required', new Enum(ProjectStatus::class)],
         ]);
@@ -147,8 +155,9 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', "Rincian tugas '{$task->title}' berhasil diperbarui.");
     }
 
-    public function destroy(Project $project)
+    public function destroy(Request $request, Project $project)
     {
+        $this->authorizeUnit($request, $project);
         $project->tasks()->delete();
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');
@@ -156,6 +165,9 @@ class ProjectController extends Controller
 
     public function approveTask(Request $request, \App\Models\Task $task)
     {
+        $managedUnit = $request->user()->managedUnits()->first();
+        abort_if(!$managedUnit || $task->tefa_unit_id !== $managedUnit->id, 403);
+
         $task->update([
             'status' => 'done',
             'completed_at' => now(),
@@ -163,5 +175,18 @@ class ProjectController extends Controller
         ]);
 
         return redirect()->back()->with('success', "Tugas '{$task->title}' berhasil di-ACC (Selesai).");
+    }
+
+    private function authorizeUnit(Request $request, Project $project): void
+    {
+        $user = $request->user();
+        if ($user->role?->value === 'superadmin') {
+            return;
+        }
+
+        $managedUnitIds = $user->managedUnits()->pluck('tefa_units.id')->toArray();
+        if (!in_array($project->tefa_unit_id, $managedUnitIds, true)) {
+            abort(403, 'Akses ditolak: Anda tidak memiliki wewenang untuk proyek unit jurusan ini.');
+        }
     }
 }

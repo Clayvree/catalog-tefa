@@ -51,6 +51,7 @@ Route::get('/produk', [PublicController::class, 'produkList'])->name('produk.lis
 Route::get('/tefa/{slug}', [PublicController::class, 'storefront'])->name('tefa.storefront');
 Route::get('/tefa/{slug}/katalog', [PublicController::class, 'catalog'])->name('tefa.catalog');
 Route::get('/tefa/{slug}/portofolio', [PublicController::class, 'portfolio'])->name('tefa.portfolio');
+Route::get('/portofolio/{portfolio}', [PublicController::class, 'portfolioDetail'])->name('portfolio.detail');
 
 // --- AUTHENTICATED CHECKOUT, PAYMENT & ORDER FLOW ---
 Route::middleware('auth')->group(function () {
@@ -59,6 +60,7 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:15,1')
         ->name('order.store');
     Route::get('/pesanan/invoice/{order}', [PublicOrderController::class, 'invoice'])->name('order.invoice');
+    Route::get('/pesanan/download/{token}', [PublicOrderController::class, 'downloadDigital'])->name('order.download');
     Route::post('/pesanan/invoice/{order}/pay', [PublicOrderController::class, 'simulatePayment'])
         ->middleware('throttle:10,1')
         ->name('order.pay.simulate');
@@ -114,13 +116,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects/import-wa/{draft}/confirm', [WhatsAppImportController::class, 'confirm'])->name('projects.import-wa.confirm');
         
         // Projects Monitoring
-        Route::resource('projects', AdminProjectController::class);
+        Route::resource('projects', AdminProjectController::class)->except(['create', 'edit']);
         Route::patch('/projects/{project}/status', [AdminProjectController::class, 'updateStatus'])->name('projects.status.update');
         Route::patch('/tasks/{task}', [AdminProjectController::class, 'updateTask'])->name('tasks.update');
         Route::patch('/tasks/{task}/approve', [AdminProjectController::class, 'approveTask'])->name('tasks.approve');
         
         // Products & Catalog CRUD (Khusus Admin Jurusan)
-        Route::resource('products', AdminProductController::class);
+        Route::resource('products', AdminProductController::class)->except(['create', 'edit', 'show']);
         
         // Orders & Fulfillment Management
         Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
@@ -130,13 +132,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('/orders/{order}/fulfillment', [AdminOrderController::class, 'updateFulfillment'])->name('orders.fulfillment.update');
         
         // Workers CRUD
-        Route::resource('workers', AdminWorkerController::class);
+        Route::resource('workers', AdminWorkerController::class)->except(['create', 'edit', 'show']);
 
         // AI Knowledge Base (Konteks per Jurusan)
         Route::resource('knowledge', AdminKnowledgeBaseController::class)->only(['index', 'store', 'update', 'destroy']);
 
-        // Portofolio (Review & Approve)
-        Route::resource('portfolios', \App\Http\Controllers\Admin\PortfolioController::class)->only(['index', 'show', 'update', 'destroy']);
+        // Portofolio (Kelola & Tambah Karya Siswa)
+        Route::resource('portfolios', \App\Http\Controllers\Admin\PortfolioController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
     });
 
     // --- WORKER / SISWA MODULE ---

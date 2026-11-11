@@ -18,6 +18,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Database\Seeders\WorkerSeeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -181,6 +182,10 @@ class DatabaseSeeder extends Seeder
             CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
+        // Produk digital memakai link unduhan (diisi admin lewat form produk).
+        // Link di bawah hanya contoh PDF publik untuk demo, ganti dengan link e-book asli (mis. Google Drive).
+        $ebookLink = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+
         CatalogItem::updateOrCreate(
             ['slug' => 'e-book-panduan-digital'],
             [
@@ -193,14 +198,10 @@ class DatabaseSeeder extends Seeder
                 'item_type' => ItemType::Digital,
                 'status' => ItemStatus::Published,
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80',
+                'digital_file_url' => $ebookLink,
                 'track_stock' => false,
             ]
         );
-
-        CatalogItem::where('item_type', ItemType::Produk)->update([
-            'track_stock' => true,
-            'stock' => 10,
-        ]);
 
         // ==========================================
         // 4. JURUSAN DKV (Pak Nova)
@@ -483,7 +484,13 @@ class DatabaseSeeder extends Seeder
             CatalogItem::updateOrCreate(['slug' => $item['slug']], $item);
         }
 
-         // Register WorkerSeeder at the very end
+        // Pastikan seluruh produk fisik dari seluruh jurusan (DKV, PPLG, TKJ, dll) memiliki stok aktif siap beli
+        CatalogItem::where('item_type', ItemType::Produk)->update([
+            'track_stock' => true,
+            'stock' => 50,
+        ]);
+
+        // Register WorkerSeeder at the very end
         $this->call(WorkerSeeder::class);
     }
 }

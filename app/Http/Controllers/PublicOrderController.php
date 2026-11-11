@@ -54,7 +54,7 @@ class PublicOrderController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_contact' => 'required|string|max:50',
-            'fulfillment_method' => 'required|string',
+            'fulfillment_method' => ['required', 'string', \Illuminate\Validation\Rule::in(['delivery', 'pickup_at_tefa', 'digital_download', 'onsite_service'])],
             'shipping_address' => 'nullable|required_if:fulfillment_method,delivery|string',
             'shipping_city' => 'nullable|required_if:fulfillment_method,delivery|string|max:100',
             'payment_method' => 'required|string',
@@ -79,6 +79,8 @@ class PublicOrderController extends Controller
                 ? 'digital'
                 : 'physical';
 
+            $isFree = ($totalPrice <= 0);
+
             $order = Order::create([
                 'id' => (string) Str::uuid(),
                 'tefa_unit_id' => $item->tefa_unit_id,
@@ -91,12 +93,13 @@ class PublicOrderController extends Controller
                 'shipping_city' => $validated['shipping_city'] ?? null,
                 'shipping_courier' => ($validated['fulfillment_method'] === 'delivery') ? 'Kurir TEFA Express' : null,
                 'payment_method' => $validated['payment_method'],
-                'payment_status' => 'unpaid',
+                'payment_status' => $isFree ? 'paid' : 'unpaid',
+                'status' => $isFree ? 'completed' : 'pending',
+                'fulfillment_status' => ($isFree && $orderType === 'digital') ? \App\Enums\FulfillmentStatus::DownloadReady : null,
                 'digital_access_token' => $orderType === 'digital' ? Str::random(32) : null,
                 'notes' => $validated['notes'] ?? null,
                 'total_price' => $totalPrice,
                 'shipping_cost' => $shippingCost,
-                'status' => 'pending',
                 'order_date' => now(),
             ]);
 
@@ -133,9 +136,11 @@ class PublicOrderController extends Controller
 
     public function simulatePayment(Order $order)
     {
-        // Pastikan hanya pemilik order atau admin yang bisa bayar
-        if ($order->user_id && $order->user_id !== auth()->id() && !in_array(auth()->user()?->role?->value, ['superadmin', 'admin_jurusan'])) {
-            abort(403, 'Aksi tidak diizinkan.');
+        $user = auth()->user();
+        $isAdmin = $user && ($user->role?->value === 'superadmin' || ($user->role?->value === 'admin_jurusan' && in_array($order->tefa_unit_id, $user->managedUnits()->pluck('tefa_units.id')->toArray(), true)));
+
+        if (!$isAdmin) {
+            abort(403, 'Aksi tidak diizinkan: Konfirmasi pelunasan pembayaran hanya dapat dilakukan oleh Admin TEFA.');
         }
 
         $order->update([
@@ -143,14 +148,41 @@ class PublicOrderController extends Controller
             'status' => ($order->status === 'pending') ? 'processed' : $order->status,
         ]);
 
-        return redirect()->back()->with('success', 'Pembayaran berhasil dikonfirmasi! Pesanan Anda segera diproses.');
+        return redirect()->back()->with('success', 'Pembayaran berhasil dikonfirmasi oleh Admin! Pesanan segera diproses.');
     }
 
-    
+    public function downloadDigital(string $token)
+    {
+        $order = Order::where('digital_access_token', $token)->firstOrFail();
+
+        if ($order->payment_status !== 'paid') {
+            abort(403, 'Akses unduhan ditolak: Pesanan belum berstatus lunas.');
+        }
+
+        $item = $order->items->first()?->catalogItem;
+        if (!$item || empty($item->digital_file_url)) {
+            abort(404, 'File digital belum tersedia atau tautan belum dikonfigurasi.');
+        }
+
+        if (filter_var($item->digital_file_url, FILTER_VALIDATE_URL)) {
+            return redirect()->away($item->digital_file_url);
+        }
+
+        $cleanPath = ltrim(str_replace('/storage/', '', $item->digital_file_url), '/');
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($cleanPath)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->download($cleanPath);
+        }
+
+        return redirect()->away($item->digital_file_url);
+    }
 
     public function nego(string $slug)
     {
         $item = CatalogItem::with(['tefaUnit.admins', 'category'])->where('slug', $slug)->firstOrFail();
+        if ($item->item_type !== ItemType::Jasa && $item->item_type !== 'kegiatan') {
+            abort(404, 'Negosiasi hanya tersedia untuk layanan kategori Jasa.');
+        }
+
         $admin = $item->tefaUnit->admins->first();
         return view('public.jasa_nego', compact('item', 'admin'));
     }
@@ -158,21 +190,27 @@ class PublicOrderController extends Controller
     public function submitNego(Request $request, string $slug)
     {
         $item = CatalogItem::with(['tefaUnit.admins'])->where('slug', $slug)->firstOrFail();
-        $admin = $item->tefaUnit->admins->first();
+        if ($item->item_type !== ItemType::Jasa && $item->item_type !== 'kegiatan') {
+            abort(404, 'Negosiasi hanya tersedia untuk layanan kategori Jasa.');
+        }
 
-        // Auto-fill from logged-in user
+        $admin = $item->tefaUnit->admins->first();
         $user = auth()->user();
-        $request->merge([
-            'client_name' => $user->name,
-            'client_contact' => $user->whatsapp_number ?? $user->phone ?? '-',
-        ]);
+
+        // Defaultkan dari user jika tidak diisi
+        if (!$request->filled('client_name')) {
+            $request->merge(['client_name' => $user->name]);
+        }
+        if (!$request->filled('client_contact')) {
+            $request->merge(['client_contact' => $user->whatsapp_number ?? $user->phone ?? '-']);
+        }
 
         $validated = $request->validate([
             'client_name' => 'required|string|max:255',
             'client_contact' => 'required|string|max:50',
             'project_brief' => 'required|string|max:2000',
-            'budget_expectation' => 'nullable|numeric|min:0',
-            'target_deadline' => 'nullable|date',
+            'budget_expectation' => 'nullable|numeric|min:10000|max:100000000',
+            'target_deadline' => 'nullable|date|after_or_equal:today',
         ]);
 
         // Catat sebagai Proyek (Draft) dan Pesanan (Pending) sekaligus
@@ -225,7 +263,9 @@ class PublicOrderController extends Controller
         // Admin terhubung via pivot tefa_unit_user, bukan kolom langsung di users
         $admin = $item->tefaUnit->admins->first();
         $adminPhone = $admin->phone ?? $superAdmin->phone; // Default WhatsApp TEFA
-        $message = urlencode("Halo Admin TEFA {$item->tefaUnit->name},\n\nSaya ingin berkonsultasi & nego harga untuk layanan *{$item->title}*.\n\n*Nama Klien:* {$validated['client_name']}\n*Kontak:* {$validated['client_contact']}\n*Kebutuhan:* {$validated['project_brief']}\n*Estimasi Budget:* Rp" . number_format((float)($validated['budget_expectation'] ?? $item->price), 0, ',', '.') . "\n\nMohon informasi ketersediaan jadwal & penawaran resmi. Terima kasih!");
+        $deadlineText = !empty($validated['target_deadline']) ? "\nTarget selesai: " . \Carbon\Carbon::parse($validated['target_deadline'])->format('d/m/Y') : "";
+        $budgetFormatted = "Rp" . number_format((float)($validated['budget_expectation'] ?? $item->price), 0, ',', '.');
+        $message = urlencode("Halo, saya {$validated['client_name']}. Saya tadi isi form di TEFAHUB untuk {$item->title}.\n\n*PENGAJUAN KEBUTUHAN – TEFAHUB*\nLayanan: {$item->title}\nNama/Instansi: {$validated['client_name']}\nKontak: {$validated['client_contact']}\nRincian kebutuhan: {$validated['project_brief']}\nEkspektasi budget: {$budgetFormatted}{$deadlineText}\n\nMohon informasi ketersediaan jadwal & penawaran resmi. Terima kasih!");
 
         $waUrl = "https://wa.me/{$adminPhone}?text={$message}";
 

@@ -53,4 +53,9 @@ class WaImportDraft extends Model
     {
         return $this->belongsTo(CatalogItem::class);
     }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

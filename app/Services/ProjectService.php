@@ -20,10 +20,16 @@ class ProjectService
             return DB::transaction(function () use ($tefaUnitId, $creatorId, $validatedAiData, $projectId) {
                 if ($projectId) {
                     $project = Project::findOrFail($projectId);
+                    
+                    // Pertahankan nomor telepon asli klien jika input AI hanya berupa nama atau kosong
+                    $rawContact = $validatedAiData['client_contact'] ?? null;
+                    $isContactValidNumber = !empty($rawContact) && preg_match('/^[0-9+ \-()]{7,25}$/', trim((string)$rawContact));
+                    $contactToSave = $isContactValidNumber ? $rawContact : ($project->client_contact ?? $rawContact);
+
                     $project->update([
                         'title'                => $validatedAiData['project_title'],
                         'client_name'          => $validatedAiData['client_name'],
-                        'client_contact'       => $validatedAiData['client_contact'] ?? null,
+                        'client_contact'       => $contactToSave,
                         'description'          => $validatedAiData['project_summary'],
                         'final_price'          => $validatedAiData['agreed_price'] ?? $project->final_price,
                         'deadline'             => $validatedAiData['agreed_deadline'] ?? $project->deadline,

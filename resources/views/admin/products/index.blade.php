@@ -16,7 +16,7 @@
     <div class="py-8 bg-slate-50 min-h-screen" x-data="{ 
         editModalOpen: false, 
         addModalOpen: false,
-        activeProduct: { id: '', title: '', category_ids: [], item_type: 'produk', fulfillment_type: 'both', track_stock: true, stock: 10, weight_gram: '', digital_file_url: '', thumbnail_url: '', description: '', status: 'published' } 
+        activeProduct: { id: '', title: '', category_ids: [], item_type: 'produk', fulfillment_type: 'both', track_stock: true, stock: 10, weight_gram: '', digital_file_url: '', thumbnail_url: '', description: '', ai_context: '', status: 'published' } 
     }" @open-add-product-modal.window="addModalOpen = true">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             
@@ -173,6 +173,7 @@
                                                 digital_file_url: '{{ addslashes($product->digital_file_url ?? '') }}',
                                                 thumbnail_url: '{{ addslashes($product->thumbnail_url) }}',
                                                 description: '{{ addslashes($product->description ?? '') }}',
+                                                ai_context: '{{ addslashes($product->ai_context ?? '') }}',
                                                 status: '{{ $product->status->value }}'
                                             }; editModalOpen = true;" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition cursor-pointer">
                                                 Edit
@@ -307,6 +308,21 @@
                             <textarea name="description" rows="3" placeholder="Jelaskan spesifikasi produk, keunggulan, bahan baku, atau ketentuan layanan..." class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
                         </div>
 
+                        <!-- Konteks AI untuk Asisten CS (Wajib) -->
+                        <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-black uppercase text-indigo-900 tracking-wider flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    Konteks AI Asisten / CS Chat <span class="text-red-500">* (Wajib)</span>
+                                </label>
+                                <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-full">Knowledge AI</span>
+                            </div>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">
+                                Tuliskan informasi lengkap seputar produk ini khusus untuk asisten AI (misal: bahan baku, FAQ, batas garansi, lama pengerjaan, ketentuan custom/revisi) agar AI dapat menjawab calon pembeli secara akurat dan tidak berhalusinasi.
+                            </p>
+                            <textarea name="ai_context" rows="3" required placeholder="Contoh: Bahan akrilik 3mm UV print anti luntur. Waktu pengerjaan 2-3 hari. Pembeli bisa kirim logo/desain sendiri via WA. Ada garansi cetak ulang jika cacat produk." class="w-full rounded-xl border-slate-200 bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
+                        </div>
+
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Status Publikasi</label>
                             <select name="status" required class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-bold">
@@ -425,6 +441,21 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi</label>
                             <textarea name="description" rows="3" x-model="activeProduct.description" class="w-full rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
+                        </div>
+
+                        <!-- Konteks AI untuk Asisten CS (Wajib) -->
+                        <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-black uppercase text-indigo-900 tracking-wider flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    Konteks AI Asisten / CS Chat <span class="text-red-500">* (Wajib)</span>
+                                </label>
+                                <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-full">Knowledge AI</span>
+                            </div>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">
+                                Tuliskan informasi lengkap seputar produk ini khusus untuk asisten AI (bahan baku, FAQ, garansi, lama pengerjaan, ketentuan custom/revisi) agar AI dapat menjawab pertanyaan dengan tepat.
+                            </p>
+                            <textarea name="ai_context" rows="3" x-model="activeProduct.ai_context" required placeholder="Tuliskan konteks AI untuk produk ini..." class="w-full rounded-xl border-slate-200 bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-xs font-medium leading-relaxed"></textarea>
                         </div>
 
                         <div>

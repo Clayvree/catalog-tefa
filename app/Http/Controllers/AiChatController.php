@@ -263,8 +263,8 @@ PROMPT;
                     ->with('category:id,name')
                     ->orderByDesc('stock')
                     ->orderBy('title')
-                    ->take(8)
-                    ->get(['id', 'category_id', 'title', 'price', 'item_type', 'stock']);
+                    ->take(12)
+                    ->get(['id', 'category_id', 'title', 'price', 'item_type', 'stock', 'ai_context', 'description']);
                 if ($items->isNotEmpty()) {
                     $context .= "Produk/Jasa tersedia:\n";
                     foreach ($items as $item) {
@@ -274,6 +274,11 @@ PROMPT;
                             : ($item->stock > 0 ? "tersedia, stok {$item->stock}" : 'habis, stok 0');
                         $kategori = $item->category?->name ? ", kategori {$item->category->name}" : '';
                         $context .= "- {$item->title}{$kategori} ({$harga}; {$stok})\n";
+                        if (!empty($item->ai_context)) {
+                            $context .= "  [Konteks AI/Info Khusus]: {$item->ai_context}\n";
+                        } elseif (!empty($item->description)) {
+                            $context .= "  [Deskripsi]: " . Str::limit($item->description, 180) . "\n";
+                        }
                     }
                 } else {
                     $context .= "Produk/Jasa tersedia: belum ada katalog published untuk unit ini.\n";
@@ -290,8 +295,8 @@ PROMPT;
                     ->forUnit($unit->id)
                     ->orderByDesc('stock')
                     ->orderBy('title')
-                    ->take(8)
-                    ->get(['title', 'price', 'item_type', 'stock']);
+                    ->take(10)
+                    ->get(['title', 'price', 'item_type', 'stock', 'ai_context', 'description']);
 
                 if ($items->isEmpty()) {
                     $context .= "- Belum ada produk published.\n";
@@ -304,6 +309,9 @@ PROMPT;
                         ? 'layanan jasa, konsultasi diperlukan'
                         : ($item->stock > 0 ? "tersedia, stok {$item->stock}" : 'habis, stok 0');
                     $context .= "- {$item->title} ({$harga}; {$stok})\n";
+                    if (!empty($item->ai_context)) {
+                        $context .= "  [Konteks AI/Info Khusus]: {$item->ai_context}\n";
+                    }
                 }
             }
         }

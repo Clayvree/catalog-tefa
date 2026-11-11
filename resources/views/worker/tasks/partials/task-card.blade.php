@@ -36,12 +36,8 @@
         @endif
     </div>
 
-    <!-- AI Match Reasoning (If extracted by AI) -->
-    @if($task->ai_recommendation_notes)
-        <div class="p-2 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[10px] text-indigo-900 leading-tight">
-            <span class="font-bold text-indigo-700"> AI Note:</span> {{ $task->ai_recommendation_notes }}
-        </div>
-    @endif
+    <!-- Tenggat & peran siswa -->
+    @include('worker.tasks.partials.task-meta', ['task' => $task])
 
     <!-- Skill Tag -->
     @if($task->skill)

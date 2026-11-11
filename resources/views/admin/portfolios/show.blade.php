@@ -19,14 +19,17 @@
                     <div class="flex items-start justify-between mb-6">
                         <div>
                             <h1 class="text-2xl font-black text-slate-900 mb-2">{{ $portfolio->title }}</h1>
-                            <div class="flex items-center gap-4 text-xs font-medium text-slate-500">
-                                <span class="flex items-center gap-1">?? Diajukan: {{ $portfolio->created_at->format('d M Y, H:i') }}</span>
-                                @if($portfolio->external_link)
-                                    <a href="{{ $portfolio->external_link }}" target="_blank" class="text-indigo-600 hover:underline flex items-center gap-1">
-                                        ?? Link Eksternal
+                                <div class="flex items-center gap-4 text-xs font-medium text-slate-500">
+                                    <span class="flex items-center gap-1">📅 Diajukan: {{ $portfolio->created_at->format('d M Y, H:i') }}</span>
+                                    @if($portfolio->external_link)
+                                        <a href="{{ $portfolio->external_link }}" target="_blank" class="text-indigo-600 hover:underline flex items-center gap-1">
+                                            🔗 Link Eksternal
+                                        </a>
+                                    @endif
+                                    <a href="{{ route('portfolio.detail', $portfolio->id) }}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1 font-bold">
+                                        👁️ Preview Publik
                                     </a>
-                                @endif
-                            </div>
+                                </div>
                         </div>
                         <div>
                             @if($portfolio->status->value === 'approved')
@@ -89,14 +92,24 @@
                                 </div>
                                 <div>
                                     <p class="font-bold text-slate-900 text-sm">{{ $contrib->display_name }}</p>
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                                         @if($contrib->workerProfile)
                                             <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Akun TEFA</span>
                                         @else
-                                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Tamu</span>
+                                            <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Manual</span>
                                         @endif
-                                        @if($contrib->role)
-                                            <p class="text-xs text-slate-500">{{ $contrib->role }}</p>
+                                        <span class="text-xs text-slate-600 font-medium">{{ $contrib->role_title }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        @if($contrib->linkedin_url)
+                                            <a href="{{ $contrib->linkedin_url }}" target="_blank" class="text-[10px] text-blue-600 hover:underline flex items-center gap-0.5 font-bold">
+                                                LinkedIn ↗
+                                            </a>
+                                        @endif
+                                        @if($contrib->social_url)
+                                            <a href="{{ $contrib->social_url }}" target="_blank" class="text-[10px] text-pink-600 hover:underline flex items-center gap-0.5 font-bold">
+                                                Medsos ↗
+                                            </a>
                                         @endif
                                     </div>
                                 </div>

@@ -24,6 +24,7 @@ class CatalogItem extends Model
         'title',
         'slug',
         'description',
+        'ai_context',
         'price',
         'stock',
         'track_stock',

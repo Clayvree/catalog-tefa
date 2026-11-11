@@ -130,8 +130,9 @@ Anda adalah AI asisten untuk "TEFA Management Platform".
 Tugas Anda mengekstrak informasi proyek dari percakapan WhatsApp antara pihak sekolah (Admin) dan Klien, lalu membaginya menjadi tugas-tugas untuk siswa berdasarkan skill mereka.
 
 Instruksi:
-1. Temukan nama klien (dan kontaknya jika ada).
-2. Temukan judul proyek secara keseluruhan.
+1. Temukan nama klien atau nama bisnis/instansi (client_name), misalnya "Toko Kue Sari".
+2. Temukan nomor telepon WhatsApp klien (client_contact) HANYA jika ada deretan nomor telepon yang tertulis jelas di dalam percakapan. Jika tidak ada nomor telepon yang tertulis, isi null. PENTING: JANGAN PERNAH mengisi client_contact dengan nama pengirim chat (seperti "Sari Kue").
+3. Temukan judul proyek secara keseluruhan.
 3. Buat ringkasan pesanan/proyek (summary).
 4. Temukan harga akhir yang benar-benar disepakati (dalam bentuk angka bulat). Jika belum ada kesepakatan, kembalikan null.
 5. Temukan deadline yang disepakati. Kembalikan dalam format YYYY-MM-DD jika jelas, jika belum ada kesepakatan kembalikan null. Jangan membuat tanggal berdasarkan perkiraan.
