@@ -65,7 +65,7 @@
                         <div>
                             <!-- Thumbnail -->
                             <div class="h-44 bg-slate-100 relative overflow-hidden">
-                                <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
+                                <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80';">
                                 <div class="absolute top-2.5 right-2.5">
                                     @if($portfolio->status->value === 'approved')
                                         <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-500 text-white shadow-md">

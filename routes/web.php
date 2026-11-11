@@ -23,6 +23,30 @@ use App\Http\Controllers\Worker\PortfolioController as WorkerPortfolioController
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MailerController;
 
+// --- SERVE UPLOADED PUBLIC STORAGE FILES (Windows & Laragon Symlink Fallback) ---
+Route::get('/storage/{path}', function (string $path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->file($fullPath);
+})->where('path', '.*')->name('storage.local');
+
+// --- FALLBACK SEEDED PORTOFOLIO IMAGES ---
+Route::get('/images/portofolio/{file}', function (string $file) {
+    $publicPath = public_path('images/portofolio/' . $file);
+    if (file_exists($publicPath)) {
+        return response()->file($publicPath);
+    }
+    $fallback = match ($file) {
+        'game.jpeg' => 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=800&auto=format&fit=crop&q=80',
+        'jmb.png' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80',
+        'silap.png' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80',
+        default => 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80',
+    };
+    return redirect($fallback);
+});
+
 // --- EMAIL COMPOSER (Dibatasi Throttle Anti-Spam) ---
 Route::get("email", [MailerController::class, "email"])->name("email");
 Route::post("send-email", [MailerController::class, "composeEmail"])

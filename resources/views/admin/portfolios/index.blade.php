@@ -163,7 +163,7 @@
                                 <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col bg-slate-50 transition hover:shadow-md">
                                     <div class="h-48 bg-slate-200 relative group">
                                         @if($portfolio->thumbnail_url)
-                                            <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
+                                            <img src="{{ $portfolio->thumbnail_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80';">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-slate-400 font-bold text-xs">
                                                 Tidak ada gambar mockup

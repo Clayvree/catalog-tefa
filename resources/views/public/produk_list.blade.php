@@ -238,7 +238,8 @@
                                              loading="lazy"
                                              decoding="async"
                                              class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 opacity-0 blur-xs"
-                                             onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');">
+                                             onload="this.classList.remove('opacity-0', 'blur-xs'); this.classList.add('opacity-100', 'blur-0');"
+                                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80';">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-300 text-xs">No Image</div>
                                     @endif

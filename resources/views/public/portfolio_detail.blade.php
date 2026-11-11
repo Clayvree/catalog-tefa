@@ -85,7 +85,7 @@
                 $hasValidImage = true;
             } else {
                 $rawPath = ltrim(str_replace('/storage/', '', (string) $portfolio->thumbnail_url), '/');
-                $hasValidImage = file_exists(public_path($rawPath)) || file_exists(public_path('storage/' . $rawPath));
+                $hasValidImage = file_exists(storage_path('app/public/' . $rawPath)) || file_exists(public_path($rawPath)) || file_exists(public_path('storage/' . $rawPath));
             }
         }
     @endphp
@@ -225,7 +225,8 @@
                              loading="lazy"
                              decoding="async"
                              class="w-full h-full object-cover opacity-0 blur-md scale-105 transition-all duration-700 ease-out"
-                             onload="this.classList.remove('opacity-0', 'blur-md', 'scale-105'); this.classList.add('opacity-100', 'blur-0', 'scale-100');">
+                             onload="this.classList.remove('opacity-0', 'blur-md', 'scale-105'); this.classList.add('opacity-100', 'blur-0', 'scale-100');"
+                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80';">
                     @else
                         {{-- Futuristic Digital Platform Graphic when dummy image is missing --}}
                         <div class="absolute inset-0 bg-gradient-to-tr from-indigo-950 via-slate-950 to-slate-900 flex items-center justify-center p-6 sm:p-12">

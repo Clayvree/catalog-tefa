@@ -35,14 +35,14 @@ class SecurityHeaders
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
         // Content Security Policy - batasi sumber daya eksternal
-        // Izinkan: self, Groq API, CDN gambar, Tailwind, Google Fonts, Alpine.js
+        // Izinkan: self, Vite dev server, Groq API, CDN gambar, Tailwind CDN, Google Fonts, Alpine.js
         $response->headers->set('Content-Security-Policy',
             "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.tailwindcss.com unpkg.com cdnjs.cloudflare.com; " .
-            "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.tailwindcss.com cdnjs.cloudflare.com; " .
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.tailwindcss.com unpkg.com cdnjs.cloudflare.com http://localhost:5173 http://127.0.0.1:5173; " .
+            "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.tailwindcss.com cdnjs.cloudflare.com http://localhost:5173 http://127.0.0.1:5173; " .
             "font-src 'self' fonts.gstatic.com data:; " .
             "img-src 'self' data: blob: *; " .
-            "connect-src 'self' api.groq.com; " .
+            "connect-src 'self' api.groq.com http://localhost:5173 http://127.0.0.1:5173 ws://localhost:5173 ws://127.0.0.1:5173; " .
             "frame-ancestors 'self';"
         );
 
